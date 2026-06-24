@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register | Chronicle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px -10px rgba(0, 88, 190, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "on-primary-container": "#7c839b",
+                    "secondary-container": "#2170e4",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#131b2e",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "tertiary": "#000000",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#0b1c30",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "primary": "#000000",
+                    "on-secondary-container": "#fefcff",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-container": "#75859d",
+                    "surface-tint": "#565e74",
+                    "background": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "secondary": "#0058be",
+                    "primary-fixed-dim": "#bec6e0",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "inverse-surface": "#2d3133",
+                    "on-surface": "#191c1e",
+                    "surface-bright": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "on-surface-variant": "#45464d",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f7f9fb",
+                    "outline": "#76777d",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed": "#d3e4fe",
+                    "surface-container-high": "#e6e8ea"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "container-max": "1280px",
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "stack-sm": "12px",
+                    "margin-desktop": "64px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "caption": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- Subtle Atmospheric Background Shader Placeholder -->
+<div class="fixed inset-0 z-0 opacity-40 pointer-events-none">
+<!-- Assuming a very subtle movement to match the high-end editorial feel -->
+
+</div>
+<!-- Main Content Area -->
+<main class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile py-stack-lg">
+<div class="w-full max-w-[480px] bg-surface-container-lowest rounded-lg editorial-shadow overflow-hidden flex flex-col">
+<!-- Branding Header -->
+<div class="pt-margin-desktop px-margin-desktop pb-stack-md text-center">
+<h1 class="font-display-lg text-display-lg uppercase tracking-tighter text-primary mb-2">CHRONICLE</h1>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">Journalism of integrity and depth.</p>
+</div>
+<!-- Registration Form Section -->
+<div class="px-margin-desktop pb-margin-desktop space-y-stack-md">
+<div class="text-center mb-base">
+<h2 class="font-headline-md text-headline-md text-on-surface">Create your account</h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">Join the community of informed readers.</p>
+</div>
+<form class="space-y-stack-sm" onsubmit="event.preventDefault();">
+<!-- Full Name -->
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="full_name">Full Name</label>
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-on-surface-variant/30" id="full_name" placeholder="Johnathan Doe" type="text"/>
+</div>
+<!-- Email Address -->
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="email">Email Address</label>
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-on-surface-variant/30" id="email" placeholder="email@example.com" type="email"/>
+</div>
+<!-- Password -->
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="password">Password</label>
+<div class="relative">
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-on-surface-variant/30" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="confirm_password">Confirm Password</label>
+<input class="w-full px-4 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-on-surface-variant/30" id="confirm_password" placeholder="••••••••" type="password"/>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 py-2">
+<input class="mt-1 w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary" id="terms" type="checkbox"/>
+<label class="font-caption text-caption text-on-surface-variant leading-tight" for="terms">
+                            I agree to the <a class="text-secondary hover:underline" href="#">Terms and Conditions</a> and the <a class="text-secondary hover:underline" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<!-- CTA Button -->
+<button class="w-full mt-stack-sm bg-secondary text-on-secondary py-4 px-gutter rounded-lg font-label-md text-label-md uppercase tracking-widest hover:bg-secondary-container hover:text-on-secondary-container transition-all duration-200 active:scale-[0.98] editorial-shadow" type="submit">
+                        Create Account
+                    </button>
+</form>
+<!-- Footer Link -->
+<div class="pt-stack-md text-center border-t border-surface-container">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Already have an account? 
+                        <a class="text-secondary font-bold hover:underline transition-all" href="#">Back to Login</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Shared Footer from JSON -->
+<footer class="w-full px-gutter py-margin-desktop grid grid-cols-1 md:grid-cols-3 gap-8 bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container border-t-border-width-thick border-primary">
+<div class="space-y-4">
+<span class="font-display text-headline-lg text-on-primary">CHRONICLE</span>
+<p class="font-body-md text-body-md opacity-80 max-w-xs">Built for truth and clarity in an era of rapid information. Chronicle provides curated, professional news for the global citizen.</p>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="font-label-bold text-label-bold uppercase opacity-60 mb-2">Legal &amp; Contact</h4>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Contact Editorial</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Archive</a>
+</div>
+<div class="flex flex-col justify-between items-start md:items-end">
+<div class="flex gap-4">
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed">public</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed">rss_feed</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed">mail</span>
+</div>
+<p class="font-label-sm text-label-sm opacity-60 mt-8 md:mt-0">© 2024 Chronicle News Media. Built for truth.</p>
+</div>
+</footer>
+<script>
+        // Micro-interaction for input focus effects
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label')?.classList.add('text-secondary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label')?.classList.remove('text-secondary');
+            });
+        });
+    </script>
+</body></html>

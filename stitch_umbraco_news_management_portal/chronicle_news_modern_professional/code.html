@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE | News Central</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#0058be",
+                    "tertiary-container": "#0b1c30",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary-container": "#7c839b",
+                    "on-tertiary-container": "#75859d",
+                    "primary": "#000000",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-bright": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "background": "#f7f9fb",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-background": "#191c1e",
+                    "primary-container": "#131b2e",
+                    "tertiary-fixed": "#d3e4fe",
+                    "outline": "#76777d",
+                    "inverse-surface": "#2d3133",
+                    "surface": "#f7f9fb",
+                    "primary-fixed": "#dae2fd",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#45464d",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#565e74",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d8e2ff",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "tertiary": "#000000",
+                    "on-secondary-fixed": "#001a42",
+                    "outline-variant": "#c6c6cd",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#2170e4",
+                    "inverse-primary": "#bec6e0",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "container-max": "1280px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "caption": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-item {
+            position: relative;
+        }
+        .active-nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #0058be;
+        }
+        .article-card-hover {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        .article-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 88, 190, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar -->
+<header class="bg-surface sticky top-0 z-50 border-b-border-width-thick border-primary flex justify-between items-center w-full px-gutter py-4">
+<div class="flex items-center gap-8">
+<h1 class="font-display-lg text-headline-lg uppercase tracking-tighter text-primary">CHRONICLE</h1>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 font-label-md text-label-md" href="#">Home</a>
+<a class="text-secondary font-bold active-nav-item font-label-md text-label-md" href="#">News</a>
+<a class="text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 font-label-md text-label-md" href="#">Categories</a>
+<a class="text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 font-label-md text-label-md" href="#">About</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface" data-icon="search">search</span>
+</button>
+<button class="md:hidden p-2">
+<span class="material-symbols-outlined text-on-surface" data-icon="menu">menu</span>
+</button>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-gutter py-stack-lg">
+<!-- Top Stories: Bento Grid Layout -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-stack-md border-b border-outline-variant pb-2">
+<h2 class="font-headline-lg text-headline-lg text-primary">Top Stories</h2>
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Live Updates</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[600px]">
+<!-- Featured Story -->
+<article class="md:col-span-8 relative group overflow-hidden rounded-lg cursor-pointer bg-primary">
+<div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/20 to-transparent z-10 opacity-80"></div>
+<div class="absolute inset-0 w-full h-full article-card-hover" data-alt="A cinematic, high-contrast photograph of a sleek, modern city skyline at dusk. The sky is a deep navy blue with wisps of cerulean clouds. Modern glass skyscrapers reflect the remaining light, creating a sophisticated and authoritative atmosphere suitable for a premium news portal. The composition is wide and expansive, conveying depth and urban complexity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJ7HFjxqr8v9SXxHQOT_tBNOWQW-tvMWUfvMbrBMzfvIWsagMwFJARaeWaKSqkhUm5yErbMDvNif-o7cfd9RUoetZgWC6OpbmJF2HYz_d92GDGTH0BwAJ6kbMyChUyIINCtsSoy3-172-OuDofqVfY2GIB2Nt6d1xtE9JzvDacogKjOp5Fe1F7K8eFhtgCEh43j_imynBoTZrntoVn9N26gXV7VKQQjtJqL4RXNwBryGG_r6RXK601')"></div>
+<div class="absolute bottom-0 left-0 p-8 z-20 w-full">
+<span class="bg-secondary text-on-secondary px-3 py-1 text-label-md font-label-md uppercase mb-4 inline-block">Global Affairs</span>
+<h3 class="font-display-lg text-display-lg text-white mb-4 leading-tight group-hover:underline">The Reshaping of International Trade: A Digital Renaissance</h3>
+<p class="text-white/80 font-body-lg text-body-lg max-w-2xl line-clamp-2">Exploring how emerging economies are bypassing traditional financial structures through decentralized digital networks and new algorithmic protocols.</p>
+<div class="flex items-center gap-4 mt-6 text-white/60 font-label-md text-label-md">
+<span>Elena Sterling</span>
+<span>•</span>
+<span>12 Min Read</span>
+</div>
+</div>
+</article>
+<!-- Secondary Top Stories -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<article class="flex-1 relative group overflow-hidden rounded-lg cursor-pointer bg-primary">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10 opacity-70"></div>
+<div class="absolute inset-0 w-full h-full article-card-hover" data-alt="A close-up, minimalist shot of high-end technology components, such as a futuristic microchip or a sleek server rack. The lighting is cold, featuring deep navy shadows and sharp cerulean blue highlights. The aesthetic is clean, professional, and suggests advanced scientific or technological breakthroughs. The focus is sharp, highlighting intricate textures." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCj2gpwGpaSBw17zBdqSvJR4nKmHHCB2AdLFZYLTpWlzeO5hy5LR5k-oXiFo7oRm-fHuSwLJ5wAkxBy4JmN5lPCllPkoLgK_uihVHPJjlajNekrlLbGFM0ZPUp0x0-VJh0iKXr3sdKNj0ps2IrDfkaFu86QOcgHEog49qheQwMo3zEaIPfbBoaBEJMIOlRehtQ2HnmJJU3NSyOlPW1bnQ_9HPhWT00OP3WzuSxTghHY8NZP1DYxsodr')"></div>
+<div class="absolute bottom-0 left-0 p-6 z-20">
+<span class="text-secondary-fixed text-label-md font-label-md uppercase mb-2 block">Technology</span>
+<h4 class="font-headline-sm text-headline-sm text-white group-hover:text-secondary-fixed transition-colors">Quantum Supremacy in Commercial Computing</h4>
+</div>
+</article>
+<article class="flex-1 relative group overflow-hidden rounded-lg cursor-pointer bg-primary">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent z-10 opacity-70"></div>
+<div class="absolute inset-0 w-full h-full article-card-hover" data-alt="An artistic, blurred interior of a prestigious modern art gallery or a minimalist architecture space. The color palette is dominated by light slates, whites, and deep navy accents. A single, sharp architectural detail or piece of minimalist furniture is in focus, conveying a sense of luxury, calm, and curated design excellence." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMbN93Ec4WVXepG18qUtXHn74d89KqjSMXRCm3b-B0ko5p8m40JlkIcoFVtb3a405yNp-xkjqg18SfdjiJ34XJfCqSvnsQkjQ-f1H23yZNr5daBTS3vgLxnu-QOikWzx6YglN3s1Rc5IlGjtv0ly4o6izYKcJIsuvAEDiGaxqAwPD_B7UVyDbXEhqFeUDOKDms_lZpaQ5K00L2YXsVzYOQR1QRn8aQfowoFhBX-K5AQ1M0aZ2o_hoi')"></div>
+<div class="absolute bottom-0 left-0 p-6 z-20">
+<span class="text-secondary-fixed text-label-md font-label-md uppercase mb-2 block">Culture</span>
+<h4 class="font-headline-sm text-headline-sm text-white group-hover:text-secondary-fixed transition-colors">The New Minimalists: Architecture of Silence</h4>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- Main Content Feed & Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Latest News Feed -->
+<section class="lg:col-span-8">
+<div class="flex items-center gap-4 mb-stack-md border-b border-outline-variant pb-2">
+<h2 class="font-headline-md text-headline-md text-primary">Latest News</h2>
+</div>
+<div class="space-y-10">
+<!-- Article List Item -->
+<article class="group grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+<div class="md:col-span-1 overflow-hidden rounded-lg aspect-[16/9]">
+<div class="w-full h-full article-card-hover cursor-pointer" data-alt="A professional editorial portrait of a woman in a business environment, captured with soft, natural lighting. The background is a blurred office space with tones of navy and white. The subject looks confident and thoughtful, embodying the intellectual and authoritative spirit of a modern professional news outlet. The image is clean and high-definition." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuARfI0Wh2uxnRZIykT4NnClcEIr_AKgLH9s-Br6bRCiqbdRoFvQLPoBOA6eJXcOH4AVpZY4km_yFBaxp_nBEcvCRKR6nehgTBGnWpvm5Lu07x6dxdE_-fFA_Xg3seBiUXJgXYXZBwefp7fikDSF7R1woSojoPN_Lk6FGR_s5UVfJ7NbaUd8AuOUkb3nalwxm3OpyxUgf6BuaHELjU4yamuKcV-fCjy1ZEulCM5Eka9sVyLSd3quXiJU')"></div>
+</div>
+<div class="md:col-span-2">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label-md text-label-md text-secondary">Economics</span>
+<span class="text-outline text-xs">•</span>
+<time class="font-label-md text-label-md text-outline">2 Hours Ago</time>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors mb-2 cursor-pointer">Central Banks Pivot on Inflation Targets Amid Global Shifts</h3>
+<p class="text-on-surface-variant font-body-md text-body-md line-clamp-2">Recent data suggests a fundamental shift in how monetary policy will be conducted over the next decade as labor markets tighten globally.</p>
+</div>
+</article>
+<article class="group grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-t border-surface-container pt-10">
+<div class="md:col-span-1 overflow-hidden rounded-lg aspect-[16/9]">
+<div class="w-full h-full article-card-hover cursor-pointer" data-alt="A wide-angle, high-resolution shot of a lush, protected nature reserve with a distant, eco-friendly research station. The lighting is golden hour, casting long shadows and creating a warm yet professional feel. The color palette emphasizes natural greens and deep navy blues in the shadows. The atmosphere is serene and focused on sustainability and science." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB3lNhcLxEvhn9W2DerZte-3P4DeZP9tCfKinhmpg3L0TJZD4C5NWjbc-aY8MwNCKRAzb3FGaUwbpXWAxtcOm8u2EUV-ybRcf2ZjFTdnPrdNa5Ku1zY9cwiujwMNOqEskGjFriFPM9qlCm4wlarSPg6S-9EAlovVSeauQfdH0tcggHDeyBIJZzs8uwr9G34omuzoCCV2aYpwZoxveU9wEBltr5RUr2SMQ2FB0Rb_ui9vP9i-OGWtxdH')"></div>
+</div>
+<div class="md:col-span-2">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label-md text-label-md text-secondary">Environment</span>
+<span class="text-outline text-xs">•</span>
+<time class="font-label-md text-label-md text-outline">4 Hours Ago</time>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors mb-2 cursor-pointer">Reclaiming the Wild: Success Stories from the Great Northern Corridor</h3>
+<p class="text-on-surface-variant font-body-md text-body-md line-clamp-2">New biodiversity reports indicate a significant rebound in keystone species across the newly protected territories of the arctic rim.</p>
+</div>
+</article>
+<article class="group grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-t border-surface-container pt-10">
+<div class="md:col-span-1 overflow-hidden rounded-lg aspect-[16/9]">
+<div class="w-full h-full article-card-hover cursor-pointer" data-alt="An abstract representation of data flowing through digital space. Glowing cerulean blue lines and nodes are arranged in a precise, geometric grid against a deep navy background. The image suggests connectivity, speed, and high-density information. The style is clean, digital, and sophisticated, avoiding clutter while conveying complexity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDs5NBKk6eRsiSIaiQnfcrd9my4nMxnnI3CamgjZDSKvWS_LNJWt24r7ZpdVqPb04jE6VAn0vc6NZHyVt4x1eZ8cgLeTdGV-NuXjZJa5GePOnd1tcHZUNwl_xWpBqyBY_B_mlY5VToW3t4iw_KESuRDv6Lum1z8_ityBrImFO9t_EHF9PbsOU6re8N3ytSsj0VWa-Gzp-YxoIC2G8WrprJ3q6GjDz54emtsuFK1Xy-TCDTEGRgBUFxc')"></div>
+</div>
+<div class="md:col-span-2">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label-md text-label-md text-secondary">Health</span>
+<span class="text-outline text-xs">•</span>
+<time class="font-label-md text-label-md text-outline">6 Hours Ago</time>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors mb-2 cursor-pointer">The Neural Link: Breakthroughs in Brain-Computer Interfacing</h3>
+<p class="text-on-surface-variant font-body-md text-body-md line-clamp-2">Clinical trials show unprecedented accuracy in non-invasive neural monitoring, opening new doors for prosthetic technology and medical rehabilitation.</p>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<nav class="flex items-center justify-center gap-4 mt-stack-lg border-t border-surface-container pt-8">
+<button class="p-2 flex items-center gap-2 font-label-md text-label-md text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                        Previous
+                    </button>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full bg-primary text-on-primary font-label-md">1</button>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container font-label-md">2</button>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container font-label-md">3</button>
+</div>
+<button class="p-2 flex items-center gap-2 font-label-md text-label-md text-primary hover:text-secondary transition-colors">
+                        Next
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</nav>
+</section>
+<!-- Sidebar -->
+<aside class="lg:col-span-4 space-y-stack-lg">
+<!-- Trending Topics -->
+<div class="bg-surface-container-low p-gutter rounded-lg border border-surface-container-high">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-6">Trending Now</h3>
+<ol class="space-y-6">
+<li class="flex gap-4 items-start group cursor-pointer">
+<span class="font-display-lg text-headline-lg text-outline/20 group-hover:text-secondary/20 transition-colors">01</span>
+<div>
+<span class="font-label-md text-label-md text-secondary uppercase text-[10px] tracking-widest">Politics</span>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-secondary leading-tight mt-1">Election Integrity and the Rise of AI-Generated Content</h4>
+</div>
+</li>
+<li class="flex gap-4 items-start group cursor-pointer">
+<span class="font-display-lg text-headline-lg text-outline/20 group-hover:text-secondary/20 transition-colors">02</span>
+<div>
+<span class="font-label-md text-label-md text-secondary uppercase text-[10px] tracking-widest">Tech</span>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-secondary leading-tight mt-1">Silicon Valley's Great Decentralization Continues</h4>
+</div>
+</li>
+<li class="flex gap-4 items-start group cursor-pointer">
+<span class="font-display-lg text-headline-lg text-outline/20 group-hover:text-secondary/20 transition-colors">03</span>
+<div>
+<span class="font-label-md text-label-md text-secondary uppercase text-[10px] tracking-widest">Lifestyle</span>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-secondary leading-tight mt-1">The Psychology of Remote Work: Three Years Later</h4>
+</div>
+</li>
+<li class="flex gap-4 items-start group cursor-pointer">
+<span class="font-display-lg text-headline-lg text-outline/20 group-hover:text-secondary/20 transition-colors">04</span>
+<div>
+<span class="font-label-md text-label-md text-secondary uppercase text-[10px] tracking-widest">Markets</span>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-secondary leading-tight mt-1">Why Rare Earth Minerals are the New Oil</h4>
+</div>
+</li>
+</ol>
+</div>
+<!-- Newsletter Signup -->
+<div class="bg-primary text-on-primary p-gutter rounded-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md mb-4">The Briefing</h3>
+<p class="font-body-md text-body-md text-white/80 mb-6">Our daily digest of the most critical stories, delivered with context and clarity every morning.</p>
+<form class="space-y-4">
+<input class="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-md py-3 px-4 focus:ring-2 focus:ring-secondary focus:border-transparent transition-all outline-none font-body-md" placeholder="Email Address" type="email"/>
+<button class="w-full bg-secondary text-white font-label-md text-label-md py-3 rounded-md hover:bg-secondary/90 transition-colors" type="submit">Subscribe Now</button>
+</form>
+<p class="font-caption text-caption text-white/40 mt-4 text-center">By subscribing, you agree to our Privacy Policy and Terms.</p>
+</div>
+<!-- Background Accent -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-secondary/20 blur-3xl"></div>
+</div>
+<!-- Featured Categories -->
+<div class="border-t border-surface-container pt-stack-md">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-6">Explore Topics</h3>
+<div class="flex flex-wrap gap-2">
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Artificial Intelligence</a>
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Climate Policy</a>
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Global Trade</a>
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Public Health</a>
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Urbanism</a>
+<a class="px-4 py-2 bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-secondary hover:text-white transition-colors" href="#">Space Tech</a>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-primary text-on-primary w-full px-gutter py-margin-desktop grid grid-cols-1 md:grid-cols-3 gap-8 border-t-border-width-thick border-primary">
+<div>
+<h2 class="font-display-lg text-headline-lg text-on-primary mb-6">CHRONICLE</h2>
+<p class="font-body-md text-body-md text-on-primary/70 max-w-xs">
+                Independent journalism for the informed reader. We deliver depth over noise, and clarity over clicks.
+            </p>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-secondary-fixed mb-6 uppercase tracking-widest">Navigation</h3>
+<ul class="space-y-4">
+<li><a class="font-label-md text-label-md opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Archive</a></li>
+<li><a class="font-label-md text-label-md opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Contact Editorial</a></li>
+<li><a class="font-label-md text-label-md opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="font-label-md text-label-md opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-secondary-fixed mb-6 uppercase tracking-widest">Connect</h3>
+<div class="flex gap-4 mb-8">
+<a class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-secondary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+</a>
+<a class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-secondary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</a>
+<a class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-secondary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+</a>
+</div>
+<p class="font-label-sm text-label-sm text-on-primary/50">
+                © 2024 Chronicle News Media. Built for truth.
+            </p>
+</div>
+</footer>
+<script>
+        // Micro-interactions for navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (!link.classList.contains('active-nav-item')) {
+                    document.querySelector('.active-nav-item')?.classList.remove('active-nav-item', 'text-secondary', 'font-bold');
+                    link.classList.add('active-nav-item', 'text-secondary', 'font-bold');
+                }
+            });
+        });
+
+        // Form submission prevention for demo
+        document.querySelector('form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Subscribed!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-600');
+            }, 3000);
+        });
+    </script>
+</body></html>

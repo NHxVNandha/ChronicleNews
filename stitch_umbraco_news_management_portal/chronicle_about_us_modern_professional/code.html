@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Chronicle | Journalism of Integrity and Depth</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(247, 249, 251, 0) 0%, rgba(247, 249, 251, 1) 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(224, 227, 229, 0.5);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#000000",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "tertiary-container": "#0b1c30",
+                      "on-surface": "#191c1e",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "surface-dim": "#d8dadc",
+                      "on-background": "#191c1e",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "background": "#f7f9fb",
+                      "surface-container": "#eceef0",
+                      "surface-bright": "#f7f9fb",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-secondary-fixed": "#001a42",
+                      "secondary-container": "#2170e4",
+                      "outline-variant": "#c6c6cd",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#131b2e",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "surface": "#f7f9fb",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#565e74",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "surface-container-low": "#f2f4f6",
+                      "outline": "#76777d",
+                      "on-secondary-container": "#fefcff",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#dae2fd",
+                      "tertiary-fixed": "#d3e4fe",
+                      "secondary": "#0058be",
+                      "inverse-surface": "#2d3133",
+                      "primary-fixed-dim": "#bec6e0",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-primary-container": "#7c839b",
+                      "surface-container-high": "#e6e8ea",
+                      "on-tertiary-container": "#75859d",
+                      "on-primary-fixed": "#131b2e",
+                      "inverse-primary": "#bec6e0",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-surface-variant": "#45464d",
+                      "tertiary": "#000000",
+                      "surface-container-highest": "#e0e3e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px",
+                      "container-max": "1280px",
+                      "stack-sm": "12px",
+                      "margin-mobile": "20px",
+                      "stack-md": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "display-lg": ["Playfair Display"],
+                      "body-lg": ["Inter"],
+                      "caption": ["Inter"],
+                      "headline-sm": ["Playfair Display"],
+                      "headline-lg": ["Playfair Display"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="bg-surface sticky top-0 z-50 flex justify-between items-center w-full px-gutter py-4 border-b-2 border-primary">
+<div class="font-display text-display uppercase tracking-tighter text-primary">CHRONICLE</div>
+<div class="hidden md:flex items-center gap-stack-md">
+<a class="font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-3 py-1" href="#">Home</a>
+<a class="font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-3 py-1" href="#">News</a>
+<a class="font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-3 py-1" href="#">Categories</a>
+<a class="font-label-bold text-label-bold text-secondary font-bold border-b border-secondary px-3 py-1" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-secondary-container p-2 rounded-full transition-colors" data-icon="search">search</button>
+<button class="md:hidden material-symbols-outlined" data-icon="menu">menu</button>
+</div>
+</nav>
+<main class="w-full">
+<!-- Hero Section -->
+<section class="relative h-[716px] flex items-center justify-center overflow-hidden bg-surface-container-lowest">
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+
+</div>
+<div class="relative z-10 text-center max-w-4xl px-gutter">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-[0.2em] block mb-stack-sm">Established 1924</span>
+<h1 class="font-display-lg text-display-lg text-primary mb-stack-md leading-tight">Journalism of Integrity and Depth</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Chronicle News is dedicated to uncovering the stories that define our era, prioritizing objective truth over sensationalism.</p>
+</div>
+<div class="absolute bottom-0 w-full h-32 hero-gradient"></div>
+</section>
+<!-- Mission Statement -->
+<section class="px-gutter py-margin-desktop bg-background">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-stack-lg items-center">
+<div class="md:col-span-5">
+<div class="relative group">
+<div class="absolute -inset-4 bg-secondary/10 rounded-xl blur-2xl group-hover:bg-secondary/20 transition-all duration-500"></div>
+<img class="relative z-10 w-full aspect-[4/5] object-cover rounded-lg shadow-xl grayscale hover:grayscale-0 transition-all duration-700" data-alt="A vintage printing press machine in a sun-drenched, dusty editorial office. The lighting is warm and golden, highlighting the intricate iron gears and ink rollers. The setting evokes a sense of historical gravitas and the enduring power of the printed word, using a soft editorial photography style with rich blacks and warm white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs0Sbddpj9j9h08VYDidFzeAQM6d9nkOAPLBCH3s8vRtQKY0G2kJzg2xfdLanIkiXlsFW9DhG2lH-qlf_BGkU3maxv7UsxqT7ANY-uEvsYh6NDK-9ri7UTYCFyc8286RkU5ntCSonLlhjS1zqyGKjgUXydqIxbBmtC5deRKPkNDnAnAp4e-YAhRtYBdbveTmJ694AuCTxZFCVn_VqNO4B35IdRDd5VfgUSW3p1mr9vwCNgMGPWNFxx"/>
+</div>
+</div>
+<div class="md:col-span-7 md:pl-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-stack-md">Our Mission</h2>
+<div class="space-y-stack-md">
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                            In an age of fragmented attention and fleeting headlines, <span class="text-primary font-bold">Chronicle</span> stands as a sanctuary for deep reporting. We believe that journalism is a public trust, requiring rigorous fact-checking and an uncompromising commitment to nuance.
+                        </p>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            Our team of investigative journalists, political analysts, and cultural critics work across six continents to bring our readers stories that challenge perspectives and ignite meaningful dialogue. We don't just report the news; we explain why it matters.
+                        </p>
+<div class="pt-stack-md border-t border-outline-variant flex gap-stack-lg">
+<div>
+<p class="font-display text-display-lg text-primary">42</p>
+<p class="font-label-md text-label-md text-outline">Pulitzer Prizes</p>
+</div>
+<div>
+<p class="font-display text-display-lg text-primary">150+</p>
+<p class="font-label-md text-label-md text-outline">Global Bureau</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Editorial Team (Bento Grid) -->
+<section class="px-gutter py-margin-desktop bg-surface-container-low">
+<div class="max-w-container-max mx-auto">
+<div class="mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary text-center">The Editorial Desk</h2>
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-xl mx-auto mt-stack-sm">Led by award-winning editors who have dedicated their careers to the pursuit of truth.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[800px]">
+<!-- Editor-in-Chief -->
+<div class="md:col-span-2 md:row-span-2 relative overflow-hidden group rounded-xl shadow-sm bg-surface">
+<img class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" data-alt="A portrait of a senior female editor with silver hair, wearing a sharp black blazer. She is standing in a modern, glass-walled office overlooking a city skyline at dusk. The aesthetic is professional, authoritative, and clean, with cool blue ambient lighting and sharp focus on the subject's thoughtful expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhT1wj7iUxCaKJQ3_fKV-D7no6YfFAc1oWGkucV8tCaCInctB2sqkTWdrgpe4-LRhxWZYnfkMwCBsibVhGWrz6nYML2_Sgg1SMOOZMYRLFTVmfxfsqfGSh1IOqGBTFicZ561VrZOHreoGwHPGs8b18rOjlUVHO2kfpN1VCEBRCGrjKAd1mYK9KFeTOWz53swnDvNoazTzKAKdNjfRFqiov-jm5arMc1XperXoBEKXN2HbtO3dJV2i1"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-transparent flex flex-col justify-end p-stack-md">
+<span class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-widest mb-1">Editor-in-Chief</span>
+<h3 class="font-headline-md text-headline-md text-on-primary">Eleanor Vance</h3>
+<p class="font-body-md text-body-md text-surface-variant opacity-0 group-hover:opacity-100 transition-opacity duration-500 line-clamp-2">Three-decade veteran of investigative reporting and former foreign correspondent.</p>
+</div>
+</div>
+<!-- Managing Editor -->
+<div class="md:col-span-2 md:row-span-1 relative overflow-hidden group rounded-xl shadow-sm bg-surface">
+<img class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" data-alt="A male editor in a white button-down shirt, working at a minimalist desk with two large monitors showing intricate news feeds and maps. The room is softly lit with natural daylight coming through a large window. The mood is focused and technologically sophisticated, following the modern editorial minimalism aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSPmfVwwI7lKoQTjFPqVoZC99vZJkkfPs62tORbKtkT6yGXWVg4Oi287OLuMkvK73nFSJxis6jE8D0zhPVovB47KgOHOVlewqb5ENyhpIxmVxjSOwMFk5ufhyxPWe32EdN5NXuw9-npma4pOnUQ6I5mvyLGeOD5MzMkaHj_rcSgN9bnWLEAGhg8y-pLLPB78LKIl74TJAKj11fNLz7xFE9zkN-A29IyEJ_c4HoNe6CHUZJIIilnKbf"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-stack-md">
+<span class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-widest mb-1">Managing Editor</span>
+<h3 class="font-headline-md text-headline-md text-on-primary">Julian Thorne</h3>
+</div>
+</div>
+<!-- Arts & Culture -->
+<div class="md:col-span-1 md:row-span-1 relative overflow-hidden group rounded-xl shadow-sm bg-surface">
+<img class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" data-alt="A portrait of a young, stylish non-binary editor surrounded by contemporary art and vintage vinyl records in a bright, creative studio space. The lighting is vibrant yet professional, featuring soft pastel accents that harmonize with the modern editorial brand. The mood is intellectual and culturally connected." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMxs9WCw3FbTdd-HbZV3alKSn2msweu760OEOHo7Iiw51hHxeTaVjvZeiQ95ja4DED9BY2fJU2Xn8BN_ZxjTIg6AeGZ6xxbWb9M46O3ceFMed9IyGht-5g6mJaGwhgDUiY_LimgVjOjJa0OduGg4ybN9Doz5XkoJLtB6fdp3gPDrzu5Bxf9tnXpZWuJWqlTPAFyQTx1_MynmJsJESZP-pu-3JuW5ZFTSynhWbAdor18xoxjK5wtxFG"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-stack-md">
+<span class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-widest mb-1">Arts &amp; Culture</span>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Sasha Grey</h3>
+</div>
+</div>
+<!-- Science & Tech -->
+<div class="md:col-span-1 md:row-span-1 relative overflow-hidden group rounded-xl shadow-sm bg-surface">
+<img class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" data-alt="A tech editor examining a futuristic prototype device in a high-tech laboratory setting. The background is filled with blurred blue LED lights and server racks. The lighting is high-key and futuristic, emphasizing a crisp, clean, and forward-thinking aesthetic in line with the Chronicle brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtSzEGSb_3eVNodxLolqc9v8abv_K-mMDDvWRET9qhKGcdeZZBoeb9I6zNtCYQDhhaZ_sRb-JhGOqhSdKKtMJLgbCfnTE8cii6Lj7FeSbUDdUQeT_dkhC4ihXxpnum7P-by0cHaEPh9bGJqXvFjDkjGRNr1KeApQXcC3eZiJYL_afqORgvY0Wj_Zg4dRSfee-S7i3uYCf_6aJ0acz6VvW5vSzXgvFG2i9htFyndh7ExcgKTRaiPLOn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-stack-md">
+<span class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-widest mb-1">Tech &amp; Science</span>
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Marcus Chen</h3>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="px-gutter py-margin-desktop bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-stack-lg">
+<div class="space-y-stack-md">
+<h2 class="font-headline-lg text-headline-lg text-primary">Connect With Us</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Whether you have a story lead, a press inquiry, or feedback on our reporting, our editorial desk is listening.</p>
+<div class="space-y-6 mt-stack-lg">
+<div class="flex items-start gap-4">
+<div class="bg-secondary-container text-on-secondary-container p-3 rounded-lg">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Editorial Inquiries</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">editorial@chronicle.press</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-secondary-container text-on-secondary-container p-3 rounded-lg">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">London Headquarters</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">12 Fleet Street, London, EC4Y 1AU</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-secondary-container text-on-secondary-container p-3 rounded-lg">
+<span class="material-symbols-outlined" data-icon="encrypted">encrypted</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Secure Tip Line</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Encrypted Signal: +44 20 7946 0123</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card p-stack-md rounded-xl">
+<form class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Full Name</label>
+<input class="w-full bg-surface-container-lowest border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Email Address</label>
+<input class="w-full bg-surface-container-lowest border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="john@example.com" type="email"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Department</label>
+<select class="w-full bg-surface-container-lowest border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none">
+<option>General Editorial</option>
+<option>Investigations</option>
+<option>Press &amp; Media</option>
+<option>Advertising</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Message</label>
+<textarea class="w-full bg-surface-container-lowest border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none" placeholder="How can we help?" rows="5"></textarea>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label-md text-label-md hover:bg-on-primary-container transition-colors duration-200 active:scale-[0.98]">
+                            Send Message
+                        </button>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-primary text-on-primary w-full px-gutter py-margin-desktop grid grid-cols-1 md:grid-cols-3 gap-8 border-t-4 border-primary">
+<div class="space-y-4">
+<div class="font-display text-headline-lg text-on-primary uppercase tracking-tighter">CHRONICLE</div>
+<p class="font-body-md text-body-md opacity-80 max-w-xs">Journalism of integrity and depth since 1924. Committed to the pursuit of truth.</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed">Navigation</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Contact Editorial</a>
+<a class="font-body-md text-body-md text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed">Newsletter</h4>
+<p class="font-label-sm text-label-sm opacity-80 mb-4">Receive a curated selection of our best reporting weekly.</p>
+<div class="flex border border-on-primary/20 rounded-lg overflow-hidden">
+<input class="bg-transparent border-none text-on-primary p-3 flex-grow focus:ring-0 placeholder:text-on-primary/40" placeholder="Email address" type="email"/>
+<button class="bg-on-primary text-primary px-4 font-label-md text-label-md hover:bg-secondary-fixed transition-colors">Join</button>
+</div>
+<div class="flex gap-4 mt-6">
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed" data-icon="public">public</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed" data-icon="rss_feed">rss_feed</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary-fixed" data-icon="share">share</span>
+</div>
+</div>
+<div class="md:col-span-3 pt-8 mt-8 border-t border-on-primary/10 flex justify-between items-center flex-wrap gap-4">
+<p class="font-label-sm text-label-sm opacity-60">© 2024 Chronicle News Media. Built for truth.</p>
+<div class="flex gap-6 opacity-60 font-label-sm text-label-sm">
+<span>London</span>
+<span>New York</span>
+<span>Tokyo</span>
+<span>Berlin</span>
+</div>
+</div>
+</footer>
+<script>
+        // Simple scroll reveal effect for text elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-4');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('h1, h2, p, .glass-card').forEach(el => {
+                el.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-4');
+                observer.observe(el);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE | News &amp; Discovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#191c1e",
+                    "outline": "#76777d",
+                    "secondary": "#0058be",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#dae2fd",
+                    "tertiary-fixed": "#d3e4fe",
+                    "on-secondary-fixed": "#001a42",
+                    "on-primary-container": "#7c839b",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#75859d",
+                    "tertiary-container": "#0b1c30",
+                    "primary-container": "#131b2e",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-container": "#2170e4",
+                    "tertiary": "#000000",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "on-surface-variant": "#45464d",
+                    "surface-variant": "#e0e3e5",
+                    "inverse-primary": "#bec6e0",
+                    "surface-tint": "#565e74",
+                    "surface-dim": "#d8dadc",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-fixed": "#131b2e",
+                    "primary": "#000000",
+                    "surface-bright": "#f7f9fb",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "background": "#f7f9fb",
+                    "on-secondary-container": "#fefcff",
+                    "outline-variant": "#c6c6cd",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "base": "8px",
+                    "margin-desktop": "64px",
+                    "stack-lg": "48px",
+                    "stack-sm": "12px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "caption": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        ::selection {
+            background-color: #0058be;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-md border-b border-outline-variant sticky top-0 z-50">
+<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<span class="font-display-lg text-headline-md uppercase tracking-tight text-primary">CHRONICLE</span>
+<div class="hidden md:flex gap-6">
+<a class="text-on-surface-variant font-label-md hover:text-secondary transition-colors" href="#">Home</a>
+<a class="text-secondary font-label-md border-b-2 border-secondary" href="#">News</a>
+<a class="text-on-surface-variant font-label-md hover:text-secondary transition-colors" href="#">Categories</a>
+<a class="text-on-surface-variant font-label-md hover:text-secondary transition-colors" href="#">About</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container rounded-full transition-colors" data-icon="search">search</button>
+<div class="hidden md:block h-6 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-lg font-label-md hover:bg-secondary-container transition-all shadow-sm active:scale-95">SIGN IN</button>
+</div>
+</nav>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
+<!-- Search Section -->
+<section class="mb-16">
+<div class="max-w-4xl mx-auto text-center mb-10">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-4 text-on-background">Explore the Archive</h1>
+<p class="text-on-surface-variant text-body-lg">Dive into a century of documented history and breakthroughs.</p>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-xl shadow-secondary/5 border border-outline-variant max-w-4xl mx-auto">
+<div class="flex flex-col md:flex-row gap-2">
+<div class="relative flex-grow">
+<input class="w-full bg-surface-container-low border-none rounded-xl p-5 text-body-md placeholder:text-outline focus:ring-2 focus:ring-secondary/20 transition-all" placeholder="Search by topic, journalist, or keyword..." type="text"/>
+<span class="absolute right-6 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="manage_search">manage_search</span>
+</div>
+<button class="bg-secondary text-on-secondary px-10 py-5 rounded-xl font-label-md uppercase tracking-wider hover:bg-secondary-container transition-all shadow-md">
+                        Search
+                    </button>
+</div>
+<div class="mt-6 flex flex-wrap gap-4 items-center justify-center">
+<span class="font-label-md text-on-surface-variant uppercase text-xs">Trending:</span>
+<a class="text-secondary hover:underline font-label-md text-sm" href="#">#Election2024</a>
+<a class="text-secondary hover:underline font-label-md text-sm" href="#">#GlobalWarming</a>
+<a class="text-secondary hover:underline font-label-md text-sm" href="#">#TechLeaps</a>
+<a class="text-secondary hover:underline font-label-md text-sm" href="#">#MetaEconomy</a>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Sidebar Navigation -->
+<aside class="lg:col-span-3">
+<div class="sticky top-28 space-y-8">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<h2 class="font-headline-sm text-headline-sm mb-6 border-b border-outline-variant pb-4 text-on-background">Categories</h2>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg bg-secondary/10 text-secondary font-label-md" href="#">
+<span>All News</span>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all font-label-md group" href="#">
+<span>Technology</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="memory">memory</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all font-label-md group" href="#">
+<span>Education</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="school">school</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all font-label-md group" href="#">
+<span>Global Affairs</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="public">public</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all font-label-md group" href="#">
+<span>Culture &amp; Art</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="palette">palette</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all font-label-md group" href="#">
+<span>Scientific Insights</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity" data-icon="biotech">biotech</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="bg-primary-container text-on-primary-fixed rounded-xl p-8 shadow-lg">
+<h3 class="font-headline-sm text-headline-sm mb-3">Newsletter</h3>
+<p class="font-body-md mb-6 text-on-primary-container">The daily briefing, delivered to your inbox at 6 AM.</p>
+<div class="space-y-3">
+<input class="w-full bg-surface-container rounded-lg border-none p-3 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-secondary" placeholder="email@chronicle.com" type="email"/>
+<button class="w-full bg-secondary text-on-secondary py-3 rounded-lg font-label-md uppercase tracking-wider hover:bg-secondary-container transition-all">Join the List</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- News Articles Grid -->
+<div class="lg:col-span-9 space-y-12">
+<!-- Featured Article -->
+<article class="grid grid-cols-1 lg:grid-cols-2 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden group cursor-pointer">
+<div class="h-80 lg:h-full relative overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Futuristic city skyline blue hour" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDly01Nh-Ha7uDSnjD-aSVax-VLBFz-63DadbLemVEJkrK8JOSqWzUlrdntOYeAukw8IwFjJnPRvD0A7KslkPx3sMILeylo3cx9SW22AidEz_3AcU7YDB8EemcVhPtr6fspdmbYs_LQUWJWkpFusnbMiNNwVSlYeVUNGksGoIkitMoEf8R04VjRC-8vQGrOIWPPfIwwQU2gRODUWVPQCHa1Bi-1bQzD7icWGKK_QaKyxmBMtzteAio3"/>
+<div class="absolute top-4 left-4 bg-secondary text-on-secondary px-3 py-1 rounded-md font-label-md text-xs uppercase tracking-wider">Featured Story</div>
+</div>
+<div class="p-8 md:p-10 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-3 mb-6 font-label-md text-xs text-secondary uppercase tracking-widest">
+<span>Tech &amp; Privacy</span>
+<span class="h-1 w-1 bg-outline-variant rounded-full"></span>
+<span class="text-on-surface-variant">12 Oct 2024</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-6 group-hover:text-secondary transition-colors">The Sovereign Grid: Decentralizing Information in 2025</h2>
+<p class="font-body-lg text-on-surface-variant mb-8 line-clamp-3">As global networks face unprecedented centralization, a new wave of cryptographic engineers is building the 'Sovereign Grid'—a peer-to-peer reality that promises absolute data autonomy.</p>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant pt-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border border-outline-variant bg-surface-container overflow-hidden">
+<div class="w-full h-full bg-secondary/10 flex items-center justify-center text-secondary font-bold">ET</div>
+</div>
+<span class="font-label-md text-sm text-on-surface">Elias Thorne</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-2 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Article Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Article 1 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-all group overflow-hidden">
+<div class="aspect-video relative overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Modern university building concrete" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMUnKnxww8KscJbsu4_vK-J73bgkSAmYcC3oG4w1U4VeUNKT-6wG7hYRxiW1LXMI379H-73MiAC9S4xS0Y0FdQjBwFB6LtDKcGJWxLUXHyGBEcOZNHrkRn9TGGfwyaXreJkfKKHOUfuB6jlm-dz8PpP_uvIhQRACDX8zuQD7pTAuhZAGM1Y0JdYZjzM0Rtq07i4QRPmKdceVfFaULT-q6q1vCVhuatXwgdlIW-RZiuhzBOMugcb93A"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-4">
+<span class="text-secondary font-label-md text-xs uppercase tracking-widest">Education</span>
+<span class="font-label-md text-xs text-outline">08 Oct 2024</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-4 group-hover:text-secondary transition-colors">Reimagining the Campus: The Death of the Lecture Hall</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">The transition to hybrid learning has left massive university halls empty. How administrators are repurposing structures.</p>
+</div>
+</article>
+<!-- Article 2 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-all group overflow-hidden">
+<div class="aspect-video relative overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Digital finance charts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBteNCsebAJEpbUdjUashj8PGzD3IDAK8At6-bFiYJj9mcYRisR42nyQXLpZBXkkwSjZv7pS67TFKR1wnxl2x-6xZWVdvw_u9W6vJOOfG7R3_iMp8tvnarejmEsk5B4LpnrSuIjf50i0NYr6vTiD6-SZshQZTU3XQ7vKz4R6dOmqSAxjhcXo_4eebpnt5k85ubHOlTd5ItUxtINpwWMVHnWuwJckNdZRplJCXu8kHklWsMcJUjH-gK2"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-4">
+<span class="text-secondary font-label-md text-xs uppercase tracking-widest">Economy</span>
+<span class="font-label-md text-xs text-outline">07 Oct 2024</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-4 group-hover:text-secondary transition-colors">The Red Index: Why the Global Market is Shifting East</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">New fiscal policies in emerging markets are challenging the dominance of traditional western exchanges.</p>
+</div>
+</article>
+<!-- Article 3 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-all group overflow-hidden">
+<div class="aspect-video relative overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Science lab plant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5Ua8ykWWFJCXOmAxB3wdFiS-pUipe7r_roJXZKHPah3uj2quHF7X_h9a3SJGTb0nJguQo7kprMZrAeK_bpr9nkUD8emSOMkL_r2WpYf8576Yz0nAQSt7221AI7rJwylEOuAwm6V1Z-48Sg87GoWPNeQdJGHiRM5gsZTucroSnPqrpntjSD9t5aIO1joTzrqkNEuxqYfU2PmyZBPxdI32Lg2v_yLQsnGcnOL_lC8Kao51HB1U2h4rk"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-4">
+<span class="text-secondary font-label-md text-xs uppercase tracking-widest">Science</span>
+<span class="font-label-md text-xs text-outline">05 Oct 2024</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-4 group-hover:text-secondary transition-colors">Genetic Resilience: Engineering Plants for the Super-Dry</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">Botanists have identified a unique genetic marker that allows specific desert flora to survive years of drought.</p>
+</div>
+</article>
+<!-- Article 4 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-all group overflow-hidden">
+<div class="aspect-video relative overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Authoritative news delivery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAejri631TJWFuXRjqE7uOe8A_eQilyJhMx4ydtE_0nZJapb0PLPSp25qn8IHTOGbAG8k9RygmHqQACoPJ0uXt6HH23ccUfQJyRiCyiRnBoOaVOlSI5DXXpaH49pzdcqCHQjyGynQM3wefJLzVwHrYdktm0RmmD6liYdTbD8DcbdkrCxG_ji9IS6f_y0FZM2bOCaZA8YqimOuNcWPyt7yTfyv8yEV2VAAai8K7MkBsi_2SmBRhQK_D"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-center mb-4">
+<span class="text-secondary font-label-md text-xs uppercase tracking-widest">Media</span>
+<span class="font-label-md text-xs text-outline">04 Oct 2024</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-4 group-hover:text-secondary transition-colors">The Truth Machine: AI's Role in Modern Editorial</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">Chronicle investigates how newsrooms are utilizing automated verification tools to fight misinformation.</p>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 py-8 border-t border-outline-variant">
+<button class="w-10 h-10 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-all active:scale-90">
+<span class="material-symbols-outlined text-sm" data-icon="keyboard_double_arrow_left">keyboard_double_arrow_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-secondary text-on-secondary font-label-md text-sm">1</button>
+<button class="w-10 h-10 rounded-lg border border-outline-variant hover:bg-surface-container transition-all font-label-md text-sm">2</button>
+<button class="w-10 h-10 rounded-lg border border-outline-variant hover:bg-surface-container transition-all font-label-md text-sm">3</button>
+<span class="px-2 text-outline">...</span>
+<button class="w-10 h-10 rounded-lg border border-outline-variant hover:bg-surface-container transition-all font-label-md text-sm">12</button>
+<button class="w-10 h-10 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-all active:scale-90">
+<span class="material-symbols-outlined text-sm" data-icon="keyboard_double_arrow_right">keyboard_double_arrow_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-primary text-on-primary w-full px-margin-mobile md:px-margin-desktop py-16 border-t border-outline-variant">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+<div>
+<span class="font-display-lg text-headline-md uppercase block mb-6">CHRONICLE</span>
+<p class="font-body-md opacity-70 max-w-sm mb-8">Built for the pursuit of absolute journalistic clarity. Independent, accurate, and essential news for the modern era.</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-on-primary/30 flex items-center justify-center hover:bg-secondary hover:border-secondary transition-all" href="#"><span class="material-symbols-outlined text-xl" data-icon="public">public</span></a>
+<a class="w-10 h-10 rounded-full border border-on-primary/30 flex items-center justify-center hover:bg-secondary hover:border-secondary transition-all" href="#"><span class="material-symbols-outlined text-xl" data-icon="alternate_email">alternate_email</span></a>
+<a class="w-10 h-10 rounded-full border border-on-primary/30 flex items-center justify-center hover:bg-secondary hover:border-secondary transition-all" href="#"><span class="material-symbols-outlined text-xl" data-icon="rss_feed">rss_feed</span></a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-md uppercase border-b border-on-primary/10 pb-4 mb-2 text-sm tracking-widest">Information</h4>
+<a class="font-body-md text-on-primary/70 hover:text-on-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-md text-on-primary/70 hover:text-on-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-md text-on-primary/70 hover:text-on-primary transition-colors" href="#">Contact Editorial</a>
+<a class="font-body-md text-on-primary/70 hover:text-on-primary transition-colors" href="#">Archive</a>
+</div>
+<div class="flex flex-col justify-between">
+<div>
+<h4 class="font-label-md uppercase border-b border-on-primary/10 pb-4 mb-6 text-sm tracking-widest">Newsletter</h4>
+<div class="flex gap-2">
+<input class="bg-surface-container/10 border border-on-primary/20 rounded-lg p-3 flex-grow focus:ring-1 focus:ring-secondary focus:outline-none placeholder:text-on-primary/30 text-on-primary" placeholder="Your Email" type="text"/>
+<button class="bg-secondary text-on-secondary px-6 rounded-lg font-label-md uppercase tracking-wider hover:bg-secondary-container transition-all">GO</button>
+</div>
+</div>
+<p class="font-caption text-on-primary/40 mt-12">© 2024 Chronicle News Media. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,17 @@
+export { AboutPage } from './AboutPage';
+export { ArchivePage } from './ArchivePage';
+export { ArticleDetailPage } from './ArticleDetailPage';
+export { AuthPage } from './AuthPage';
+export { AuthorDetailPage, AuthorsPage } from './AuthorsPage';
+export { CategoriesPage } from './CategoriesPage';
+export { ContactPage } from './ContactPage';
+export { HomePage } from './HomePage';
+export { LegalPage } from './LegalPage';
+export { MultimediaHubPage } from './MultimediaHubPage';
+export { NewsletterPage } from './NewsletterPage';
+export { NewsPage } from './NewsPage';
+export { NotFoundPage } from './NotFoundPage';
+export { PublicSectionPage } from './PublicSectionPage';
+export { SearchPage } from './SearchPage';
+export { SectionsHubPage } from './SectionsHubPage';
+export { TopicPage } from './TopicPage';

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE | Media Gallery Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-container": "#0b1c30",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-background": "#191c1e",
+                    "surface-tint": "#565e74",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "on-surface-variant": "#45464d",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary-fixed": "#001a42",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#fefcff",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "on-tertiary-container": "#75859d",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "outline-variant": "#c6c6cd",
+                    "surface": "#f7f9fb",
+                    "on-error-container": "#93000a",
+                    "outline": "#76777d",
+                    "surface-container-high": "#e6e8ea",
+                    "background": "#f7f9fb",
+                    "surface-bright": "#f7f9fb",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#131b2e",
+                    "inverse-primary": "#bec6e0",
+                    "tertiary-fixed": "#d3e4fe",
+                    "secondary": "#0058be",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary": "#000000",
+                    "secondary-container": "#2170e4",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "12px",
+                    "margin-mobile": "20px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-md": "24px",
+                    "margin-desktop": "64px",
+                    "base": "8px",
+                    "stack-lg": "48px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"],
+                    "caption": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e0e3e5;
+            border-radius: 10px;
+        }
+        .image-card-hover:hover .image-overlay {
+            opacity: 1;
+        }
+        .image-overlay {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SideNavBar Component (Admin) -->
+<aside class="hidden md:flex flex-col h-screen p-gutter gap-4 bg-surface border-r-border-width-thin border-primary w-64 shrink-0 overflow-y-auto custom-scrollbar">
+<div class="mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Admin Portal</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Editorial Desk</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:translate-x-1 hover:-translate-y-1 font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:translate-x-1 hover:-translate-y-1 font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined" data-icon="newspaper">newspaper</span>
+<span>News</span>
+</a>
+<!-- Active Item: Media -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary text-on-secondary border-border-width-thin border-primary font-label-bold text-label-bold shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="perm_media">perm_media</span>
+<span>Media</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:translate-x-1 hover:-translate-y-1 font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-8 flex flex-col gap-4">
+<button class="bg-primary text-on-primary py-4 px-6 rounded-lg font-label-bold text-label-bold hover:translate-x-1 hover:-translate-y-1 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Create Post</span>
+</button>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-bold text-label-bold" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col min-w-0 bg-surface-container-lowest overflow-hidden">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center w-full px-gutter py-2 border-b-border-width-thin border-outline shrink-0 bg-surface-container-lowest">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="font-label-bold text-label-bold text-primary uppercase tracking-widest">Dashboard / Media Gallery</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a senior editorial manager for a premium news organization. The person is dressed in smart business casual attire, looking directly at the camera with a confident yet approachable expression. The lighting is bright and clean, characteristic of a high-end office environment with neutral tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ4vQsGkwWQJxOvljCpgWVOjeWrFGu4av_5uz11by0lXweClBGxprAKx98mZzSxHLlG6POealCQmrqKfWRbPA3MVRWMLettnUTeBQJ1f3j6nkVXJGgSRcHDwvbpWlVus26SEniBlocChEI0umKcJ8lChV_s3h2yyhqpzDv2Ehq-BmFeNirjPQ-g3XjN2EXLZ0csgv7_bqFF_1Z4L3KBynWuwjvd8ouO83P-QCQRHtkTnpXRo23ssZp"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Editor Profile</span>
+</div>
+<button class="font-label-sm text-label-sm text-primary hover:text-secondary transition-colors duration-200">Sign Out</button>
+</div>
+</header>
+<!-- Gallery Controls -->
+<section class="px-gutter py-8 shrink-0">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">Media Gallery</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Manage your editorial assets. Browse, filter, and upload high-resolution imagery for your latest stories.</p>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-label-bold text-label-bold hover:bg-secondary-container hover:text-on-secondary-container transition-all flex items-center gap-2 h-fit">
+<span class="material-symbols-outlined" data-icon="upload">upload</span>
+<span>Upload New Media</span>
+</button>
+</div>
+<div class="mt-8 flex flex-col md:flex-row gap-4">
+<!-- Search Bar -->
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all font-body-md text-body-md" placeholder="Search filenames or tags..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex gap-2">
+<select class="bg-white border border-outline-variant rounded-lg px-4 py-3 font-label-md text-label-md text-on-surface focus:outline-none focus:border-secondary appearance-none cursor-pointer min-w-[140px]">
+<option>All File Types</option>
+<option>Images (JPG, PNG)</option>
+<option>Video (MP4)</option>
+<option>Documents (PDF)</option>
+</select>
+<select class="bg-white border border-outline-variant rounded-lg px-4 py-3 font-label-md text-label-md text-on-surface focus:outline-none focus:border-secondary appearance-none cursor-pointer min-w-[140px]">
+<option>Sort: Newest</option>
+<option>Sort: Oldest</option>
+<option>Sort: Name A-Z</option>
+<option>Sort: File Size</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Gallery Grid Area -->
+<section class="flex-grow px-gutter pb-gutter overflow-y-auto custom-scrollbar">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-gutter">
+<!-- Media Card 1 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A wide-angle landscape photograph of a modern city skyline at dusk. The sky is a deep violet and orange, reflecting off the glass windows of contemporary skyscrapers. The scene captures the bustling energy of an urban center with soft motion blur from distant traffic lights. High-end architectural photography style with a focus on geometric lines and premium clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAskwoNibSZ725OEUUmLNoU3ggVVos4KFFwevEO1daiJcbvJTlGZ5SwwjDXEwyrYnhz2NDw8-e6rA-DiG_l6KrYUxcp5pBtRKqmKNayjIXVePWXLzJmoogGs4L-4tf2c0lHI6DMtL5tbebT3zISPfeUbIV2KWy6E1nqp8E7HEudUOE1cePuzf5X3xqf9S-9A2MUpCKEXIT6USDeQa5LtkMGqvFwxmVfSf_fh5dzkT8sXkz1NVNfGuA3"/>
+<!-- Overlay actions -->
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 bg-white rounded-full text-error hover:bg-error hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">urban-skyline-v1.jpg</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">12.4 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 24, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 2 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A cinematic, high-contrast portrait of a technology CEO in a minimalist studio. The subject is backlit with a cool blue rim light, creating a professional and futuristic atmosphere. The background is a clean, dark charcoal gray. Every detail of the subject's expression is sharp, emphasizing wisdom and authority. Editorial photography style for a premium business magazine." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYk_8qTwfU_P0NszNLAvh1uWoIwfQeIymf7CyxG9AE43o_vbN57V6Vjbl14NKQF0SBMv1G-s_Slo7iTFZ8jzVnw0fpXpIoPyBOD5T5fM5Mb45-g0KkxkKuoyEyggSPKYaCvbhpBofkNONwVC_LTAAwx6WwASAOQMVz4D0Lb-obHT11nH69Dn87ai6Tw_FvJtB-t3BnDdWiGKQZbbFupeHk4Rkmv9qw09r4ulZEVlGrMRARjGFpuwTc"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">ceo-portrait-series.png</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">8.1 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 22, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 3 (Video Placeholder) -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden relative">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A lush, vibrant overhead shot of a tropical rainforest canopy with mist swirling between the trees. The greens are deep and rich, punctuated by small colorful birds in flight. The lighting is soft and diffused, creating a serene, natural mood. High-resolution documentary style imagery for an environmental feature article." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUAcf3sA5SO7E-hyTmEZ_r9Ty7axxqGybyMVegx5tHkOaPWD4aLQftOaQ-Um7eSOtAhZL2ZMxxGd6TogrUMH_hzYByZM8adUC_E4TQbFuM6xvuhXSDtHwyQRP9KXfMvsp3qh7r5jG_Bf6PBPMQUpS6j_hqsb7-zhT-NXBg3x3ZG_cmBSgfRQp60thlM_3DlnfnovxX3Rf2MnjZzbYJTlIZ2lZyBERMxFQm6yequhb-aa_M7esJpvV2"/>
+<div class="absolute top-3 right-3 bg-primary/60 text-white p-1 rounded backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm" data-icon="videocam">videocam</span>
+</div>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-4 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-all scale-90 hover:scale-100">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">rainforest-broll-h264.mp4</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">45.8 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 20, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 4 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Abstract close-up of high-tech circuit boards with glowing neon pathways in cerulean blue and electric purple. The perspective is from a low angle, emphasizing the complexity and scale of the technology. Soft bokeh in the background adds depth and a high-end digital feel. The aesthetic is futuristic and precise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYF2J-_Ucj7SqE4Uargs8v18wIndEJGg3Hq9oq2ISFGNhJh85mteosQa5cuDg5NDrNaubpQp07WVwnb37X_nvMylGHGnoE-25sRWwR4liyNE3S4t3d2MBO1pGyUKUTqZ9rUGUCInMLX15ka5Le0eNXwaQcj98r4fpvPVqTo-Hki4DM87_S3tsIcEAA391pHPBVNen0TnVTsaS5iZXiZQi2l1xgdv8GuF9ftD8rORw7m1GVI9_dpdTv"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">tech-abstract-blue.jpg</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">6.2 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 19, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 5 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A clean, minimalist workspace with a sleek laptop, a cup of coffee, and a single green plant on a white marble desk. Large windows in the background allow soft, natural morning light to flood the scene. The overall look is professional, calm, and highly curated, representing a modern creative lifestyle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTiKPBjtnoDRI5qEB9GLj6nb5m-qhdcZMCgviBB5vazyTe8PgRHtY-uqOpyDPoUHUUAsO4YMwRGAf-icZ_qaj-0VUgz7F4n5gS182wggro-GKlA90sRy_YgrNSF1nJuzUoVm2GQsPDD4aLF7kzQ2mRLudzlrCmN3wjj1U625uNRHJSEIyof5H_IViNQtGGl6TFvzSDWzeIIN2t88uUskZvwgfZ0odEmmNgyt6OanH0IsPlnJgDyHUC"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 bg-white rounded-full text-error hover:bg-error hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">lifestyle-work-01.png</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">14.9 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 18, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 6 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A high-fashion editorial photo of a model wearing avant-garde sustainable clothing in a desert setting. The lighting is dramatic, with long shadows cast by the setting sun. The color palette consists of warm sand tones, deep oranges, and stark architectural silhouettes. A premium fashion publication style with expert color grading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPUsbaZPc7MlmY_xy5ugy09pv5818mFGz4Fw8CNKLUXJ7rp3RB244TKgG_lH2OUDjx3ELQ0PicIZT01KrgXZGE66_pRoaMxv3LC3eF6pN0TlCP6broSfg880EEYDjoWIX-YoI40iLEpyznt0hRVVJQ8uLOkEZymayEHMcWZ8cvuIFD8k919gl5xpFb7Xz-IMVaD4axfckhd-ajysn73jAhYTRfyvRc9heiFVCyY0-KFFxSBtaBOiyP"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">fashion-editorial-sand.jpg</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">11.1 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 15, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 7 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A macro photograph of water droplets on a deep blue surface, capturing intricate reflections of light. The image is crisp and detailed, with a very shallow depth of field that creates a beautiful bokeh effect. It has a peaceful, contemplative mood and fits a high-end science or nature editorial theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVaQkwjIMj7epXg7iKWY6rHipt1RrvhTclVT53GsIq7HyCq1btpnn3Wz0jeBnxUlTVLIHP5r8nqs0jJs42SjyhaUlmLDemvFFWXQ28UsCj_6FcSGDJtvzt-CIouc8WOrT6Zb6FTTIV5844ZmzpalajMWsyaBQhsYYNezHhX2fiw7zS9-Y_hMMW_Xy2UrW6_rrXfbFhhqu_TQ5LtdI5WEBijYcMWI-xJIKT7_B8eai5T7OJtPA184Sc"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">macro-nature-water.png</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">7.4 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 12, 2024</span>
+</div>
+</div>
+</div>
+<!-- Media Card 8 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-secondary/50 transition-all hover:shadow-xl image-card-hover">
+<div class="aspect-[4/3] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A wide-angle interior shot of a futuristic library with tall, glowing bookshelves and clean white surfaces. People are seen sitting at glass tables with holograms hovering above them. The lighting is cool and ethereal, with a strong focus on symmetry and modern architectural design. A vision of the future of knowledge." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwNcybiApxnCHHwu-tLbYEnF92VJW6neG-zGGKjmnyNV4Drcd7Y1lRNKU54x-Jvub4mBySrKR9TEqQ6fnhkL0onDMEzEfRff1kyYuGbba21wA0h8ZWvO4jGTQUOXcEkBjHqr80H3_kINwpPsns4F24NC-MnP8R3_HetCp7D1ltGB_KVlRhAXmeh7Uy45mbk-SRUnT8KxvcZo8fpgtFuUFTQXKkKBYuhsIAg14l4T8vCfqZODKlfe_G"/>
+<div class="image-overlay absolute inset-0 bg-primary/40 flex items-center justify-center gap-3">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-label-bold text-label-bold text-on-surface truncate">future-library-int.jpg</h3>
+<div class="flex justify-between items-center mt-2">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-tighter">13.2 MB</span>
+<span class="font-caption text-caption text-on-surface-variant">Oct 10, 2024</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Hidden by default -->
+<div class="hidden flex-col items-center justify-center py-stack-lg text-center" id="empty-state">
+<span class="material-symbols-outlined text-outline-variant text-6xl mb-4" data-icon="cloud_off">cloud_off</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">No media files found</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Try adjusting your filters or upload a new asset.</p>
+</div>
+</section>
+<!-- Footer Component -->
+<footer class="w-full px-gutter py-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-t-border-width-thick border-primary bg-primary text-on-primary shrink-0">
+<div class="flex flex-col gap-2">
+<div class="font-display text-headline-lg text-on-primary">CHRONICLE</div>
+<p class="font-label-sm text-label-sm opacity-80">© 2024 Chronicle News Media. Built for truth.</p>
+</div>
+<div class="flex flex-wrap gap-4 items-center">
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-all" href="#">Contact Editorial</a>
+</div>
+<div class="flex justify-end items-center gap-6">
+<span class="font-label-sm text-label-sm opacity-80">Storage: 4.2GB / 10GB</span>
+<div class="w-32 h-1 bg-on-primary/20 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed h-full" style="width: 42%;"></div>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple search filter simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        const mediaCards = document.querySelectorAll('.grid > div');
+        const emptyState = document.getElementById('empty-state');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            let visibleCount = 0;
+
+            mediaCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+            }
+        });
+
+        // Add some interaction to the delete buttons (non-functional but visual)
+        document.querySelectorAll('[data-icon="delete"]').forEach(btn => {
+            btn.parentElement.addEventListener('click', (e) => {
+                const card = e.target.closest('.group');
+                card.style.opacity = '0.5';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                    alert('Editorial Permission Required: You do not have sufficient privileges to delete production assets.');
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

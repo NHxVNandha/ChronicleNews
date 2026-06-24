@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE Admin Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c1e",
+                        "outline": "#d1d5db",
+                        "secondary": "#0058be",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f3f4f6",
+                        "primary-fixed": "#dae2fd",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary-container": "#7c839b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#75859d",
+                        "tertiary-container": "#0b1c30",
+                        "primary-container": "#131b2e",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "surface-container-high": "#e5e7eb",
+                        "secondary-container": "#2170e4",
+                        "tertiary": "#000000",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f9fafb",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-surface-variant": "#4b5563",
+                        "surface-variant": "#f3f4f6",
+                        "inverse-primary": "#bec6e0",
+                        "surface-tint": "#565e74",
+                        "surface-dim": "#d1d5db",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#0f172a",
+                        "surface-bright": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "background": "#f8fafc",
+                        "on-secondary-container": "#fefcff",
+                        "outline-variant": "#e2e8f0",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "20px",
+                        "stack-md": "24px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "stack-lg": "48px",
+                        "stack-sm": "12px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .sidebar-item-active {
+            background-color: rgba(15, 23, 42, 0.05);
+            color: #0f172a;
+            border-right: 3px solid #0f172a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen overflow-hidden font-body-md">
+<!-- SideNavBar (Modern Professional) -->
+<aside class="hidden md:flex flex-col h-screen p-6 bg-surface border-r border-outline-variant w-72 shrink-0 overflow-y-auto">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-2xl font-bold text-primary tracking-tight">CHRONICLE</h1>
+<p class="text-caption text-on-surface-variant uppercase tracking-widest mt-1">Editorial Desk</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 font-label-md sidebar-item-active transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="dashboard">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="newspaper">description</span>
+<span>Articles</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="perm_media">photo_library</span>
+<span>Assets Library</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="settings">settings</span>
+<span>Workspace Settings</span>
+</a>
+</nav>
+<div class="mt-6">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md shadow-sm hover:bg-primary-container transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                Create New Post
+            </button>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-4 py-3 font-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="help">help_outline</span>
+<span>Knowledge Base</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col min-w-0 bg-background overflow-y-auto">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-gutter py-4 bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer md:hidden" data-icon="menu">menu</span>
+<h2 class="text-xl font-bold text-primary">Overview</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="bg-surface-variant border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary/20 outline-none" placeholder="Quick search..." type="text"/>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-label-md text-primary">Alexander Thorne</span>
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider">Senior Editorial Director</span>
+</div>
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Senior editor profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKP9cCTrvo9epMFyNo1_SlIOMZTCOwo4Xkds9_ewk6id30Sd1eCpaT5QyvTk6QA9yTeX9AxBwnNRwakHbaM0KJduIjiVzc0GYN5jSbUrlUVKwcZJ0ETDBIPIvAl-W1zpYM-BexBxxpjlfHKavW29A_MY6BoKKk4V3BvaKHZh2lbfHasdqZhLxqxIopldffBPC0vI6ECfYfPlligAsMG7prmQ45jp-hWYnuqccYZOH6mvQ1v-pmfN21"/>
+</div>
+</div>
+</div>
+</header>
+<div class="p-8 space-y-8 max-w-[1400px] mx-auto w-full">
+<!-- Quick Stats Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-surface p-6 rounded-xl card-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-slate-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">article</span>
+</span>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+12%</span>
+</div>
+<p class="text-sm font-medium text-on-surface-variant mb-1">Total Published</p>
+<p class="text-3xl font-bold text-primary">1,284</p>
+</div>
+<div class="bg-surface p-6 rounded-xl card-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-slate-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">category</span>
+</span>
+</div>
+<p class="text-sm font-medium text-on-surface-variant mb-1">Active Categories</p>
+<p class="text-3xl font-bold text-primary">14</p>
+</div>
+<div class="bg-surface p-6 rounded-xl card-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-slate-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">pending_actions</span>
+</span>
+<span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">Action Required</span>
+</div>
+<p class="text-sm font-medium text-on-surface-variant mb-1">Pending Drafts</p>
+<p class="text-3xl font-bold text-primary">23</p>
+</div>
+<div class="bg-surface p-6 rounded-xl card-shadow border border-outline-variant">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-slate-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">visibility</span>
+</span>
+</div>
+<p class="text-sm font-medium text-on-surface-variant mb-1">Total Engagement</p>
+<p class="text-3xl font-bold text-primary">42.5k</p>
+</div>
+</section>
+<!-- Main Articles Management -->
+<section class="bg-surface rounded-xl card-shadow border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+<div>
+<h3 class="text-lg font-bold text-primary">Content Repository</h3>
+<p class="text-sm text-on-surface-variant">Review and manage the editorial pipeline.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 text-sm font-medium border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                            Filter
+                        </button>
+<button class="px-4 py-2 text-sm font-medium border border-outline-variant rounded-lg hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                            Export
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">Article Detail</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">Classification</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">Lifecycle Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">Date Added</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7KRNKHg_URLdsexAb3N2Z2zwZt6BMwTl7ACx8oAY9TBQ8P2lIfCn3rnQVpWdNJpt8XRPrkQSnfxomJoXaU-bdhx9U-SoIDWcwvlXFZ_fBRXEpmxpncOTT-97EKX8_TJ4wJ4dsQSXlyVP4Tw9ByTM0gB_f275G480c6DK-_jGWMoE5NGe7S49C4nsHXg2vMKWX9P1UgFFz_vQiFyYdjMYwkvwB-TmwhkVjfm-aMAAqW2SQkxsxylre"/>
+</div>
+<span class="font-medium text-primary hover:text-secondary cursor-pointer transition-colors line-clamp-1">The Impact of Neural Networks on Urban Infrastructure</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-0.5 text-[11px] font-bold bg-slate-100 text-slate-700 rounded-full uppercase">Technology</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-sm text-on-surface font-medium">Published</span>
+</span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Oct 12, 2024</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeKol6AlA1ja2u-0hfwpHA4UVVHIcJDGRg08L_1WvvLbwQmhc9YnczV3QASO5In-C-3B7CCt7h7FnRkscXFOh9FUuUXd6vXdd8wjNp_O4b0IEm-eL4RmP52h5gpXgEysPtxUzObemjsSRM1cIU0JbQBo9ed28xgqwRevJw3NMvnkBJLYEkBOJkzQfa1o4hC5NlX3fN1YaU2BvFMIFj_2sZYgf48XMe4EtA1SGtZTyF1AlAEFz_9Igl"/>
+</div>
+<span class="font-medium text-primary hover:text-secondary cursor-pointer transition-colors line-clamp-1">Revisiting the Brutalist Movement in Modern Architecture</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-0.5 text-[11px] font-bold bg-slate-100 text-slate-700 rounded-full uppercase">Culture</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span class="text-sm text-on-surface font-medium">Draft</span>
+</span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Oct 14, 2024</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPlnN-DoNWWFpRZo9Q2nodTal8xvW_mI-LJpcMR4EpRN8GzpD8sOO6F-F1RcFYO05jBEYnQtose-8e-xM901FmZJnHeou32STPjTEuiVYA5MHNbNyhIhrhLxcVQHE-o671SMYdAVkmOnTpkRppvvUjHttUfYOeFMwOjqYIHWY_GNZm1dnWyKUPkyCvEnVrdvJ3BGYjWzj_x0WcdCPrpZkCPwEPsx5LdsHCjmbzH074Aa4lFY67-N0r"/>
+</div>
+<span class="font-medium text-primary hover:text-secondary cursor-pointer transition-colors line-clamp-1">Global Market Shifts: A Quarterly Analysis of Trade</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-0.5 text-[11px] font-bold bg-slate-100 text-slate-700 rounded-full uppercase">Business</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+<span class="text-sm text-on-surface font-medium">Scheduled</span>
+</span>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Oct 11, 2024</td>
+<td class="px-6 py-4">
+<div class="flex justify-end gap-1">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 border-t border-outline-variant flex justify-between items-center bg-surface-container-low">
+<span class="text-sm text-on-surface-variant">Showing <span class="font-bold text-primary">1 - 10</span> of 284 articles</span>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-sm font-medium border border-outline-variant rounded hover:bg-surface-variant disabled:opacity-50 transition-colors">Prev</button>
+<button class="px-3 py-1.5 text-sm font-medium bg-primary text-on-primary rounded hover:bg-primary-container transition-colors">Next</button>
+</div>
+</div>
+</section>
+<!-- Bottom Dashboard Sections -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+<div class="lg:col-span-2 bg-surface rounded-xl card-shadow border border-outline-variant p-8">
+<h4 class="text-lg font-bold mb-6 flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-secondary">campaign</span>
+                        System Notices &amp; Alerts
+                    </h4>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-red-50 border-l-4 border-red-500 flex justify-between items-center">
+<div>
+<p class="text-sm font-bold text-red-900">Breaking News Layout Review</p>
+<p class="text-xs text-red-700 mt-0.5">High priority update for regional election coverage module.</p>
+</div>
+<span class="material-symbols-outlined text-red-500">notification_important</span>
+</div>
+<div class="p-4 rounded-lg bg-blue-50 border-l-4 border-blue-500 flex justify-between items-center">
+<div>
+<p class="text-sm font-bold text-blue-900">Maintenance Update</p>
+<p class="text-xs text-blue-700 mt-0.5">Scheduled downtime for CMS cluster at 02:00 UTC tomorrow.</p>
+</div>
+<span class="material-symbols-outlined text-blue-500">info</span>
+</div>
+</div>
+</div>
+<div class="bg-primary-container text-on-primary-container rounded-xl card-shadow p-8 relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<h4 class="text-lg font-bold mb-2">Editorial Quality Score</h4>
+<p class="text-sm opacity-80 mb-8">Average accuracy across all departments (last 30 days).</p>
+<div class="text-5xl font-bold tracking-tight mb-4">98.4%</div>
+<div class="w-full bg-white/10 rounded-full h-2 mb-2">
+<div class="bg-white h-full rounded-full shadow-[0_0_8px_rgba(255,255,255,0.5)]" style="width: 98.4%"></div>
+</div>
+<p class="text-[11px] uppercase tracking-wider font-bold opacity-60">Tier: Platinum Excellence</p>
+</div>
+<!-- Subtle abstract graphic -->
+<div class="absolute -bottom-4 -right-4 opacity-10">
+<span class="material-symbols-outlined text-[140px]">shield_check</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Professional Footer -->
+<footer class="mt-auto bg-surface border-t border-outline-variant px-8 py-10">
+<div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-2">
+<h3 class="text-xl font-bold text-primary mb-4">CHRONICLE</h3>
+<p class="text-sm text-on-surface-variant max-w-sm">The leading enterprise platform for modern editorial workflows. Built for high-stakes newsrooms requiring precision and scale.</p>
+<p class="text-xs text-on-surface-variant mt-6">© 2024 Chronicle Media Group. All rights reserved.</p>
+</div>
+<div>
+<h4 class="text-xs font-bold uppercase tracking-widest text-primary mb-4">Editorial Tools</h4>
+<ul class="space-y-2 text-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Style Guide</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press Kit</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Media Assets</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Legal &amp; Compliance</a></li>
+</ul>
+</div>
+<div class="flex flex-col items-start md:items-end justify-between">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="language">language</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="rss">rss_feed</span>
+</div>
+<div class="mt-8 text-right">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Environment: Stable</p>
+<p class="text-[10px] text-on-surface-variant opacity-60">Build v2.4.1.8890</p>
+</div>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.classList.add('opacity-80', 'scale-95');
+            });
+            button.addEventListener('mouseup', function() {
+                this.classList.remove('opacity-80', 'scale-95');
+            });
+            button.addEventListener('mouseleave', function() {
+                this.classList.remove('opacity-80', 'scale-95');
+            });
+        });
+    </script>
+</body></html>

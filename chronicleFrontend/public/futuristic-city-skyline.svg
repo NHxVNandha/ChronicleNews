@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Futuristic city skyline</title>
+  <desc id="desc">A cinematic futuristic city skyline with deep navy towers and cerulean light.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#09111f"/>
+      <stop offset="0.45" stop-color="#10233f"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" x2="1">
+      <stop offset="0" stop-color="#7dd3fc" stop-opacity="0"/>
+      <stop offset="0.48" stop-color="#7dd3fc" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="orb" cx="72%" cy="24%" r="36%">
+      <stop offset="0" stop-color="#93c5fd" stop-opacity="0.9"/>
+      <stop offset="0.42" stop-color="#3b82f6" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="1000" fill="url(#sky)"/>
+  <rect width="1400" height="1000" fill="url(#orb)"/>
+  <path d="M0 710 C220 640 390 715 572 662 C772 604 940 650 1118 594 C1240 555 1326 560 1400 526 L1400 1000 L0 1000 Z" fill="#050b15" opacity="0.55"/>
+  <g opacity="0.55" stroke="#7dd3fc" stroke-width="2">
+    <path d="M0 640 H1400" opacity="0.22"/>
+    <path d="M0 730 H1400" opacity="0.18"/>
+    <path d="M0 820 H1400" opacity="0.14"/>
+    <path d="M214 0 V1000" opacity="0.08"/>
+    <path d="M502 0 V1000" opacity="0.08"/>
+    <path d="M790 0 V1000" opacity="0.08"/>
+    <path d="M1078 0 V1000" opacity="0.08"/>
+  </g>
+  <ellipse cx="760" cy="718" rx="560" ry="70" fill="#60a5fa" opacity="0.18" filter="url(#blur)"/>
+  <rect x="0" y="690" width="1400" height="110" fill="url(#glow)" opacity="0.32"/>
+  <g fill="#07111f">
+    <path d="M82 526 h106 v474 H82z"/>
+    <path d="M212 430 h72 l34 56 v514 H212z"/>
+    <path d="M342 575 h112 v425 H342z"/>
+    <path d="M488 346 h134 v654 H488z"/>
+    <path d="M648 470 h94 v530 h-94z"/>
+    <path d="M782 260 h154 v740 H782z"/>
+    <path d="M966 535 h112 v465 H966z"/>
+    <path d="M1108 402 h84 l46 74 v524 h-130z"/>
+    <path d="M1268 590 h86 v410 h-86z"/>
+  </g>
+  <g fill="#0b1b32">
+    <path d="M0 760 h88 v240 H0z"/>
+    <path d="M150 640 h116 v360 H150z"/>
+    <path d="M302 704 h92 v296 h-92z"/>
+    <path d="M430 608 h138 v392 H430z"/>
+    <path d="M600 740 h96 v260 h-96z"/>
+    <path d="M724 590 h116 v410 H724z"/>
+    <path d="M870 680 h168 v320 H870z"/>
+    <path d="M1070 626 h94 v374 h-94z"/>
+    <path d="M1210 712 h190 v288 h-190z"/>
+  </g>
+  <g fill="#93c5fd" opacity="0.85">
+    <rect x="114" y="570" width="42" height="6" rx="3"/>
+    <rect x="238" y="512" width="48" height="6" rx="3"/>
+    <rect x="516" y="402" width="72" height="6" rx="3"/>
+    <rect x="814" y="326" width="82" height="6" rx="3"/>
+    <rect x="1002" y="594" width="46" height="6" rx="3"/>
+    <rect x="1138" y="476" width="58" height="6" rx="3"/>
+    <rect x="1290" y="646" width="42" height="6" rx="3"/>
+  </g>
+  <g fill="#60a5fa" opacity="0.38">
+    <rect x="112" y="620" width="14" height="84"/>
+    <rect x="144" y="620" width="14" height="112"/>
+    <rect x="526" y="450" width="14" height="160"/>
+    <rect x="566" y="450" width="14" height="130"/>
+    <rect x="816" y="384" width="16" height="210"/>
+    <rect x="864" y="384" width="16" height="250"/>
+    <rect x="1138" y="526" width="14" height="178"/>
+    <rect x="1182" y="526" width="14" height="150"/>
+  </g>
+  <path d="M0 826 C240 792 424 835 650 790 C896 742 1062 800 1400 716 L1400 1000 L0 1000 Z" fill="#020617" opacity="0.72"/>
+  <rect y="896" width="1400" height="104" fill="#020617"/>
+</svg>

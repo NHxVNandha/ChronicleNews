@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE | Archive &amp; Categories</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .transition-editorial {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#000000",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "tertiary-container": "#0b1c30",
+                      "on-surface": "#191c1e",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "surface-dim": "#d8dadc",
+                      "on-background": "#191c1e",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "background": "#f7f9fb",
+                      "surface-container": "#eceef0",
+                      "surface-bright": "#f7f9fb",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-secondary-fixed": "#001a42",
+                      "secondary-container": "#2170e4",
+                      "outline-variant": "#c6c6cd",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#131b2e",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "surface": "#f7f9fb",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#565e74",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "surface-container-low": "#f2f4f6",
+                      "outline": "#76777d",
+                      "on-secondary-container": "#fefcff",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#dae2fd",
+                      "tertiary-fixed": "#d3e4fe",
+                      "secondary": "#0058be",
+                      "inverse-surface": "#2d3133",
+                      "primary-fixed-dim": "#bec6e0",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-primary-container": "#7c839b",
+                      "surface-container-high": "#e6e8ea",
+                      "on-tertiary-container": "#75859d",
+                      "on-primary-fixed": "#131b2e",
+                      "inverse-primary": "#bec6e0",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-surface-variant": "#45464d",
+                      "tertiary": "#000000",
+                      "surface-container-highest": "#e0e3e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px",
+                      "container-max": "1280px",
+                      "stack-sm": "12px",
+                      "margin-mobile": "20px",
+                      "stack-md": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "display-lg": ["Playfair Display"],
+                      "display-lg-mobile": ["Playfair Display"],
+                      "body-lg": ["Inter"],
+                      "caption": ["Inter"],
+                      "headline-sm": ["Playfair Display"],
+                      "headline-lg": ["Playfair Display"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar (Shared Component JSON Mapping) -->
+<header class="bg-surface dark:bg-surface-dim docked full-width top-0 border-b-border-width-thick border-primary dark:border-outline-variant z-50 sticky">
+<nav class="flex justify-between items-center w-full px-gutter py-4 container-max mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-display text-display uppercase tracking-tighter text-primary dark:text-on-primary-fixed text-headline-lg font-extrabold" href="#">CHRONICLE</a>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface dark:text-on-surface-variant font-label-bold text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-2 py-1" href="#">Home</a>
+<a class="text-on-surface dark:text-on-surface-variant font-label-bold text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-2 py-1" href="#">News</a>
+<a class="text-secondary dark:text-secondary-fixed-dim font-bold border-b-border-width-thin border-secondary font-label-bold text-label-md px-2 py-1" href="#">Categories</a>
+<a class="text-on-surface dark:text-on-surface-variant font-label-bold text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-100 px-2 py-1" href="#">About</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-secondary-container p-2 rounded-full transition-editorial" data-icon="search">search</button>
+<button class="hidden md:block bg-primary text-on-primary px-6 py-2 font-label-md hover:opacity-90 transition-editorial">SUBSCRIBE</button>
+</div>
+</nav>
+</header>
+<main class="container-max mx-auto px-gutter py-stack-lg flex flex-col md:flex-row gap-gutter">
+<!-- Sidebar Filter (SideNavBar logic mapping) -->
+<aside class="w-full md:w-72 shrink-0 space-y-stack-md">
+<div class="sticky top-24 space-y-stack-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary border-b border-outline-variant pb-2 mb-4">Archive Filters</h2>
+<p class="font-body-md text-on-surface-variant mb-6">Browse our historical database by date and discipline.</p>
+</div>
+<!-- Year Selection -->
+<div class="space-y-2">
+<label class="font-label-md text-label-md uppercase tracking-wider text-outline">Select Year</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-none px-4 py-3 font-body-md focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none">
+<option>2024</option>
+<option>2023</option>
+<option>2022</option>
+<option>2021</option>
+<option>Archives (Pre-2020)</option>
+</select>
+</div>
+<!-- Category Chips -->
+<div class="space-y-3">
+<label class="font-label-md text-label-md uppercase tracking-wider text-outline">Category</label>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center justify-between px-4 py-3 bg-secondary dark:bg-secondary-container text-on-secondary dark:text-on-secondary-container transition-editorial group" href="#">
+<span class="font-label-md">Technology</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<a class="flex items-center justify-between px-4 py-3 text-on-surface hover:bg-surface-container-high transition-editorial group" href="#">
+<span class="font-label-md">Education</span>
+<span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="flex items-center justify-between px-4 py-3 text-on-surface hover:bg-surface-container-high transition-editorial group" href="#">
+<span class="font-label-md">Health</span>
+<span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="flex items-center justify-between px-4 py-3 text-on-surface hover:bg-surface-container-high transition-editorial group" href="#">
+<span class="font-label-md">Sports</span>
+<span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+</nav>
+</div>
+<!-- Newsletter Card (Modern UI Pattern) -->
+<div class="bg-primary-container p-6 text-on-primary mt-stack-lg border-l-4 border-secondary">
+<h3 class="font-headline-sm text-headline-sm mb-2">The Weekly Digest</h3>
+<p class="font-body-md opacity-80 mb-4">Curated editorial depth delivered to your inbox every Sunday morning.</p>
+<div class="flex flex-col gap-2">
+<input class="bg-white/10 border-white/20 text-white placeholder:text-white/50 px-4 py-2 text-label-md focus:ring-secondary focus:border-secondary" placeholder="Email Address" type="email"/>
+<button class="bg-secondary text-on-secondary py-2 font-label-md hover:bg-secondary/90 transition-editorial">JOIN ARCHIVE</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Content Area -->
+<section class="flex-1">
+<header class="mb-stack-md flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-display-lg text-display-lg md:text-display-lg text-primary leading-tight">Technology Archive</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-2">Documenting the evolution of digital culture, emerging intelligence, and the infrastructure of the future.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant bg-surface-container-lowest hover:bg-surface-container transition-editorial">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-2 border border-outline-variant opacity-50">
+<span class="material-symbols-outlined">list</span>
+</button>
+</div>
+</header>
+<!-- Featured "Hero" Card in Archive -->
+<article class="relative w-full h-[450px] mb-stack-md group overflow-hidden bg-primary-container">
+<div class="absolute inset-0 opacity-80 group-hover:opacity-100 transition-editorial transform group-hover:scale-105" data-alt="A cinematic, high-contrast photograph of a futuristic clean-room laboratory filled with advanced robotics and soft blue ambient lighting. Scientists in minimalist tech-wear are examining a glowing holographic interface. The style is professional and high-end editorial, with a focus on cold blues and deep shadows to signify technological authority." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDNEMkw2NeIexVcxUsYMfk64_bZEM8a_vseod9MKYHlaSbpfIyTEmFkskWerE6CqLuO7IOBfkcBm2wkz7NcvYXHAjNgb_NM1ddifmX2tC1XkveAofuU9AEDNyjlloM_lC9N_akANjum-tgHVKlvbvaE9EiCl2AfJkbQwUSFAOZQam-9pIik7oiPNULzz9gD7FQwHqRgZH03d9XIMjbbFvYGy-dxwn2SnkQB9NlV1tKsRPmhGkvKO5sE')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-gutter text-on-primary max-w-3xl">
+<span class="bg-secondary text-on-secondary px-3 py-1 font-label-md text-label-md uppercase tracking-widest mb-4 inline-block">Special Report</span>
+<h2 class="font-display-lg text-display-lg mb-4 hover:underline cursor-pointer">The Silent Shift: How Neural Architecture Redefined Search in 2024</h2>
+<p class="font-body-lg text-body-lg opacity-90 line-clamp-2">An investigative look into the deep integration of generative models within our fundamental information gateways and the consequences for digital truth.</p>
+<div class="mt-6 flex items-center gap-4">
+<span class="font-label-md">By Helena Vane</span>
+<span class="w-1 h-1 bg-white/50 rounded-full"></span>
+<span class="font-label-md opacity-70">12 Min Read</span>
+</div>
+</div>
+</article>
+<!-- Articles Grid -->
+<div class="bento-grid">
+<!-- Card 1 -->
+<article class="group">
+<div class="aspect-video overflow-hidden mb-4 bg-surface-variant">
+<div class="w-full h-full object-cover transition-editorial group-hover:scale-110" data-alt="Close-up shot of architectural blueprints being projected onto a dark wooden table in a minimalist studio. The lighting is focused and warm, highlighting the intricate white lines of the digital projection. Professional editorial aesthetic with a palette of deep charcoals and sharp whites." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCR8EZ0mzVdEVuFkkE-qSARk8UetKscxHIbRkR8VoBcyQ46-aoS4WyjV_g26n3r6-H3wo4r2Q6QUd0qQmtQSYCagxHS0zinyNoJuL8oDYtBkf8gjJohOFtBYM5oeC1y3mucFPe83AkurGymBuRCppM6CiajCEShK185VagmFGhXVLuFf6ozlRGIfmzaK39PIhV9snbnfouaRPzXIirq6BtfVwb3vxPQERj1a54oecmMqdyCAKi2-H5U')"></div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-secondary uppercase text-[12px] tracking-widest">Hardware</span>
+<span class="font-caption text-caption text-outline">Oct 14, 2024</span>
+</div>
+<h3 class="font-headline-md text-headline-md leading-tight group-hover:text-secondary transition-colors cursor-pointer">Silicon Sentience: The Rise of Sovereign Chips</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-3">The geopolitical race for compute power has entered a new phase as private entities begin constructing independent infrastructure.</p>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group">
+<div class="aspect-video overflow-hidden mb-4 bg-surface-variant">
+<div class="w-full h-full object-cover transition-editorial group-hover:scale-110" data-alt="A minimalist overhead view of several sleek, black smartphones arranged in a perfect geometric circle on a pure white surface. The lighting is soft and even, typical of a high-end product design magazine. The overall mood is sterile, modern, and highly organized, emphasizing symmetry and clarity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkRCYJAW0vQD4idxs3R0urhEZlovj_uzexUBqyD7cwbLNL11E7i8SxDAWaYUXOU7leuDg4SFEPoZ0LxHjkCTmAC4zjiT_6T8klU5WtXtRYLCXgEmCxjbi1Z9ejw3uKk2F7JWdf7NGrBDjicfm1mG_MSJyRrN3LHjwMFEd-MvPhoqrotQ-1-oAMfYHng9jHE99iIlFB9kYcwrUKkVsryhS9H7PrW8GzmoKvkC4q3_beKpeQ5L__xI6i')"></div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-secondary uppercase text-[12px] tracking-widest">Digital Culture</span>
+<span class="font-caption text-caption text-outline">Sep 29, 2024</span>
+</div>
+<h3 class="font-headline-md text-headline-md leading-tight group-hover:text-secondary transition-colors cursor-pointer">The Paradox of Choice in the Unified App Era</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-3">As global platforms consolidate disparate services, the user experience becomes friction-free but increasingly fragile.</p>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group">
+<div class="aspect-video overflow-hidden mb-4 bg-surface-variant">
+<div class="w-full h-full object-cover transition-editorial group-hover:scale-110" data-alt="An abstract visualization of digital data flowing through a fiber optic network. The style uses vibrant cerulean blues and deep navy blacks, with sharp streaks of light cutting through a dark void. The composition feels fast-paced and high-tech, reflecting the speed of global communication." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRK7qfzoRayexBxgncf7YjUKBbgVMuZdHtIme-x95N0mMX1NyLoIsBBebV-WlZU3kSeITvUXxkW1415S_PYFHZCOJTGWEzYefSNKlari2TQO3jxuwN3UJgbJv1Ik2uEJqjtES7GEkMjohFC1ltoJxDDbWbvQV3GCEOsFAO2OGo7ov3ZumQZPdYL60n2EwzGlsB50bHDKtMZD99UyGbj-IRrrsUDwhBIit234JZRaMPLVIwBjUFIZvc')"></div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-secondary uppercase text-[12px] tracking-widest">Policy</span>
+<span class="font-caption text-caption text-outline">Aug 11, 2024</span>
+</div>
+<h3 class="font-headline-md text-headline-md leading-tight group-hover:text-secondary transition-colors cursor-pointer">Encryption and the New Sovereignty</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-3">How mathematics became the most powerful political tool of the twenty-first century in the fight for privacy.</p>
+</div>
+</article>
+<!-- Card 4 (Text Only for Asymmetric Rhythm) -->
+<article class="bg-surface-container-low p-6 border-t-2 border-primary group hover:bg-surface-container-high transition-editorial">
+<div class="space-y-4">
+<span class="font-label-md text-secondary uppercase text-[12px] tracking-widest">Sustainability</span>
+<h3 class="font-display-lg text-[28px] leading-tight group-hover:underline cursor-pointer italic">"The green transition requires more than just energy; it requires a redesign of information itself."</h3>
+<p class="font-body-md text-on-surface-variant italic">Editorial by Marcus Thorne on the hidden carbon cost of large language models and the path to sustainable AI.</p>
+<div class="pt-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">MT</div>
+<span class="font-label-md">Marcus Thorne, Senior Editor</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<footer class="mt-stack-lg border-t border-outline-variant pt-8 flex items-center justify-between">
+<button class="flex items-center gap-2 font-label-md text-on-surface-variant hover:text-primary transition-editorial">
+<span class="material-symbols-outlined">arrow_back</span>
+                    Previous
+                </button>
+<div class="flex gap-2">
+<span class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary font-label-md">1</span>
+<a class="w-8 h-8 flex items-center justify-center hover:bg-surface-container transition-editorial font-label-md" href="#">2</a>
+<a class="w-8 h-8 flex items-center justify-center hover:bg-surface-container transition-editorial font-label-md" href="#">3</a>
+<span class="w-8 h-8 flex items-center justify-center font-label-md">...</span>
+<a class="w-8 h-8 flex items-center justify-center hover:bg-surface-container transition-editorial font-label-md" href="#">12</a>
+</div>
+<button class="flex items-center gap-2 font-label-md text-on-surface-variant hover:text-primary transition-editorial">
+                    Next
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</footer>
+</section>
+</main>
+<!-- Footer (Shared Component JSON Mapping) -->
+<footer class="bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container full-width border-t-border-width-thick border-primary w-full px-gutter py-margin-desktop grid grid-cols-1 md:grid-cols-3 gap-8 mt-stack-lg">
+<div class="space-y-4">
+<span class="font-display text-headline-lg text-on-primary uppercase tracking-tighter">CHRONICLE</span>
+<p class="font-body-md opacity-80 max-w-sm">Dedicated to rigorous journalism and the pursuit of truth in a digital age. Our archives serve as a living history of global progress.</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<h4 class="font-label-md uppercase opacity-50 mb-2">Network</h4>
+<a class="font-label-sm text-label-sm text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-editorial" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-editorial" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="font-label-md uppercase opacity-50 mb-2">Connect</h4>
+<a class="font-label-sm text-label-sm text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-editorial" href="#">Contact Editorial</a>
+<a class="font-label-sm text-label-sm text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-editorial" href="#">Archive</a>
+</div>
+</div>
+<div class="flex flex-col justify-between">
+<div class="flex gap-4">
+<button class="w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-editorial">
+<span class="material-symbols-outlined text-on-primary">share</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white/10 transition-editorial">
+<span class="material-symbols-outlined text-on-primary">rss_feed</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm opacity-60 mt-8">© 2024 Chronicle News Media. Built for truth.</p>
+</div>
+</footer>
+<!-- Interactive Search Overlay (Micro-interaction) -->
+<div class="fixed inset-0 bg-primary/95 z-[100] hidden flex flex-col items-center justify-center p-gutter transition-all duration-300 opacity-0" id="search-overlay">
+<button class="absolute top-8 right-8 text-on-primary hover:rotate-90 transition-transform" onclick="toggleSearch()">
+<span class="material-symbols-outlined text-4xl">close</span>
+</button>
+<div class="w-full max-w-4xl text-center">
+<p class="font-label-md text-secondary uppercase tracking-[0.3em] mb-4">Chronicle Archive Search</p>
+<input class="w-full bg-transparent border-b-2 border-white/20 text-on-primary font-display-lg text-[40px] md:text-[60px] text-center focus:outline-none focus:border-secondary transition-colors pb-4 placeholder:opacity-30" placeholder="Type keywords, dates, or authors..." type="text"/>
+<div class="mt-8 flex flex-wrap justify-center gap-4">
+<span class="font-label-md text-white/50">Trending:</span>
+<a class="font-label-md text-on-primary hover:text-secondary underline decoration-secondary/50" href="#">#ClimateTech</a>
+<a class="font-label-md text-on-primary hover:text-secondary underline decoration-secondary/50" href="#">#QuantumComputing</a>
+<a class="font-label-md text-on-primary hover:text-secondary underline decoration-secondary/50" href="#">#FutureOfWork</a>
+</div>
+</div>
+</div>
+<script>
+        function toggleSearch() {
+            const overlay = document.getElementById('search-overlay');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    overlay.querySelector('input').focus();
+                }, 10);
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // Connect the search icon from TopNavBar
+        document.querySelector('[data-icon="search"]').parentElement.addEventListener('click', toggleSearch);
+
+        // Escape key to close search
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggleSearch();
+        });
+    </script>
+</body></html>

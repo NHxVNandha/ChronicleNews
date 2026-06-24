@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Daily Gazette | Create Post</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#565e74",
+                    "on-tertiary-container": "#75859d",
+                    "on-surface-variant": "#45464d",
+                    "on-secondary-fixed": "#001a42",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary": "#0058be",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#76777d",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#004395",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary-fixed": "#dae2fd",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-container": "#2170e4",
+                    "on-primary-fixed": "#131b2e",
+                    "outline-variant": "#c6c6cd",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "tertiary-container": "#0b1c30",
+                    "on-surface": "#191c1e",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-background": "#191c1e",
+                    "surface": "#f7f9fb",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "secondary-fixed": "#d8e2ff",
+                    "inverse-primary": "#bec6e0",
+                    "tertiary": "#000000",
+                    "on-error": "#ffffff",
+                    "primary": "#000000",
+                    "background": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#fefcff",
+                    "surface-dim": "#d8dadc",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "tertiary-fixed": "#d3e4fe",
+                    "surface-bright": "#f7f9fb",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-primary-container": "#7c839b",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "stack-lg": "48px",
+                    "container-max": "1280px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "stack-sm": "12px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e0e3e5;
+            border-radius: 10px;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-fixed">
+<!-- TopAppBar - Navigation shell suppressed because this is a task-focused sub-page -->
+<header class="w-full sticky top-0 z-40 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="p-2 -ml-2 text-on-surface-variant" onclick="history.back()">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">New Article</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors" id="open-settings">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<main class="max-w-2xl mx-auto pb-32">
+<div class="px-margin-mobile pt-stack-md space-y-stack-md">
+<!-- Lead Image Placeholder -->
+<section class="group relative w-full aspect-video rounded-xl bg-surface-container-low overflow-hidden border border-dashed border-outline-variant hover:border-secondary transition-colors cursor-pointer flex flex-col items-center justify-center">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-10 group-hover:opacity-20 transition-opacity" data-alt="A clean, minimalist workspace with a sleek laptop and a fresh cup of coffee, captured in soft morning light with a professional editorial aesthetic. The composition is balanced and utilizes a muted palette of greys, whites, and deep navy accents to create a calm, focused atmosphere for a news editor's desk." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEAz3mYc9hvcf_5aKTKxUIvDiAdIWMP8Nflv6DOivz7rxJGDmU8v4lIOexxElIFs9eiJ82-n8HpZ9lJfzygm2CYxk77j3-1GuNHtJohZ6SDoAA0MCLHNSCqZob-QgYOvFC-Te9eOq6Hr2LMKH5fg1-oc_Wiq7L_zjVFf5AZ6agh3cutT5OlKfOU2Ly0EVZqDetLENq8tl9mCldAPkJmPrUe1DlxjXVLp7QSunam4JrVTXvKx5xcrnD"/>
+</div>
+<div class="relative z-10 flex flex-col items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-4xl">add_a_photo</span>
+<span class="font-label-md text-label-md">Add Featured Image</span>
+</div>
+</section>
+<!-- Inputs Section -->
+<section class="space-y-6">
+<!-- Title Field -->
+<div class="group">
+<textarea class="w-full bg-transparent font-headline-lg-mobile text-headline-lg-mobile text-primary placeholder:text-outline-variant border-none resize-none px-0 py-2 focus:ring-0" placeholder="Article Title..." rows="2"></textarea>
+</div>
+<!-- Summary/Subtitle Field -->
+<div class="group">
+<textarea class="w-full bg-transparent font-body-lg text-body-lg text-on-surface-variant placeholder:text-outline-variant border-none resize-none px-0 py-2 focus:ring-0 leading-relaxed italic" placeholder="Write a short summary or deck for this story..." rows="3"></textarea>
+</div>
+<!-- Divider -->
+<hr class="border-outline-variant opacity-30"/>
+<!-- Simple Rich Text Editor -->
+<div class="editor-container flex flex-col min-h-[400px]">
+<!-- Toolbar (Contextual) -->
+<div class="sticky top-16 z-30 bg-surface/95 backdrop-blur-sm py-2 border-b border-outline-variant/30 flex items-center gap-1 overflow-x-auto no-scrollbar">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">format_bold</span></button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">format_italic</span></button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">format_list_bulleted</span></button>
+<div class="w-px h-6 bg-outline-variant mx-1"></div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">format_quote</span></button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">link</span></button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">image</span></button>
+<div class="w-px h-6 bg-outline-variant mx-1"></div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg"><span class="material-symbols-outlined">text_increase</span></button>
+</div>
+<!-- Editor Body -->
+<div class="w-full h-full py-6 font-body-md text-body-md text-on-surface focus:outline-none leading-loose space-y-4 empty:before:content-['Start_typing_your_story...'] empty:before:text-outline-variant" contenteditable="true"></div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Action Bar (Fixed) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant z-40 pb-safe">
+<div class="max-w-2xl mx-auto px-margin-mobile py-4 flex items-center gap-4">
+<button class="flex-1 px-6 py-3 border border-outline-variant text-on-surface font-label-md text-label-md rounded-full hover:bg-surface-container-low transition-all">
+                Save Draft
+            </button>
+<button class="flex-1 px-6 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-sm hover:opacity-90 active:scale-[0.98] transition-all">
+                Publish
+            </button>
+</div>
+</div>
+<!-- Metadata Settings Bottom Sheet -->
+<div class="fixed inset-0 bg-black/40 z-[45] hidden opacity-0 transition-opacity duration-300" id="settings-backdrop"></div>
+<div class="fixed bottom-0 left-0 w-full bg-surface rounded-t-[32px] z-50 bottom-sheet max-h-[751px] overflow-hidden flex flex-col" id="settings-sheet">
+<!-- Handle -->
+<div class="w-full flex justify-center py-4 cursor-pointer" id="close-settings">
+<div class="w-10 h-1.5 bg-outline-variant rounded-full opacity-50"></div>
+</div>
+<div class="px-margin-mobile pb-12 flex-1 overflow-y-auto custom-scrollbar">
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Post Settings</h2>
+<div class="space-y-8">
+<!-- Category Selection -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-3 uppercase tracking-wider">Category</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-secondary text-on-secondary font-label-md text-label-md">Politics</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant/30">Technology</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant/30">Economy</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant/30">Culture</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md border border-outline-variant/30">Science</button>
+</div>
+</div>
+<!-- Toggles -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface">Featured Article</p>
+<p class="text-caption text-on-surface-variant">Prioritize on home feed</p>
+</div>
+<button class="w-12 h-6 bg-secondary rounded-full relative flex items-center px-1 transition-colors">
+<div class="w-4 h-4 bg-white rounded-full translate-x-6 transition-transform shadow-sm"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface">Breaking News</p>
+<p class="text-caption text-on-surface-variant">Send push notification</p>
+</div>
+<button class="w-12 h-6 bg-outline-variant rounded-full relative flex items-center px-1 transition-colors">
+<div class="w-4 h-4 bg-white rounded-full translate-x-0 transition-transform shadow-sm"></div>
+</button>
+</div>
+</div>
+<!-- Author & Time -->
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Author</label>
+<div class="bg-surface-container-low px-4 py-3 rounded-xl flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a journalist in a modern office, characterized by soft depth of field and warm, natural lighting. The style is crisp and editorial, reflecting authority and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnYCLXvA6LMZXSiukI8yEXWVExWLSqYv4gBFMD7R0frzG__3w8Y8BKUoaZHncDOyyA1IVIdPIUWzXbg2N1Y83IchhkyPKm6RwSMhNSt5X1fO6hcioCpqIMZwAV-XlE6hB-zF_R31HhcNfkTAJBRv3SsaMAIXWrXv4odoYIyPhIKFH2Q8_qyAWQjdG8TpINEFvF5I1opL0MF66zLVYdYRt8ylHlGDBv2rhaY0IXXR1AYiF1u6u2ijAM"/>
+</div>
+<span class="font-body-md text-body-md truncate">J. Thompson</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Schedule</label>
+<div class="bg-surface-container-low px-4 py-3 rounded-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span class="font-body-md text-body-md">Now</span>
+</div>
+</div>
+</div>
+<!-- Tags -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Tags</label>
+<div class="bg-surface-container-low p-3 rounded-xl flex items-center gap-2 flex-wrap min-h-[48px] border border-outline-variant/20">
+<span class="px-2 py-1 bg-surface rounded-md text-caption flex items-center gap-1 border border-outline-variant/30">
+                            #election2024 <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+<span class="px-2 py-1 bg-surface rounded-md text-caption flex items-center gap-1 border border-outline-variant/30">
+                            #democracy <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+<input class="bg-transparent border-none text-caption p-0 focus:ring-0 flex-1 min-w-[60px]" placeholder="Add tag..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        const settingsBtn = document.getElementById('open-settings');
+        const settingsSheet = document.getElementById('settings-sheet');
+        const backdrop = document.getElementById('settings-backdrop');
+        const closeBtn = document.getElementById('close-settings');
+
+        function toggleSettings(show) {
+            if (show) {
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.add('opacity-100');
+                    settingsSheet.classList.add('open');
+                }, 10);
+            } else {
+                backdrop.classList.remove('opacity-100');
+                settingsSheet.classList.remove('open');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        settingsBtn.addEventListener('click', () => toggleSettings(true));
+        backdrop.addEventListener('click', () => toggleSettings(false));
+        closeBtn.addEventListener('click', () => toggleSettings(false));
+
+        // Interaction for Toggles
+        document.querySelectorAll('.relative.flex.items-center.px-1').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const dot = this.querySelector('.w-4');
+                const isOff = dot.classList.contains('translate-x-0');
+                
+                if(isOff) {
+                    dot.classList.replace('translate-x-0', 'translate-x-6');
+                    this.classList.replace('bg-outline-variant', 'bg-secondary');
+                } else {
+                    dot.classList.replace('translate-x-6', 'translate-x-0');
+                    this.classList.replace('bg-secondary', 'bg-outline-variant');
+                }
+            });
+        });
+
+        // Editor focus highlight
+        const editor = document.querySelector('[contenteditable="true"]');
+        editor.addEventListener('focus', () => {
+            // Optional visual feedback
+        });
+    </script>
+</body></html>

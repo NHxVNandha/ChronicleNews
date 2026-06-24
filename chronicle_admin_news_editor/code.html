@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHRONICLE | Editor Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-container": "#0b1c30",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-background": "#191c1e",
+                    "surface-tint": "#565e74",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "on-surface-variant": "#45464d",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary-fixed": "#001a42",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#fefcff",
+                    "primary-fixed-dim": "#bec6e0",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "on-tertiary-container": "#75859d",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "outline-variant": "#c6c6cd",
+                    "surface": "#f7f9fb",
+                    "on-error-container": "#93000a",
+                    "outline": "#76777d",
+                    "surface-container-high": "#e6e8ea",
+                    "background": "#f7f9fb",
+                    "surface-bright": "#f7f9fb",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#131b2e",
+                    "inverse-primary": "#bec6e0",
+                    "tertiary-fixed": "#d3e4fe",
+                    "secondary": "#0058be",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary": "#000000",
+                    "secondary-container": "#2170e4",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "12px",
+                    "margin-mobile": "20px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-md": "24px",
+                    "margin-desktop": "64px",
+                    "base": "8px",
+                    "stack-lg": "48px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"],
+                    "caption": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px -20px rgba(0, 88, 190, 0.08);
+        }
+        /* Custom scrollbar for editor desk */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #76777d; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex overflow-hidden">
+<!-- Sidebar Navigation (Predicted Component: SideNavBar) -->
+<aside class="hidden md:flex flex-col h-screen p-gutter gap-4 bg-surface dark:bg-surface-container-low border-r-border-width-thin border-primary dark:border-outline w-64 z-50">
+<div class="mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Admin Portal</h1>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">Editorial Desk</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded text-on-surface dark:text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 hover:-translate-y-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded bg-secondary dark:bg-secondary-container text-on-secondary dark:text-on-secondary-container border-border-width-thin border-primary font-label-md text-label-md active-tab-shadow" href="#">
+<span class="material-symbols-outlined" data-icon="newspaper">newspaper</span>
+                News
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-on-surface dark:text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 hover:-translate-y-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="perm_media">perm_media</span>
+                Media
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-on-surface dark:text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 hover:-translate-y-1 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-12">
+<button class="w-full bg-primary text-on-primary py-4 px-4 font-label-md text-label-md uppercase tracking-wider hover:opacity-90 transition-opacity active:scale-95">
+                Create Post
+            </button>
+</div>
+<div class="mt-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded text-on-surface dark:text-on-surface-variant hover:bg-surface-container-high transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- Top Navigation (Predicted Component: TopNavBar variant) -->
+<header class="flex justify-between items-center w-full px-gutter py-2 bg-surface-container-lowest dark:bg-surface-container-high border-b-border-width-thin border-outline z-40">
+<div class="flex items-center gap-4">
+<button class="md:hidden">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Edit Article</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional editorial headshot of a journalist in a modern office, soft high-key lighting, focused on a person with a clean-cut aesthetic. The background features blurred modern architecture and minimalist decor. The color palette is composed of soft greys, deep blacks, and crisp whites to match the brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAf_sPDUC-0fjzftGjot_y5Ap4IQdpk-akKegdYnuAxUMZjha16PQI2Nl7ZU71acGi5TSsP1M1dv5c8VM6OSTNwMDAxSW2CkOTMf0dALUkr-6bzxQzwnCJ-KPMraiyt_kvswRo6tyPUMx6aUU_xcbSCDcYdiEa4XY49a7VQTx41cfVsQUQa1EbxWJO8k8J5Y4hCZu93N_-ZfxZtsUOclzviaoDVtY4Mkit5A9k4UQ_IWqp8GycvNDK"/>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Editor Profile</span>
+</div>
+<button class="font-label-sm text-label-sm text-primary uppercase border-b border-primary hover:text-secondary transition-colors">Sign Out</button>
+</div>
+</header>
+<!-- Editor Workspace -->
+<div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+<!-- Main Writing Area -->
+<section class="flex-1 overflow-y-auto p-gutter lg:p-margin-desktop bg-white dark:bg-surface">
+<div class="max-w-[800px] mx-auto space-y-stack-lg">
+<!-- Title Input -->
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-outline uppercase tracking-widest">Article Title</label>
+<textarea class="w-full font-headline-lg text-headline-lg border-none focus:ring-0 p-0 placeholder:text-outline-variant bg-transparent resize-none leading-tight" placeholder="Enter a compelling headline..." rows="2"></textarea>
+</div>
+<!-- Summary Input -->
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-outline uppercase tracking-widest">Deck / Summary</label>
+<textarea class="w-full font-body-lg text-body-lg border-none focus:ring-0 p-0 placeholder:text-outline-variant bg-transparent resize-none border-b border-outline-variant pb-4" placeholder="Write a brief, punchy summary to appear in previews..." rows="3"></textarea>
+</div>
+<!-- Featured Image Upload Area -->
+<div class="group relative w-full aspect-video bg-surface-container-low rounded-lg border-2 border-dashed border-outline-variant flex flex-col items-center justify-center cursor-pointer hover:border-secondary transition-colors overflow-hidden">
+<div class="text-center p-gutter">
+<span class="material-symbols-outlined text-4xl text-outline mb-2" data-icon="add_photo_alternate">add_photo_alternate</span>
+<p class="font-label-md text-label-md text-outline">Click to upload featured image</p>
+<p class="font-caption text-caption text-outline opacity-60">Recommended: 16:9, min 1920x1080px</p>
+</div>
+<!-- Background preview placeholder -->
+<div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity">
+<div class="w-full h-full bg-cover bg-center" data-alt="A cinematic, wide-angle landscape shot of a futuristic cityscape at dawn, featuring sharp architectural lines and a misty atmosphere. The lighting is cold and professional with soft cerulean blue highlights. The composition follows the rule of thirds with a focus on a central skyscraper, embodying a high-end editorial news aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCfBKes9bTml-xU-WxpZ5Palln1CPkn0fExM-LqRCrGIW7unZ7i3KHPBS3PGvfOoQpJDbApNV8hub3YhOC-z5HoWewbNqvmf6sC91Sh6HirDehFtjWGaaSeLrYSAcvIH63HwFz4C6qzUPXzh7oysBqnK9hsfaP3GXqXnl9xzb--4OcPEc_c8ZxcZhH2kNEgjUXmNhSOwcGDqUBMz7Tvk3BHYEsfHvOPmBau3A9AocJPs0Hks4xtuSvE')"></div>
+</div>
+</div>
+<!-- Article Body Editor Shell -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2 overflow-x-auto no-scrollbar">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="format_bold">format_bold</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="format_italic">format_italic</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="format_quote">format_quote</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="link">link</span></button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="image">image</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="code">code</span></button>
+</div>
+<div class="w-full min-h-[500px] font-body-lg text-body-lg outline-none prose prose-slate max-w-none" contenteditable="true">
+<p class="text-outline-variant">Start writing your story here...</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sidebar Controls (Right) -->
+<aside class="w-full lg:w-80 bg-surface-container-lowest border-l border-outline-variant overflow-y-auto p-6 space-y-8 editorial-shadow">
+<!-- Action Group -->
+<div class="space-y-3">
+<button class="w-full bg-primary text-on-primary py-4 px-4 font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="publish">publish</span>
+                        Publish Now
+                    </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-high text-on-surface py-3 px-2 font-label-md text-label-md uppercase tracking-tighter flex items-center justify-center gap-1 hover:bg-outline-variant transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="save">save</span>
+                            Draft
+                        </button>
+<button class="bg-surface-container-high text-on-surface py-3 px-2 font-label-md text-label-md uppercase tracking-tighter flex items-center justify-center gap-1 hover:bg-outline-variant transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                            Schedule
+                        </button>
+</div>
+</div>
+<div class="h-px bg-outline-variant"></div>
+<!-- Meta Fields -->
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="category">category</span>
+                            Category
+                        </label>
+<select class="w-full bg-white border border-outline-variant rounded p-3 font-body-md focus:border-secondary focus:ring-0 transition-colors">
+<option>Politics</option>
+<option>Technology</option>
+<option>Culture</option>
+<option>Science</option>
+<option>Economy</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="tag">tag</span>
+                            Tags
+                        </label>
+<input class="w-full bg-white border border-outline-variant rounded p-3 font-body-md focus:border-secondary focus:ring-0 transition-colors" placeholder="Add tags, press enter..." type="text"/>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-caption font-label-md rounded flex items-center gap-1">
+                                #Breaking <span class="material-symbols-outlined text-xs cursor-pointer" data-icon="close">close</span>
+</span>
+<span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-caption font-label-md rounded flex items-center gap-1">
+                                #Global <span class="material-symbols-outlined text-xs cursor-pointer" data-icon="close">close</span>
+</span>
+</div>
+</div>
+<div class="space-y-4 pt-4">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface">Allow Comments</label>
+<button class="w-9 h-5 bg-outline-variant rounded-full p-0.5 transition-colors duration-200 focus:outline-none" onclick="this.classList.toggle('bg-secondary'); this.querySelector('div').classList.toggle('translate-x-4')">
+<div class="w-4 h-4 bg-white rounded-full transition-transform duration-200"></div>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface">Featured Article</label>
+<button class="w-9 h-5 bg-outline-variant rounded-full p-0.5 transition-colors duration-200 focus:outline-none" onclick="this.classList.toggle('bg-secondary'); this.querySelector('div').classList.toggle('translate-x-4')">
+<div class="w-4 h-4 bg-white rounded-full transition-transform duration-200"></div>
+</button>
+</div>
+</div>
+</div>
+<!-- Status Card -->
+<div class="p-4 bg-surface-container-high rounded border border-outline-variant">
+<p class="font-label-md text-label-md text-outline mb-1">Status</p>
+<div class="flex items-center gap-2 mb-3">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="font-label-md text-label-md">Draft — Last edited 2m ago</span>
+</div>
+<p class="font-caption text-caption text-outline">Visibility: Public</p>
+<p class="font-caption text-caption text-outline">Author: J. Sterling</p>
+</div>
+</aside>
+</div>
+<!-- Footer (Predicted Component: Footer variant) -->
+<footer class="w-full px-gutter py-4 bg-primary text-on-primary border-t-border-width-thick border-primary flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<div>
+<h3 class="font-display text-headline-sm text-on-primary tracking-tighter">CHRONICLE</h3>
+<p class="font-label-sm text-label-sm opacity-60">© 2024 Chronicle News Media. Built for truth.</p>
+</div>
+<div class="flex gap-6">
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm opacity-80 hover:opacity-100 hover:text-secondary-fixed transition-colors" href="#">Contact Editorial</a>
+</div>
+</footer>
+</main>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        // Mimic active state logic for sidebar
+        const navLinks = document.querySelectorAll('aside nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                navLinks.forEach(l => {
+                    l.classList.remove('bg-secondary', 'dark:bg-secondary-container', 'text-on-secondary', 'active-tab-shadow');
+                    l.classList.add('text-on-surface', 'hover:bg-surface-container-high');
+                });
+                link.classList.add('bg-secondary', 'dark:bg-secondary-container', 'text-on-secondary', 'active-tab-shadow');
+                link.classList.remove('text-on-surface', 'hover:bg-surface-container-high');
+            });
+        });
+    </script>
+</body></html>

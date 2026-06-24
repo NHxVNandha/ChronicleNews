@@ -1,0 +1,168 @@
+# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+## Chronicle News - Website Manajemen Berita Profesional Berbasis CMS
+
+### 1. Informasi Proyek
+* **Nama Proyek:** Chronicle News Management Portal
+* **Versi:** 2.0
+* **Tanggal:** Juni 2026
+* **Platform:** Web
+* **Tipe Produk:** Portal berita publik dan dashboard admin/CMS editorial
+* **Frontend Saat Ini:** React, Vite, TypeScript, Tailwind CSS, React Router
+* **Target Backend:** ASP.NET Core 8, Umbraco CMS, SQL Server
+* **Status Saat Ini:** Static frontend prototype. Integrasi backend, autentikasi nyata, dan CRUD persistence belum diimplementasikan.
+
+### 2. Latar Belakang
+Chronicle News dikembangkan sebagai portal berita profesional yang mendukung publikasi berita nasional, internasional, regional, opini, video, podcast, arsip, dan konten berbasis kategori/topik. Sistem juga menyediakan dashboard CMS untuk membantu redaksi mengelola artikel, media, workflow review, kalender editorial, SEO, komentar, notifikasi, iklan, dan akses tim.
+
+### 3. Tujuan Sistem
+* Mempermudah pengelolaan berita secara terpusat melalui CMS.
+* Menyediakan portal berita publik yang profesional, mudah diakses, dan kredibel.
+* Mendukung proses editorial dari draft, review, scheduling, publish, archive, hingga audit activity.
+* Menyediakan navigasi berita lengkap untuk pembaca: kategori, topik, pencarian, arsip, penulis, breaking news, video, podcast, opini, dan regional.
+* Mendukung kebutuhan media profesional seperti SEO, newsletter, push/email notification, komentar, media library, dan ad placement.
+* Menyiapkan fondasi integrasi dengan Umbraco CMS dan backend ASP.NET Core.
+
+### 4. Target Pengguna
+* **Pengunjung Website:** Membaca berita, mencari artikel, menelusuri kategori/topik, melihat profil penulis, membaca opini, melihat video, mendengar podcast, dan mengakses arsip.
+* **Subscriber/Pembaca Terdaftar:** Menerima newsletter, menyimpan artikel, dan mengatur preferensi notifikasi pada fase lanjutan.
+* **Author/Reporter:** Membuat draft berita, mengunggah aset, dan mengirim artikel untuk review.
+* **Reviewer/Fact Checker:** Meninjau artikel, memberi catatan, memvalidasi sumber, dan menyetujui konten sebelum publikasi.
+* **Editor:** Mengelola konten, kategori, jadwal publikasi, review queue, SEO artikel, dan status publikasi.
+* **Administrator:** Mengelola user, role, permission, pengaturan portal, media, iklan, notifikasi, dan audit log.
+
+### 5. Ruang Lingkup Produk
+#### 5.1 In Scope - Frontend Prototype
+* Portal publik: Home, News, Detail Berita, Categories, Search, Archive, Authors, Topics, About, Contact, Privacy, Terms.
+* Section berita profesional: Breaking News, Video, Podcast, Opinion/Editorial, Regional/Local News, Newsletter.
+* Admin/CMS dengan menu utama terstruktur: Dashboard, Content, Assets, Publishing, Optimization, Engagement, Monetization, Settings. Fitur terkait digabung dalam satu view dengan section/tab agar hierarki UI lebih jelas.
+* Static mock data untuk artikel, kategori, media, analytics, user, role, dan workflow.
+* Login/register UI dengan bypass ke dashboard admin selama backend belum tersedia.
+
+#### 5.2 In Scope - Backend/Fase Implementasi Berikutnya
+* Autentikasi dan otorisasi berbasis role.
+* CRUD artikel, kategori, media, tag/topik, author, dan halaman statis.
+* Draft, review, scheduled publish, publish, unpublish, archive.
+* Integrasi Umbraco CMS untuk content model dan editorial workflow.
+* Search/filter/sort berbasis database atau search index.
+* Upload media dan manajemen file.
+* SEO metadata, sitemap XML, robots.txt, canonical URL, Open Graph, dan schema article.
+* Moderasi komentar jika fitur komentar publik diaktifkan.
+* Newsletter dan notification campaign.
+* Audit trail untuk aktivitas admin/editor.
+
+#### 5.3 Out of Scope - Versi Saat Ini
+* Mobile native app.
+* Sistem pembayaran/subscription berbayar.
+* Integrasi sosial media otomatis secara penuh.
+* Recommendation engine berbasis machine learning.
+* Personalization kompleks berbasis perilaku pembaca.
+
+### 6. Kebutuhan Fungsional
+#### Portal Publik
+* **F01 - Home Page:** Menampilkan featured news, latest reports, kategori utama, newsletter call-to-action.
+* **F02 - Daftar Berita:** Menampilkan top stories, latest news, trending, pagination, dan topic chips.
+* **F03 - Detail Berita:** Menampilkan judul, kategori, author, tanggal, read time, gambar utama, isi artikel, key takeaways, share/bookmark UI, dan newsletter box.
+* **F04 - Kategori:** Menampilkan daftar kategori, tab kategori, filter tahun, dan list artikel berdasarkan kategori.
+* **F05 - Search:** Menampilkan search input, filter, hasil pencarian, sort, dan daftar artikel.
+* **F06 - Archive:** Menampilkan arsip berdasarkan tahun, kategori, dan pencarian.
+* **F07 - Authors:** Menampilkan daftar penulis dan detail profil penulis beserta artikel terkait.
+* **F08 - Topics/Tags:** Menampilkan halaman topik/tag dan artikel terkait.
+* **F09 - Breaking News:** Menampilkan halaman khusus live/breaking news untuk update cepat.
+* **F10 - Video:** Menampilkan halaman video report dan visual journalism.
+* **F11 - Podcast:** Menampilkan halaman audio briefing/podcast.
+* **F12 - Opinion:** Menampilkan opini, editorial, kolom, dan analisis redaksi.
+* **F13 - Regional:** Menampilkan berita daerah/lokal.
+* **F14 - Newsletter:** Menampilkan landing page subscribe newsletter.
+* **F15 - About & Contact:** Menampilkan profil media, misi, tim redaksi, dan form kontak.
+* **F16 - Legal Pages:** Menampilkan Privacy Policy dan Terms of Service.
+* **F17 - 404 Page:** Menampilkan halaman fallback jika route tidak ditemukan.
+
+#### Admin/CMS
+* **A01 - Login/Register UI:** Menyediakan tampilan login/register admin. Untuk prototype, login dibypass ke dashboard.
+* **A02 - Dashboard:** Menampilkan statistik artikel, draft, media, readers, analytics, top categories, dan content repository preview.
+* **A03 - Content Workspace:** Menggabungkan Articles DataTable, create/edit artikel, review queue, dan editorial calendar dalam satu view editorial workflow.
+* **A04 - Articles DataTable:** Menampilkan repository artikel dengan tab status All, Published, Draft, Scheduled, Needs Review, Archived; search by title/author/category; checkbox selection; bulk actions; date filter; kolom title, category, author, status, updated time, views; dan action edit, preview, delete.
+* **A05 - Article Editor:** Menyediakan form create/edit artikel dengan judul, summary, body editor, featured image, toolbar, tags, kategori, status, preview, draft, schedule, AI editorial assistant, dan publish checklist.
+* **A06 - Assets Library:** Menggabungkan media gallery, upload queue, kategori, dan taxonomy health dalam satu view aset konten.
+* **A07 - Publishing Control:** Menggabungkan scheduled posts, draft queue, published articles, archived articles, dan status board publikasi.
+* **A08 - Optimization Center:** Menggabungkan SEO Management dan AI/KBBI Settings dalam satu view optimasi kualitas konten.
+* **A09 - Engagement Center:** Menggabungkan comments moderation, push notification, email campaign, newsletter, dan editorial reminder.
+* **A10 - Monetization:** Mengelola placement iklan, ukuran slot, status, dan sponsor/native placement.
+* **A11 - Settings:** Menggabungkan workspace settings, publication profile, team access, role permissions, activity log, dan profile admin/editor.
+* **A12 - AI Settings:** Mengelola konfigurasi AI provider, API key, base URL, model, temperature, max tokens, system prompt editorial, aturan KBBI, gaya jurnalistik, correction modes, dan safety approval.
+* **A13 - AI Editorial Assistant:** Menyediakan panel bantuan di Editor untuk koreksi bahasa Indonesia sesuai KBBI, perbaikan tata bahasa, cek nada jurnalistik, cek bias/opini, cek struktur 5W+1H, headline suggestion, summary generation, SEO suggestion, dan review saran dengan aksi apply/ignore.
+
+### 7. Sitemap
+#### Public Website
+* `/` - Home
+* `/news` - Daftar berita
+* `/news/:slug` - Detail berita
+* `/sections` - Gabungan kategori, topik, dan regional desk
+* `/multimedia` - Gabungan video dan podcast/audio briefing
+* `/categories` - Kategori
+* `/search` - Pencarian
+* `/archive` - Arsip berita
+* `/authors` - Daftar penulis
+* `/authors/:slug` - Detail penulis
+* `/topics/:slug` - Detail topik/tag
+* `/breaking` - Breaking News
+* `/video` - Video Reports
+* `/podcast` - Podcast/Audio Briefing
+* `/opinion` - Opinion/Editorial
+* `/regional` - Regional/Local News
+* `/newsletter` - Newsletter
+* `/about` - Tentang Kami
+* `/contact` - Kontak redaksi
+* `/privacy` - Privacy Policy
+* `/terms` - Terms of Service
+* `*` - 404 Not Found
+
+#### Admin/CMS
+* `/login` - Login admin
+* `/register` - Register admin/editor
+* `/admin` - Dashboard
+* `/admin/content` - Content workspace: artikel, editor, review queue, editorial calendar
+* `/admin/assets` - Assets library: media, kategori, taxonomy
+* `/admin/publishing` - Publishing control: draft, scheduled, published, archived
+* `/admin/optimization` - Optimization center: SEO dan AI/KBBI settings
+* `/admin/engagement` - Engagement center: comments, notifications, newsletter/campaigns
+* `/admin/monetization` - Monetization: ads dan sponsorship placement
+* `/admin/articles` - Alias ke Content workspace
+* `/admin/articles/new` - Editor artikel
+* `/admin/articles/:slug/edit` - Edit artikel existing dari DataTable
+* `/admin/review` - Alias ke Content workspace
+* `/admin/calendar` - Alias ke Publishing control
+* `/admin/categories` - Alias ke Assets library
+* `/admin/media` - Alias ke Assets library
+* `/admin/comments` - Alias ke Engagement center
+* `/admin/seo` - Alias ke Optimization center
+* `/admin/ai-settings` - AI settings dan editorial AI configuration
+* `/admin/notifications` - Alias ke Engagement center
+* `/admin/ads` - Alias ke Monetization
+* `/admin/activity` - Activity log
+* `/admin/profile` - Editor/admin profile
+* `/admin/settings` - Workspace settings dan team access
+
+### 8. Kebutuhan Non-Fungsional
+* **Responsiveness:** Tampilan harus bekerja pada desktop dan mobile.
+* **Performance:** Asset dan bundle harus optimal untuk produksi.
+* **Accessibility:** Link, button, form, kontras warna, dan navigasi keyboard perlu diperhatikan pada fase polishing.
+* **Security:** Backend wajib menerapkan authentication, authorization, CSRF protection, validation, file upload restrictions, dan audit logging.
+* **SEO:** Public pages harus mendukung metadata unik, canonical, Open Graph, structured data, sitemap, dan robots.txt.
+* **Maintainability:** Struktur komponen perlu dipecah dari `App.tsx` ke folder pages/components ketika masuk fase backend atau scale-up.
+
+### 9. Status Implementasi Frontend Saat Ini
+* Public pages utama dan halaman pendukung sudah tersedia secara static.
+* Admin/CMS pages utama dan modul profesional sudah tersedia secara static.
+* Semua route utama sudah terdaftar di React Router.
+* Data masih menggunakan mock data lokal.
+* Build frontend harus diverifikasi dengan `npm run build` setelah perubahan.
+
+### 10. Rekomendasi Fase Berikutnya
+* Pecah `App.tsx` menjadi struktur `pages`, `components`, `layouts`, dan `data`.
+* Implementasikan backend ASP.NET Core + Umbraco CMS.
+* Definisikan content model: Article, Category, Tag/Topic, Author, MediaAsset, StaticPage, NewsletterCampaign, Comment, AdPlacement.
+* Implementasikan authentication/authorization role-based.
+* Implementasikan CRUD dan integrasi database.
+* Implementasikan integrasi AI server-side untuk koreksi KBBI dan editorial assistant, termasuk penyimpanan API key secara aman, prompt versioning, audit log koreksi, dan approval editor sebelum perubahan diterapkan.
+* Tambahkan automated tests untuk routing, form validation, dan API integration.

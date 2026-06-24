@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c1e",
+                        "outline": "#76777d",
+                        "secondary": "#0058be",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "primary-fixed": "#dae2fd",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary-container": "#7c839b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#75859d",
+                        "tertiary-container": "#0b1c30",
+                        "primary-container": "#131b2e",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary-container": "#2170e4",
+                        "tertiary": "#000000",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-surface-variant": "#45464d",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-primary": "#bec6e0",
+                        "surface-tint": "#565e74",
+                        "surface-dim": "#d8dadc",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-fixed": "#131b2e",
+                        "primary": "#000000",
+                        "surface-bright": "#f7f9fb",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "background": "#f7f9fb",
+                        "on-secondary-container": "#fefcff",
+                        "outline-variant": "#c6c6cd",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "20px",
+                        "stack-md": "24px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "stack-lg": "48px",
+                        "stack-sm": "12px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "caption": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-md border-b border-outline-variant fixed top-0 left-0 w-full z-50">
+<nav class="flex justify-between items-center max-w-7xl mx-auto px-gutter py-4">
+<div class="font-headline-md text-headline-md uppercase tracking-widest text-primary">
+            CHRONICLE
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-secondary transition-colors" href="#">Home</a>
+<a class="text-secondary font-label-md text-label-md border-b-2 border-secondary" href="#">News</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-secondary transition-colors" href="#">Categories</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-secondary transition-colors" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container rounded-full transition-colors" data-icon="search">search</button>
+<button class="md:hidden material-symbols-outlined text-on-surface-variant p-2" data-icon="menu">menu</button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-margin-desktop px-gutter max-w-7xl mx-auto">
+<!-- Article Header Section -->
+<article class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Headline & Meta -->
+<header class="lg:col-span-12 mb-8">
+<div class="inline-block bg-tertiary-fixed-dim text-on-tertiary-fixed px-3 py-1 mb-6 rounded-sm font-label-md text-label-md uppercase tracking-wider">
+                Politics &amp; Policy
+            </div>
+<h1 class="font-headline-lg text-4xl md:text-6xl leading-[1.1] mb-10 max-w-4xl text-primary">
+                The Architecture of Truth: Redesigning the Modern Editorial Engine
+            </h1>
+<div class="flex flex-wrap items-center gap-12 py-8 border-y border-outline-variant">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Helena V. Vance" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLJiaiiMMVZnyvhW1FyiqWN0RUK4D1Ni458-NODer0bs9KRuQxF8r6UcEwI7-r-p7OutxzFo4m8rA2lRIABW8i7IxdS4WgXoNHwU7uOkzQJc7vOieacb-UC8mP4HTVoKGISyZY1_DfvjXPBKduq7TXqOF0yYei0hTSAln6DHqmBH3jfOi7aaKZr6BvPVZJ1Quszoe1-BpHIKJNeyKQrAlrz2JcEmCts_Sy0DU2STWcZK7FdgN1wEYQ"/>
+</div>
+<div>
+<p class="font-label-md text-caption text-on-surface-variant uppercase">Written By</p>
+<p class="font-body-md text-body-md font-bold text-primary">Helena V. Vance</p>
+</div>
+</div>
+<div class="h-10 w-px bg-outline-variant hidden md:block"></div>
+<div>
+<p class="font-label-md text-caption text-on-surface-variant uppercase">Date Published</p>
+<p class="font-body-md text-body-md text-primary">October 24, 2024</p>
+</div>
+<div class="h-10 w-px bg-outline-variant hidden md:block"></div>
+<div>
+<p class="font-label-md text-caption text-on-surface-variant uppercase">Reading Time</p>
+<p class="font-body-md text-body-md text-primary">12 Minute Read</p>
+</div>
+<div class="ml-auto flex gap-3">
+<button class="w-11 h-11 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="share">share</span>
+</button>
+<button class="w-11 h-11 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Feature Image Section -->
+<section class="lg:col-span-12 mb-12">
+<div class="rounded-xl overflow-hidden shadow-sm">
+<img alt="Modern Newsroom" class="w-full aspect-[21/9] object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGrF9vn-6RruCkt2Ocw4OF9FvwFO7PbmTSYcaOME37Z5Ldw5nwRTfDPo5bPqFLrc1RtSp682WB9R80-cWHPu2seNS-UzTgOtXl1G2Rp2waDImErS_RAamx39yVN8wG8qaMmPlewTTKlB8-OQgI552p2GY--BXyeqd_wMiQsLJMxtv8UGRlkk1bRgwNh_ccTTIT6Avc4AK3z3aZqfduLhkvpu7q2zOCERs01xGtnMYlf4r0i8gWbelU"/>
+</div>
+<div class="mt-4 font-body-md text-caption italic text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="photo_camera">photo_camera</span>
+                The internal grid system of the Chronicle headquarters in Berlin. Photography by Marcus Thorne.
+            </div>
+</section>
+<!-- Sidebar -->
+<aside class="lg:col-span-4 space-y-12">
+<div class="bg-surface-container-low p-8 rounded-xl">
+<h3 class="font-label-md text-label-md uppercase mb-6 text-secondary tracking-widest border-b border-outline-variant pb-2">Key Takeaways</h3>
+<ul class="space-y-6">
+<li class="flex gap-4">
+<span class="font-headline-sm text-secondary">01</span>
+<p class="font-body-md text-body-md text-on-surface">Structural integrity is the core of digital trust.</p>
+</li>
+<li class="flex gap-4">
+<span class="font-headline-sm text-secondary">02</span>
+<p class="font-body-md text-body-md text-on-surface">The rejection of shadows signals a new era of transparency.</p>
+</li>
+<li class="flex gap-4">
+<span class="font-headline-sm text-secondary">03</span>
+<p class="font-body-md text-body-md text-on-surface">Functionalism over aesthetics is the ultimate aesthetic.</p>
+</li>
+</ul>
+</div>
+<div class="bg-primary-container text-on-primary-fixed p-8 rounded-xl shadow-lg">
+<h3 class="font-label-md text-label-md uppercase mb-3 tracking-widest">Newsletter</h3>
+<p class="font-body-md text-body-md opacity-90 mb-6">Get the weekly editorial briefing directly to your inbox.</p>
+<div class="space-y-3">
+<input class="w-full bg-surface-container-highest/10 border border-white/20 rounded-lg px-4 py-3 focus:border-secondary focus:ring-0 text-white placeholder:text-white/40" placeholder="Your email address" type="email"/>
+<button class="w-full bg-secondary text-white py-3 font-label-md rounded-lg hover:bg-secondary-container transition-all">Subscribe</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Body -->
+<section class="lg:col-span-8 font-body-lg text-body-lg text-on-surface-variant leading-relaxed space-y-10">
+<p class="font-headline-sm text-2xl text-on-surface leading-snug italic">
+                "In an era where information flows with liquid volatility, the containers we build to hold it must be as rigid as the truth itself."
+            </p>
+<p>
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. 
+            </p>
+<h2 class="font-headline-md text-headline-md text-primary pt-6">The Supremacy of the Grid</h2>
+<p>
+                The grid is the journalist's greatest ally. By adhering to a strict columns-and-gutters system, we eliminate the ambiguity of hierarchy. Every element has its place, and every place has its element. This isn't about restriction; it's about clarity. When the design stops competing for the reader's attention, the content can finally speak.
+            </p>
+<blockquote class="pl-8 border-l-4 border-secondary py-2 my-12">
+<p class="font-headline-md text-2xl text-primary italic leading-tight">
+                    "Transparency is not a feature; it is the fundamental architecture of modern editorial integrity."
+                </p>
+<cite class="block mt-4 font-label-md text-caption text-secondary uppercase not-italic">— The Chronicle Manifesto</cite>
+</blockquote>
+<p>
+                Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
+            </p>
+<div class="grid grid-cols-2 gap-6 my-12">
+<div class="rounded-xl overflow-hidden border border-outline-variant">
+<img alt="Technical Drawing" class="w-full h-72 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqX4bqLOw8DIdzNxLZPLHIr8XBJXyLaytow8xUZS7lCPEm1lCy_zReo5wCQyUg9O5SJ3_kQI3AoAY16WJRwFLGmof1BeKI0q38W3Q0rI201h8qSYq23SitJoEb3cTrar64vN8WtH8H1reKR1nEI8cVBg2sVhDlCKZ1QyjkqGvessPr8Dg6D-JbkxUsn0_8f8FQ1ofa0LGhfivsukDN11tUvzxOY3GSQFCp5obDWHcktv4n7khRFjgj"/>
+</div>
+<div class="rounded-xl overflow-hidden border border-outline-variant">
+<img alt="Newspaper Stacks" class="w-full h-72 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE_nswkvpQ6VvLSzV-P0S2zqN-2k32yNHGdWMw512oHRn8W6thdOEK3GP0invRwKl6qz8L-WH0cnFzFvMhIKdzxEm7zSGuBlLlSXnMQmF1i1LFDxf_IlzFrPwYm9loNp3cyBtyA3VXFwB6FO41lJqohBU-sQTFJbcktAa4HN4dFH1_MHDubVqZPEzChm3_GzpNE04tkKCcFTl-74Mux_Es0QF2h4bJgFEmReV23gDOiz87chxJP_Wc"/>
+</div>
+</div>
+<p>
+                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+            </p>
+</section>
+<!-- Related News Section -->
+<section class="lg:col-span-12 mt-24 border-t border-outline-variant pt-16">
+<div class="flex items-end justify-between mb-12">
+<h2 class="font-headline-md text-3xl text-primary">Related Intelligence</h2>
+<a class="font-label-md text-label-md text-secondary hover:underline flex items-center gap-1" href="#">
+                    View All News <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Related Card 1 -->
+<div class="group cursor-pointer">
+<div class="aspect-[16/10] rounded-xl overflow-hidden mb-6 border border-outline-variant shadow-sm transition-shadow group-hover:shadow-md">
+<img alt="Urbanism" class="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjA787UwQ6FWTKZmuekn5NkXUdbzYk8pHwuf79KaPuM2isIU94a4VfG4Itbpzh0iFUig97FT-RinICqrtynzU5myVzp7JqLgVkzyUdwTCNXsBB5uLonpGxK76YucgvhGLH7-b3lJpA4ffB2FqQp0ikp3EM26wzPvKaJ5z7mgRRf7t4MxsD_RGZt9BZl89Ssl0w6jU_K8k--3fllt8nNgKxjIuVb4HjNv08jtwehg6-iR73cJeyrgG5"/>
+</div>
+<div>
+<div class="font-label-md text-caption text-secondary uppercase mb-3">Urbanism</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-3 leading-tight group-hover:text-secondary transition-colors">Concrete Echoes: The Rise of Brutalist Revival</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Exploring why architects are returning to raw materials and heavy forms in the 21st century.</p>
+</div>
+</div>
+<!-- Related Card 2 -->
+<div class="group cursor-pointer">
+<div class="aspect-[16/10] rounded-xl overflow-hidden mb-6 border border-outline-variant shadow-sm transition-shadow group-hover:shadow-md">
+<img alt="Ethics" class="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmSHWNKE_0aXiDN_l8nBqEtqWIt1-8GbmEbEhBrEjjpfJvgDz2rLtiXCwieNJT-tJR7AYl08uHkeZrWfc217-SMsqUqu479xK7NGeuQKX00w3-_k-LDd-1SrQGgRPeNTf1_mmwpFBT6oJQvNKWdOiXDNLSxWPqdfdToJOx3YdTYmYFH4uI6oOUIi5qdfAkNakfO_BpXpBWjYOtHcq4zzvpBpWNUExJGIqp30IYZqwVQ0NbAbZVtzJm"/>
+</div>
+<div>
+<div class="font-label-md text-caption text-secondary uppercase mb-3">Ethics</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-3 leading-tight group-hover:text-secondary transition-colors">The Physicality of the Printed Word</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Why analog formats are becoming the new standard for archival verification and trust.</p>
+</div>
+</div>
+<!-- Related Card 3 -->
+<div class="group cursor-pointer">
+<div class="aspect-[16/10] rounded-xl overflow-hidden mb-6 border border-outline-variant shadow-sm transition-shadow group-hover:shadow-md">
+<img alt="Technology" class="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi0KRwX1jEASAyVSnByY6VTSsJgBrWlU3GUGdaJU-qlP1UUS3UDyRKal4xCGtK_tuswJPRFRGQOJWhiQKyiUl0T-5jE74u1sW70aHoUYSLpH8-eKTshGynI2nt6fSU_5eTIvGdjxhNS0kJe4TvxSU0ZXYf-GGFbzvGvIF2FhyZJS81NkMze27Lknko86MEWUMJfNLf2v6BziZOmOT4xqeYP-NoHLo9Mspy5-uIZ4blBpw1rgpsiY8I"/>
+</div>
+<div>
+<div class="font-label-md text-caption text-secondary uppercase mb-3">Technology</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-3 leading-tight group-hover:text-secondary transition-colors">Algorithmic Accountability in News</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Inside the new transparent AI engines powering the modern newsroom's fact-checking process.</p>
+</div>
+</div>
+</div>
+</section>
+</article>
+</main>
+<!-- Footer -->
+<footer class="bg-primary text-on-primary py-16">
+<div class="max-w-7xl mx-auto px-gutter grid grid-cols-1 md:grid-cols-3 gap-16">
+<div class="flex flex-col gap-6">
+<div class="font-headline-md text-2xl uppercase tracking-widest text-white">CHRONICLE</div>
+<p class="font-body-md text-body-md opacity-70 max-w-xs">Building the structural foundation for global truth. Every grid, every line, every word matters.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-md text-label-md uppercase mb-4 tracking-widest text-secondary-fixed">Navigation</h4>
+<nav class="flex flex-col gap-3 font-body-md text-body-md opacity-80">
+<a class="hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Contact Editorial</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex flex-col gap-6">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed">Headquarters</h4>
+<p class="font-body-md text-body-md opacity-80">Friedrichstraße 102<br/>10117 Berlin, Germany</p>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-primary transition-all cursor-pointer">𝕏</div>
+<div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-primary transition-all cursor-pointer">LN</div>
+<div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-primary transition-all cursor-pointer">IG</div>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-gutter mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="font-label-md text-caption opacity-60 uppercase tracking-widest">© 2024 Chronicle News Media. Built for truth.</p>
+<div class="flex gap-6 font-label-md text-caption uppercase opacity-40">
+<span class="cursor-pointer hover:opacity-100">EN</span>
+<span class="cursor-pointer hover:opacity-100">DE</span>
+<span class="cursor-pointer hover:opacity-100">FR</span>
+</div>
+</div>
+</footer>
+<script>
+    // Micro-interaction for scroll progress
+    document.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY;
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (scrollPos / height) * 100;
+        // Navigation background opacity could change here
+    });
+
+    // Simple smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if(href !== '#') {
+                e.preventDefault();
+                document.querySelector(href).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+</body></html>

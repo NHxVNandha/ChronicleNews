@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chronicle | Editorial Login</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "on-primary-container": "#7c839b",
+                    "secondary-container": "#2170e4",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#131b2e",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "tertiary": "#000000",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#0b1c30",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "primary": "#000000",
+                    "on-secondary-container": "#fefcff",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-container": "#75859d",
+                    "surface-tint": "#565e74",
+                    "background": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "secondary": "#0058be",
+                    "primary-fixed-dim": "#bec6e0",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "inverse-surface": "#2d3133",
+                    "on-surface": "#191c1e",
+                    "surface-bright": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "on-surface-variant": "#45464d",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f7f9fb",
+                    "outline": "#76777d",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed": "#d3e4fe",
+                    "surface-container-high": "#e6e8ea"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "container-max": "1280px",
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "stack-sm": "12px",
+                    "margin-desktop": "64px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "caption": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "30px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fb;
+            color: #191c1e;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .editorial-overlay {
+            background: linear-gradient(to bottom, rgba(19, 27, 46, 0.4), rgba(19, 27, 46, 0.1));
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 md:p-8">
+<!-- Auth Container -->
+<main class="w-full h-screen md:h-[921px] max-w-[1400px] flex overflow-hidden md:rounded-xl bg-surface-container-lowest shadow-2xl relative">
+<!-- Left Side: Editorial Image -->
+<section class="hidden md:flex relative w-1/2 h-full overflow-hidden">
+<div class="absolute inset-0 z-0 bg-primary-container">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-1000 hover:scale-105" data-alt="A professional, high-end editorial shot of a modern architectural interior featuring clean lines, vast glass windows, and a minimalist workspace. The scene is bathed in natural, soft morning light creating a serene, trustworthy atmosphere. The color palette is dominated by muted slates and crisp whites with deep navy shadows. The composition is asymmetrical and sophisticated, reflecting a premium journalism environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjSQ-U1ST5U6jP5WxTP2hWeV3l_P63jw3iQi42uzG-H5FBviG5NY8Sz_nWEtO38VEvVlEDmgjcOqmkM9ezoWPXYE718TTiqnuNtz8qB0g0CcIcdXQmvRz-QGlEcLeEdaJL324YjEcArFsihKDwmobcOqcv39TVPQZQSt_dLIcI_s6CNwqn90LVQ6Uk0rF7lkeYt00_bYjpXHn3trv7_bSk7AqdOpXNd2eBCGHwPRmtf1NrabCx9key')">
+</div>
+</div>
+<div class="absolute inset-0 z-10 editorial-overlay"></div>
+<!-- Brand Anchor on Image -->
+<div class="absolute top-margin-desktop left-margin-desktop z-20">
+<h1 class="font-display-lg text-display-lg text-on-primary tracking-tighter uppercase">CHRONICLE</h1>
+<p class="font-body-md text-body-md text-on-primary opacity-80 mt-2">The architecture of truth.</p>
+</div>
+<!-- Contextual Quote -->
+<div class="absolute bottom-margin-desktop left-margin-desktop right-margin-desktop z-20">
+<blockquote class="border-l-4 border-secondary pl-6">
+<p class="font-headline-sm text-headline-sm text-on-primary italic font-serif leading-relaxed">
+                        "Great journalism is not about the answers, it is about the courage to ask the right questions."
+                    </p>
+<footer class="mt-4 font-label-md text-label-md text-on-primary uppercase tracking-widest opacity-60">
+                        Editorial Desk
+                    </footer>
+</blockquote>
+</div>
+</section>
+<!-- Right Side: Login Form -->
+<section class="w-full md:w-1/2 h-full flex flex-col justify-center items-center px-margin-mobile md:px-margin-desktop bg-surface-container-lowest relative">
+<!-- Mobile Brand Header -->
+<div class="md:hidden absolute top-8 left-margin-mobile">
+<h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tighter uppercase">CHRONICLE</h1>
+</div>
+<div class="w-full max-w-md space-y-stack-md">
+<header class="space-y-2">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Welcome Back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Sign in to your editorial portal to continue your work.</p>
+</header>
+<form class="space-y-gutter" onsubmit="event.preventDefault();">
+<!-- Identity Field -->
+<div class="space-y-base">
+<label class="font-label-md text-label-md text-on-surface-variant block" for="email">EMAIL ADDRESS</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+<input class="w-full pl-10 pr-4 py-4 rounded-lg bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all outline-none font-body-md text-body-md text-on-surface" id="email" placeholder="editor@chronicle.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-base">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant block uppercase" for="password">Password</label>
+<a class="font-label-md text-label-md text-secondary hover:text-on-secondary-fixed-variant transition-colors" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-10 pr-12 py-4 rounded-lg bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-all outline-none font-body-md text-body-md text-on-surface" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Actions Row -->
+<div class="flex items-center">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary cursor-pointer" id="remember" type="checkbox"/>
+<label class="ml-3 font-body-md text-body-md text-on-surface-variant cursor-pointer select-none" for="remember">Stay signed in for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-label-md text-label-md py-5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 active:scale-[0.98] flex justify-center items-center gap-2 group" type="submit">
+                        SIGN IN TO PORTAL
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Link -->
+<footer class="pt-stack-md text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Don't have an editorial account? 
+                        <a class="font-label-md text-label-md text-secondary hover:underline font-bold" href="#">Register here</a>
+</p>
+</footer>
+</div>
+<!-- Bottom Legal Bar -->
+<div class="absolute bottom-6 flex gap-gutter opacity-40 font-caption text-caption uppercase tracking-widest">
+<a class="hover:opacity-100 transition-opacity" href="#">Legal</a>
+<a class="hover:opacity-100 transition-opacity" href="#">Privacy</a>
+<a class="hover:opacity-100 transition-opacity" href="#">Support</a>
+</div>
+</section>
+</main>
+<!-- Visual Polish: Soft Ambient Glow -->
+<div class="fixed top-0 right-0 w-[500px] h-[500px] bg-secondary-fixed-dim/20 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2"></div>
+<div class="fixed bottom-0 left-0 w-[300px] h-[300px] bg-primary-fixed-dim/10 blur-[100px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2"></div>
+<script>
+        // Simple micro-interactions for input focus
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('.material-symbols-outlined').style.color = '#0058be';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('.material-symbols-outlined').style.color = '#76777d';
+            });
+        });
+
+        // Toggle password visibility placeholder
+        const togglePass = document.querySelector('button .material-symbols-outlined');
+        if(togglePass) {
+            togglePass.addEventListener('click', function() {
+                const type = document.getElementById('password').type === 'password' ? 'text' : 'password';
+                document.getElementById('password').type = type;
+                this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+            });
+        }
+    </script>
+</body></html>
