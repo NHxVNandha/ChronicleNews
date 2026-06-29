@@ -26,3 +26,5 @@ export { getRoles, getUsers, updateUserRole, updateUserStatus } from './userServ
 export type { RoleRecord, UserRecord } from './userService';
 export { addCommentReply, changeCommentStatus, createCampaign, getCampaigns, getComments, getSubscriberSummary } from './engagementService';
 export type { Campaign, CommentStatus as EngagementCommentStatus, ModerationComment, SubscriberSummary } from './engagementService';
+export { getSeoSettings, updateSeoSettings, getAiSettings, updateAiSettings } from './optimizationService';
+export type { AiSettings, SeoSettings } from './optimizationService';

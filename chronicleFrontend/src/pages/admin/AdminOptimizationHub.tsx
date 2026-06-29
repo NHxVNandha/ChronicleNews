@@ -3,6 +3,7 @@ import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { Field, Icon } from '../../components/ui';
 import { articles } from '../../data';
+import { getAiSettings, getSeoSettings, updateAiSettings, updateSeoSettings, type AiSettings, type SeoSettings } from '../../services';
 
 type OptTab = 'seo' | 'content' | 'ai';
 const optTabs: { id: OptTab; label: string; icon: string }[] = [
@@ -49,17 +50,59 @@ const safeguards = ['AI hanya memberi saran, tidak mengubah artikel otomatis', '
 
 export function AdminOptimizationHub() {
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
   const [currentTab, setCurrentTab] = useState<OptTab>('seo');
   const [seoScore] = useState(78);
   const [readabilityScore] = useState(68);
   const [keywordDensity] = useState(2.4);
   const [currentKeyword, setCurrentKeyword] = useState('digital transformation');
   const [socialTab, setSocialTab] = useState<'facebook' | 'twitter'>('facebook');
+  const [seoSettings, setSeoSettings] = useState<SeoSettings | null>(null);
+  const [aiSettings, setAiSettings] = useState<AiSettings | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const [seo, ai] = await Promise.all([getSeoSettings(), getAiSettings()]);
+        if (!isMounted) return;
+        setSeoSettings(seo);
+        setAiSettings(ai);
+        setCurrentKeyword(seo.focusKeyword);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load optimization settings.');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void load();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  async function handleSaveAll() {
+    if (!seoSettings || !aiSettings) return;
+    try {
+      setSaving(true);
+      setError('');
+      const [seo, ai] = await Promise.all([
+        updateSeoSettings({ ...seoSettings, focusKeyword: currentKeyword }),
+        updateAiSettings(aiSettings),
+      ]);
+      setSeoSettings(seo);
+      setAiSettings(ai);
+      setStatusMessage('Optimization settings saved.');
+      setTimeout(() => setStatusMessage(''), 3000);
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : 'Failed to save optimization settings.');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   const scoreFactors = [
     { label: 'Meta Tags', value: 90, color: 'bg-emerald-500' },
@@ -109,8 +152,12 @@ export function AdminOptimizationHub() {
           <h1 className="font-display text-4xl font-bold text-primary">Optimization Center</h1>
           <p className="mt-2 max-w-3xl text-slate-600">SEO, content quality, AI/KBBI editorial correction, and performance analytics in one quality-control command center.</p>
         </div>
-        <button className="w-fit rounded-lg bg-primary px-5 py-3 font-bold !text-white" type="button">Save All Settings</button>
+        <div className="flex flex-col items-start gap-3">
+          {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
+          <button className="w-fit rounded-lg bg-primary px-5 py-3 font-bold !text-white disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
+        </div>
       </div>
+      {error && <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
       <div className="min-w-0 space-y-6">
         <div className="flex gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
@@ -157,11 +204,11 @@ export function AdminOptimizationHub() {
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="space-y-4">
-                  <Field label="Default Meta Title" placeholder="Chronicle News — Independent Journalism" icon="title" />
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Meta Title</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" value={seoSettings?.defaultMetaTitle ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, defaultMetaTitle: e.target.value } : current)} placeholder="Chronicle News — Independent Journalism" /></label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Meta Description</span>
-                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" rows={3} defaultValue="Independent journalism for the informed reader. National news, in-depth analysis, and editorial integrity." />
-                    <p className="mt-1 text-right text-xs text-slate-400">148 characters</p>
+                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" rows={3} value={seoSettings?.metaDescription ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, metaDescription: e.target.value } : current)} />
+                    <p className="mt-1 text-right text-xs text-slate-400">{(seoSettings?.metaDescription ?? '').length} characters</p>
                   </label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Focus Keyword</span>
@@ -282,14 +329,18 @@ export function AdminOptimizationHub() {
                 <div className="space-y-4">
                   <label className="block">
                     <span className="mb-2 flex items-center justify-between text-sm font-bold uppercase tracking-wider text-slate-600"><span>robots.txt</span><button className="rounded bg-slate-100 px-3 py-1 text-xs font-bold text-primary" type="button">Reset to default</button></span>
-                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-sm outline-none focus:border-secondary" rows={6} defaultValue={`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nSitemap: https://chronicle.news/sitemap.xml`} />
+                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-sm outline-none focus:border-secondary" rows={6} value={seoSettings?.robotsTxt ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, robotsTxt: e.target.value } : current)} />
                   </label>
                   <div className="space-y-3">
                     <h4 className="font-bold text-primary">Crawl Settings</h4>
-                    <label className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-sm font-semibold text-slate-700">Enable crawling</span><span className="h-6 w-11 rounded-full bg-secondary p-1"><span className="block h-4 w-4 translate-x-5 rounded-full bg-white" /></span></label>
-                    <label className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-sm font-semibold text-slate-700">Index article pages</span><span className="h-6 w-11 rounded-full bg-secondary p-1"><span className="block h-4 w-4 translate-x-5 rounded-full bg-white" /></span></label>
-                    <label className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-sm font-semibold text-slate-700">Index category pages</span><span className="h-6 w-11 rounded-full bg-secondary p-1"><span className="block h-4 w-4 translate-x-5 rounded-full bg-white" /></span></label>
-                    <label className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-sm font-semibold text-slate-700">Noindex author pages</span><span className="h-6 w-11 rounded-full bg-slate-300 p-1"><span className="block h-4 w-4 rounded-full bg-white" /></span></label>
+                    {seoSettings && ([
+                      ['Enable crawling', 'enableCrawling'],
+                      ['Index article pages', 'indexArticlePages'],
+                      ['Index category pages', 'indexCategoryPages'],
+                      ['Noindex author pages', 'noIndexAuthorPages'],
+                    ] as const).map(([label, key]) => (
+                      <button key={key} className="flex w-full items-center justify-between rounded-lg bg-slate-50 px-4 py-3" type="button" onClick={() => setSeoSettings((current) => current ? { ...current, [key]: !current[key] } : current)}><span className="text-sm font-semibold text-slate-700">{label}</span><span className={`h-6 w-11 rounded-full p-1 ${seoSettings[key] ? 'bg-secondary' : 'bg-slate-300'}`}><span className={`block h-4 w-4 rounded-full bg-white ${seoSettings[key] ? 'translate-x-5' : ''}`} /></span></button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -413,24 +464,24 @@ export function AdminOptimizationHub() {
                 <p className="mt-1 text-sm text-slate-600">Configure provider, model, KBBI rules, and editor approval safety.</p>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Provider</span><select className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" defaultValue="OpenAI">{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label>
-                <Field label="Model Name" placeholder="gpt-4.1-mini / gemini-1.5-pro" icon="psychology" />
-                <Field label="Base URL" placeholder="https://api.openai.com/v1" icon="link" />
-                <Field label="API Key" placeholder="Stored securely on backend" icon="key" type="password" />
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Temperature</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" defaultValue="0.2" type="number" step="0.1" /></label>
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Max Tokens</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" defaultValue="1200" type="number" /></label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Provider</span><select className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.provider ?? 'OpenAI'} onChange={(e) => setAiSettings((current) => current ? { ...current, provider: e.target.value } : current)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Model Name</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.modelName ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, modelName: e.target.value } : current)} /></label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Base URL</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.baseUrl ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, baseUrl: e.target.value } : current)} /></label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">API Key</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.apiKeyHint ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, apiKeyHint: e.target.value } : current)} type="password" /></label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Temperature</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.temperature ?? 0} onChange={(e) => setAiSettings((current) => current ? { ...current, temperature: Number(e.target.value) } : current)} type="number" step="0.1" /></label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Max Tokens</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.maxTokens ?? 0} onChange={(e) => setAiSettings((current) => current ? { ...current, maxTokens: Number(e.target.value) } : current)} type="number" /></label>
               </div>
-              <label className="mt-5 block"><span className="mb-2 block font-bold text-slate-600">System Prompt Editorial</span><textarea className="w-full rounded-lg border border-purple-100 bg-white p-4 outline-none focus:border-secondary" rows={4} defaultValue="Anda adalah asisten editor berita berbahasa Indonesia. Koreksi ejaan sesuai KBBI, perbaiki tata bahasa, pertahankan gaya jurnalistik formal, netral, objektif, ringkas, dan jangan mengubah fakta tanpa catatan." /></label>
+              <label className="mt-5 block"><span className="mb-2 block font-bold text-slate-600">System Prompt Editorial</span><textarea className="w-full rounded-lg border border-purple-100 bg-white p-4 outline-none focus:border-secondary" rows={4} value={aiSettings?.systemPrompt ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, systemPrompt: e.target.value } : current)} /></label>
             </section>
 
             <section className="grid gap-6 lg:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
                 <h3 className="text-lg font-bold text-primary">Editorial Language Rules</h3>
                 <div className="mt-5 grid gap-4">
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Bahasa Utama</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" defaultValue="Bahasa Indonesia" /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Standar Bahasa</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" defaultValue="KBBI" /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Gaya Penulisan</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" defaultValue="Jurnalistik formal" /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Nada</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" defaultValue="Netral, objektif, ringkas" /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Bahasa Utama</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.primaryLanguage ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, primaryLanguage: e.target.value } : current)} /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Standar Bahasa</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.languageStandard ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, languageStandard: e.target.value } : current)} /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Gaya Penulisan</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.writingStyle ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, writingStyle: e.target.value } : current)} /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Nada</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.tone ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, tone: e.target.value } : current)} /></label>
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
