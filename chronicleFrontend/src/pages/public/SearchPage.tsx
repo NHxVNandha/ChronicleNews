@@ -1,22 +1,55 @@
-import { useDeferredValue, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui';
-import { articles } from '../../data';
+import type { Article } from '../../data';
+import { getArticles, getCategories, type Category } from '../../services';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
-const filters = ['All Results', 'Latest', 'Technology', 'Education', 'Health', 'Sports'];
 const dateFilters = ['All archive', 'Past 30 days', 'Past year'];
+
+function isWithinPastDays(dateLabel: string, days: number) {
+  const parsed = new Date(dateLabel);
+  if (Number.isNaN(parsed.getTime())) return true;
+  const threshold = Date.now() - days * 24 * 60 * 60 * 1000;
+  return parsed.getTime() >= threshold;
+}
 
 export function SearchPage() {
   const [query, setQuery] = useState('digital truth');
   const [activeFilter, setActiveFilter] = useState('All Results');
   const [dateFilter, setDateFilter] = useState('All archive');
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [error, setError] = useState('');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const [articleData, categoryData] = await Promise.all([
+          getArticles({ sort: 'newest', limit: 24 }),
+          getCategories(),
+        ]);
+        if (!isMounted) return;
+        setArticles(articleData);
+        setCategories(categoryData);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load search data.');
+      }
+    };
+    void load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filters = useMemo(() => ['All Results', 'Latest', ...categories.map((category) => category.name)], [categories]);
 
   const results = articles.filter((article) => {
     const matchesQuery = !deferredQuery || [article.title, article.summary, article.category, article.author].some((value) => value.toLowerCase().includes(deferredQuery));
     const matchesCategory = activeFilter === 'All Results' || activeFilter === 'Latest' || article.category === activeFilter;
-    const matchesDate = dateFilter === 'All archive' || (dateFilter === 'Past 30 days' && article.date.includes('October')) || dateFilter === 'Past year';
+    const matchesDate = dateFilter === 'All archive' || (dateFilter === 'Past 30 days' && isWithinPastDays(article.date, 30)) || (dateFilter === 'Past year' && isWithinPastDays(article.date, 365));
 
     return matchesQuery && matchesCategory && matchesDate;
   });
@@ -27,6 +60,7 @@ export function SearchPage() {
     <>
       <PublicHeader />
       <main className="container-page py-12">
+        {error && <div className="mb-8 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
         <section className="mx-auto mb-12 max-w-5xl text-center">
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-secondary">Chronicle Search</p>
           <h1 className="font-display text-5xl font-bold text-primary md:text-6xl">Find the signal in the archive.</h1>
