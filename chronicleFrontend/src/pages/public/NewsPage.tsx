@@ -1,30 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArticleCard } from '../../components/ui';
 import { toSlug, topicList } from '../../config/navigation';
-import type { Article } from '../../data';
-import { getArticles } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 export function NewsPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const articleData = await getArticles({ sort: 'newest', limit: 8 });
-        if (isMounted) setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load news feed.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, error } = useArticles({ sort: 'newest', limit: 8 });
 
   const topStories = articles.slice(0, 3);
   const latestNews = articles.slice(3);

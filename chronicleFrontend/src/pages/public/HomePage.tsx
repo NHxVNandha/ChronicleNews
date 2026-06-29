@@ -1,36 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArticleCard } from '../../components/ui';
-import type { Article } from '../../data';
 import { heroImage } from '../../data';
-import { getArticles, getCategories, type Category } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
+import { useCategories } from '../../hooks/useCategories';
 import { Footer, PublicHeader } from '../../layouts/PublicLayout';
 
 export function HomePage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const [articleData, categoryData] = await Promise.all([
-          getArticles({ sort: 'newest', limit: 5 }),
-          getCategories(),
-        ]);
-        if (!isMounted) return;
-        setArticles(articleData);
-        setCategories(categoryData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load homepage data.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, error: articleError } = useArticles({ sort: 'newest', limit: 5 });
+  const { categories, error: categoryError } = useCategories();
+  const error = articleError || categoryError;
 
   const featured = articles[0];
 

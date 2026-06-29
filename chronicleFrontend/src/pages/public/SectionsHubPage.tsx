@@ -1,32 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { Article } from '../../data';
-import { getArticles, getCategories, type Category } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
+import { useCategories } from '../../hooks/useCategories';
 import { toSlug, topicList } from '../../config/navigation';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 export function SectionsHubPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const [categoryData, articleData] = await Promise.all([getCategories(), getArticles({ sort: 'newest', limit: 24 })]);
-        if (!isMounted) return;
-        setCategories(categoryData);
-        setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load sections.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { categories, error: categoryError } = useCategories();
+  const { articles, error: articleError } = useArticles({ sort: 'newest', limit: 24 });
+  const error = categoryError || articleError;
 
   const categoriesWithCounts = categories.map((category) => ({
     ...category,

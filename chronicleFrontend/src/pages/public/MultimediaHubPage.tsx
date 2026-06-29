@@ -1,29 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui';
-import type { Article } from '../../data';
-import { getArticles } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 export function MultimediaHubPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const articleData = await getArticles({ sort: 'popular', limit: 4 });
-        if (isMounted) setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load multimedia hub.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, error } = useArticles({ sort: 'popular', limit: 4 });
 
   const items = [
     ['Video Reports', 'play_circle', 'Visual explainers, interviews, and documentary-style short reports.', '/video'],

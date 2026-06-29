@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArticleCard, Avatar } from '../../components/ui';
 import { adminProfileImage, authorProfileImage, toSlug } from '../../config/navigation';
 import type { Article } from '../../data';
-import { getArticles } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 function buildAuthors(articles: Article[]) {
@@ -11,24 +11,7 @@ function buildAuthors(articles: Article[]) {
 }
 
 export function AuthorsPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const articleData = await getArticles({ sort: 'newest', limit: 24 });
-        if (isMounted) setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load authors.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, error } = useArticles({ sort: 'newest', limit: 24 });
 
   const authors = useMemo(() => buildAuthors(articles), [articles]);
 
@@ -47,24 +30,7 @@ export function AuthorsPage() {
 
 export function AuthorDetailPage() {
   const { slug } = useParams();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const articleData = await getArticles({ sort: 'newest', limit: 24 });
-        if (isMounted) setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load author profile.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, error } = useArticles({ sort: 'newest', limit: 24 });
 
   const authorArticles = articles.filter((article) => toSlug(article.author) === slug);
   const lead = authorArticles[0] ?? articles[0];

@@ -1,32 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/ui';
-import type { Article } from '../../data';
-import { getArticles, getCategories, type Category } from '../../services';
+import { useArticles } from '../../hooks/useArticles';
+import { useCategories } from '../../hooks/useCategories';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 export function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const [categoryData, articleData] = await Promise.all([getCategories(), getArticles({ sort: 'newest', limit: 12 })]);
-        if (!isMounted) return;
-        setCategories(categoryData);
-        setArticles(articleData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load categories.');
-      }
-    };
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { categories, error: categoryError } = useCategories();
+  const { articles, error: articleError } = useArticles({ sort: 'newest', limit: 12 });
+  const error = categoryError || articleError;
 
   const featuredCategory = categories[0];
   const featuredArticles = useMemo(() => articles.filter((article) => !featuredCategory || article.category === featuredCategory.name), [articles, featuredCategory]);
