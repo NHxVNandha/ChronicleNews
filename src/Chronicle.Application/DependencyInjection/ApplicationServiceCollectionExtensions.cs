@@ -5,6 +5,7 @@ using Chronicle.Application.Abstractions.Categories;
 using Chronicle.Application.Abstractions.Dashboard;
 using Chronicle.Application.Abstractions.Engagement;
 using Chronicle.Application.Abstractions.Media;
+using Chronicle.Application.Abstractions.Optimization;
 using Chronicle.Application.Abstractions.Roles;
 using Chronicle.Application.Abstractions.Users;
 using Chronicle.Application.ActivityLogs.Services;
@@ -22,6 +23,9 @@ using Chronicle.Application.Engagement.Dtos;
 using Chronicle.Application.Engagement.Services;
 using Chronicle.Application.Engagement.Validators;
 using Chronicle.Application.Media.Services;
+using Chronicle.Application.Optimization.Dtos;
+using Chronicle.Application.Optimization.Services;
+using Chronicle.Application.Optimization.Validators;
 using Chronicle.Application.Roles.Services;
 using Chronicle.Application.Users.Dtos;
 using Chronicle.Application.Users.Services;
@@ -44,6 +48,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IMediaService, MediaService>();
         services.AddScoped<IEngagementService, EngagementService>();
+        services.AddScoped<IOptimizationService, OptimizationService>();
 
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenRequestValidator>();
@@ -60,6 +65,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IValidator<ChangeCommentStatusRequest>, ChangeCommentStatusRequestValidator>();
         services.AddScoped<IValidator<AddCommentReplyRequest>, AddCommentReplyRequestValidator>();
         services.AddScoped<IValidator<CreateCampaignRequest>, CreateCampaignRequestValidator>();
+        services.AddScoped<IValidator<UpdateSeoSettingsRequest>, UpdateSeoSettingsRequestValidator>();
+        services.AddScoped<IValidator<UpdateAiSettingsRequest>, UpdateAiSettingsRequestValidator>();
 
         return services;
     }

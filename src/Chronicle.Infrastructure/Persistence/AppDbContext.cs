@@ -17,6 +17,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Comment> Comments => Set<Comment>();
     public DbSet<CommentReply> CommentReplies => Set<CommentReply>();
     public DbSet<Campaign> Campaigns => Set<Campaign>();
+    public DbSet<SeoSettings> SeoSettings => Set<SeoSettings>();
+    public DbSet<AiSettings> AiSettings => Set<AiSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

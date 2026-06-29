@@ -91,6 +91,39 @@ public static class AppDbSeeder
             new Campaign { Id = SeedIds.Campaigns.Campaign5, Title = "Special Report: Climate Summit", Type = CampaignType.Newsletter, Audience = "Climate Desk Followers", Status = CampaignStatus.Draft, CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-2) },
         };
 
+        var seoSettings = new SeoSettings
+        {
+            Id = SeedIds.Optimization.SeoSettings,
+            DefaultMetaTitle = "Chronicle News - Independent Journalism",
+            MetaDescription = "Independent journalism for the informed reader. National news, in-depth analysis, and editorial integrity.",
+            FocusKeyword = "digital transformation",
+            RobotsTxt = "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nSitemap: https://chronicle.news/sitemap.xml",
+            EnableCrawling = true,
+            IndexArticlePages = true,
+            IndexCategoryPages = true,
+            NoIndexAuthorPages = false,
+            CreatedAt = now.AddDays(-30),
+            UpdatedAt = now.AddDays(-1),
+        };
+
+        var aiSettings = new AiSettings
+        {
+            Id = SeedIds.Optimization.AiSettings,
+            Provider = "OpenAI",
+            ModelName = "gpt-4.1-mini",
+            BaseUrl = "https://api.openai.com/v1",
+            ApiKeyHint = "Stored securely on backend",
+            Temperature = 0.2m,
+            MaxTokens = 1200,
+            SystemPrompt = "Anda adalah asisten editor berita berbahasa Indonesia. Koreksi ejaan sesuai KBBI, perbaiki tata bahasa, pertahankan gaya jurnalistik formal, netral, objektif, ringkas, dan jangan mengubah fakta tanpa catatan.",
+            PrimaryLanguage = "Bahasa Indonesia",
+            LanguageStandard = "KBBI",
+            WritingStyle = "Jurnalistik formal",
+            Tone = "Netral, objektif, ringkas",
+            CreatedAt = now.AddDays(-30),
+            UpdatedAt = now.AddDays(-1),
+        };
+
         var activityLogs = new[]
         {
             new ActivityLog { Id = Guid.Parse("f1111111-1111-1111-1111-111111111111"), UserId = SeedIds.Users.Admin, Action = "login", EntityType = "Auth", Description = "User logged in.", CreatedAt = now.AddHours(-8) },
@@ -109,6 +142,8 @@ public static class AppDbSeeder
         await context.Comments.AddRangeAsync(comments, cancellationToken);
         await context.CommentReplies.AddRangeAsync(commentReplies, cancellationToken);
         await context.Campaigns.AddRangeAsync(campaigns, cancellationToken);
+        await context.SeoSettings.AddAsync(seoSettings, cancellationToken);
+        await context.AiSettings.AddAsync(aiSettings, cancellationToken);
         await context.ActivityLogs.AddRangeAsync(activityLogs, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }

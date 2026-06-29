@@ -16,6 +16,8 @@ public interface IAppDbContext
     DbSet<Comment> Comments { get; }
     DbSet<CommentReply> CommentReplies { get; }
     DbSet<Campaign> Campaigns { get; }
+    DbSet<SeoSettings> SeoSettings { get; }
+    DbSet<AiSettings> AiSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
