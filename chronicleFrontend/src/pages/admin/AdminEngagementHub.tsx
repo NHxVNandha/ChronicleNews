@@ -2,28 +2,7 @@ import { useEffect, useState } from 'react';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
-
-type CommentStatus = 'Pending' | 'Approved' | 'Hidden' | 'Flagged';
-
-type ModerationComment = {
-  id: number;
-  text: string;
-  articleTitle: string;
-  author: string;
-  date: string;
-  status: CommentStatus;
-  replies: { author: string; text: string; date: string }[];
-};
-
-type NotifCampaign = {
-  id: number;
-  title: string;
-  type: 'Push' | 'Email' | 'Newsletter';
-  audience: string;
-  sent: string;
-  status: 'Sent' | 'Scheduled' | 'Draft';
-  openRate?: string;
-};
+import { addCommentReply, changeCommentStatus, createCampaign, getCampaigns, getComments, getSubscriberSummary, type Campaign as NotifCampaign, type EngagementCommentStatus as CommentStatus, type ModerationComment, type SubscriberSummary } from '../../services';
 
 type SocialPost = {
   id: number;
@@ -48,35 +27,6 @@ const statusTabs: { key: CommentStatus | 'All'; label: string }[] = [
   { key: 'Flagged', label: 'Flagged' },
 ];
 
-const sampleArticles = [
-  'The Architecture of Truth',
-  'The Sovereign Grid',
-  'Campus Reimagined',
-  'The Red Index',
-  'Genetic Resilience',
-  'The Truth Machine',
-];
-
-const initialComments: ModerationComment[] = [
-  { id: 1, text: 'Koreksi data pada paragraf kedua, angka inflasi seharusnya 5.2% bukan 4.8%.', articleTitle: sampleArticles[0], author: 'Budi Santoso', date: '2024-10-24 09:15', status: 'Pending', replies: [] },
-  { id: 2, text: 'Artikel ini perlu sumber tambahan untuk klaim tentang kebijakan fiskal.', articleTitle: sampleArticles[1], author: 'Sari Wulandari', date: '2024-10-24 10:30', status: 'Pending', replies: [] },
-  { id: 3, text: 'Mohon periksa kembali data pada tabel bagian ketiga.', articleTitle: sampleArticles[2], author: 'Ahmad Fauzi', date: '2024-10-24 11:00', status: 'Pending', replies: [] },
-  { id: 4, text: 'Foto yang digunakan tidak sesuai dengan konteks berita.', articleTitle: sampleArticles[3], author: 'Dewi Lestari', date: '2024-10-23 14:20', status: 'Flagged', replies: [{ author: 'Editor', text: 'Sudah diganti dengan foto yang sesuai.', date: '2024-10-23 15:45' }] },
-  { id: 5, text: 'Konfirmasi jadwal wawancara sudah sesuai dengan narasumber.', articleTitle: sampleArticles[4], author: 'Rudi Hartono', date: '2024-10-23 08:45', status: 'Approved', replies: [] },
-  { id: 6, text: 'Terdapat kesalahan penulisan nama menteri pada paragraf kelima.', articleTitle: sampleArticles[0], author: 'Maya Indah', date: '2024-10-22 16:10', status: 'Approved', replies: [{ author: 'Editor', text: 'Sudah diperbaiki, terima kasih.', date: '2024-10-22 17:00' }] },
-  { id: 7, text: 'Link referensi nomor 3 sudah tidak bisa diakses.', articleTitle: sampleArticles[5], author: 'Agus Prasetyo', date: '2024-10-22 11:30', status: 'Pending', replies: [] },
-  { id: 8, text: 'Spam promosi produk tidak terkait.', articleTitle: sampleArticles[1], author: 'Unknown', date: '2024-10-21 22:15', status: 'Hidden', replies: [] },
-  { id: 9, text: 'Data statistik pada grafik perlu diperbarui dengan rilis terbaru BPS.', articleTitle: sampleArticles[3], author: 'Fitriani', date: '2024-10-21 09:00', status: 'Pending', replies: [] },
-  { id: 10, text: 'Mohon tambahkan konteks tentang latar belakang narasumber.', articleTitle: sampleArticles[2], author: 'Hendra Gunawan', date: '2024-10-20 14:30', status: 'Approved', replies: [{ author: 'Editor', text: 'Sudah ditambahkan di sidebar.', date: '2024-10-20 15:10' }, { author: 'Hendra Gunawan', text: 'Terima kasih.', date: '2024-10-20 15:30' }] },
-];
-
-const notifCampaigns: NotifCampaign[] = [
-  { id: 1, title: 'Breaking News: Market Update', type: 'Push', audience: 'All Subscribers', sent: '2024-10-24 08:00', status: 'Sent', openRate: '42%' },
-  { id: 2, title: 'Daily Newsletter — October 24', type: 'Newsletter', audience: 'Email Subscribers', sent: '2024-10-24 06:30', status: 'Sent', openRate: '28%' },
-  { id: 3, title: 'Weekend Edition Preview', type: 'Email', audience: 'Premium Readers', sent: '2024-10-26 09:00', status: 'Scheduled' },
-  { id: 4, title: 'Election Coverage Alert', type: 'Push', audience: 'All Subscribers', sent: '2024-10-25 18:00', status: 'Scheduled' },
-  { id: 5, title: 'Special Report: Climate Summit', type: 'Newsletter', audience: 'Climate Desk Followers', sent: '', status: 'Draft' },
-];
 
 const socialPosts: SocialPost[] = [
   { id: 1, platform: 'Twitter / X', text: 'New: The Architecture of Truth — redesigning the modern editorial engine...', scheduled: '2024-10-24 10:00', status: 'Scheduled' },
@@ -94,11 +44,14 @@ const platformColors: Record<string, string> = {
 
 export function AdminEngagementHub() {
   const [loading, setLoading] = useState(true);
-  const [comments, setComments] = useState<ModerationComment[]>(initialComments);
+  const [comments, setComments] = useState<ModerationComment[]>([]);
+  const [campaigns, setCampaigns] = useState<NotifCampaign[]>([]);
+  const [subscribers, setSubscribers] = useState<SubscriberSummary[]>([]);
+  const [error, setError] = useState('');
   const [statusFilter, setStatusFilter] = useState<CommentStatus | 'All'>('All');
   const [searchText, setSearchText] = useState('');
   const [articleFilter, setArticleFilter] = useState('All');
-  const [replyOpen, setReplyOpen] = useState<number | null>(null);
+  const [replyOpen, setReplyOpen] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
 
   const [pushTitle, setPushTitle] = useState('');
@@ -115,21 +68,44 @@ export function AdminEngagementHub() {
   const [socialPostsList, setSocialPostsList] = useState<SocialPost[]>(socialPosts);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    const load = async () => {
+      try {
+        setLoading(true);
+        const [commentData, campaignData, subscriberData] = await Promise.all([
+          getComments(),
+          getCampaigns(),
+          getSubscriberSummary(),
+        ]);
+
+        if (!isMounted) return;
+        setComments(commentData);
+        setCampaigns(campaignData);
+        setSubscribers(subscriberData);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load engagement data.');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void load();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  function updateCommentStatus(id: number, status: CommentStatus) {
-    setComments((current) => current.map((c) => c.id === id ? { ...c, status } : c));
+  const sampleArticles = Array.from(new Set(comments.map((comment) => comment.articleTitle)));
+
+  async function updateCommentStatus(id: string, status: CommentStatus) {
+    const updated = await changeCommentStatus(id, status);
+    setComments((current) => current.map((c) => c.id === id ? updated : c));
   }
 
-  function handleReply(commentId: number) {
+  async function handleReply(commentId: string) {
     if (!replyText.trim()) return;
-    setComments((current) => current.map((c) =>
-      c.id === commentId
-        ? { ...c, replies: [...c.replies, { author: 'Editor', text: replyText.trim(), date: new Date().toLocaleString('id-ID') }] }
-        : c
-    ));
+    const reply = await addCommentReply(commentId, replyText.trim());
+    setComments((current) => current.map((c) => c.id === commentId ? { ...c, replies: [...c.replies, reply] } : c));
     setReplyText('');
     setReplyOpen(null);
   }
@@ -144,8 +120,10 @@ export function AdminEngagementHub() {
     setPushSchedule('now');
   }
 
-  function handleSendNewsletter() {
+  async function handleSendNewsletter() {
     if (!newsletterTitle.trim()) return;
+    const created = await createCampaign({ title: newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
+    setCampaigns((current) => [created, ...current]);
     setNewsletterStatus(`"${newsletterTitle}" will be sent to subscribers.`);
     setNewsletterTitle('');
   }
@@ -198,13 +176,6 @@ export function AdminEngagementHub() {
     { device: 'Tablet', pct: 10, color: 'bg-emerald-500' },
   ];
 
-  const subscriberData = [
-    { tier: 'Free', count: '18,420', delta: '+342' },
-    { tier: 'Premium', count: '4,286', delta: '+87' },
-    { tier: 'Newsletter Only', count: '12,150', delta: '+210' },
-    { tier: 'Push Subscribers', count: '8,740', delta: '+156' },
-  ];
-
   const newsletterStats = [
     { label: 'Subscribers', value: '28,406', delta: '+3.2%' },
     { label: 'Avg. Open Rate', value: '26.8%', delta: '+1.4%' },
@@ -221,6 +192,7 @@ export function AdminEngagementHub() {
         </div>
       ) : (
       <div className="space-y-10">
+        {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
         {/* ── Section 1: Comments Moderation ── */}
         <div className="space-y-5">
@@ -322,13 +294,13 @@ export function AdminEngagementHub() {
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         {comment.status !== 'Approved' && (
-                          <button className="rounded-lg bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-200" type="button" onClick={() => updateCommentStatus(comment.id, 'Approved')}>Approve</button>
+                          <button className="rounded-lg bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Approved')}>Approve</button>
                         )}
                         {comment.status !== 'Hidden' && (
-                          <button className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200" type="button" onClick={() => updateCommentStatus(comment.id, 'Hidden')}>Hide</button>
+                          <button className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Hidden')}>Hide</button>
                         )}
                         {comment.status !== 'Flagged' && (
-                          <button className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200" type="button" onClick={() => updateCommentStatus(comment.id, 'Flagged')}>Flag</button>
+                          <button className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Flagged')}>Flag</button>
                         )}
                         <button
                           className={`rounded-lg px-3 py-2 text-xs font-bold ${replyOpen === comment.id ? 'bg-primary !text-white' : 'bg-blue-100 text-secondary hover:bg-blue-200'}`}
@@ -531,7 +503,7 @@ export function AdminEngagementHub() {
             <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
               <h3 className="mb-5 text-xl font-bold text-primary">Subscriber Overview</h3>
               <div className="space-y-4">
-                {subscriberData.map((item) => (
+                {subscribers.map((item) => (
                   <div key={item.tier} className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 p-4">
                     <div>
                       <p className="font-bold text-primary">{item.tier}</p>
@@ -561,7 +533,7 @@ export function AdminEngagementHub() {
                   </tr>
                 </thead>
                 <tbody>
-                  {notifCampaigns.map((camp) => (
+                  {campaigns.map((camp) => (
                     <tr key={camp.id} className="border-b border-slate-100">
                       <td className="px-5 py-4 font-semibold text-primary">{camp.title}</td>
                       <td className="py-4 pr-4">
