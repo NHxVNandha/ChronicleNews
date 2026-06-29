@@ -3,6 +3,7 @@ using Chronicle.Application.Abstractions.Articles;
 using Chronicle.Application.Abstractions.ActivityLogs;
 using Chronicle.Application.Abstractions.Categories;
 using Chronicle.Application.Abstractions.Dashboard;
+using Chronicle.Application.Abstractions.Engagement;
 using Chronicle.Application.Abstractions.Media;
 using Chronicle.Application.Abstractions.Roles;
 using Chronicle.Application.Abstractions.Users;
@@ -17,6 +18,9 @@ using Chronicle.Application.Categories.Dtos;
 using Chronicle.Application.Categories.Services;
 using Chronicle.Application.Categories.Validators;
 using Chronicle.Application.Dashboard.Services;
+using Chronicle.Application.Engagement.Dtos;
+using Chronicle.Application.Engagement.Services;
+using Chronicle.Application.Engagement.Validators;
 using Chronicle.Application.Media.Services;
 using Chronicle.Application.Roles.Services;
 using Chronicle.Application.Users.Dtos;
@@ -39,6 +43,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IMediaService, MediaService>();
+        services.AddScoped<IEngagementService, EngagementService>();
 
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenRequestValidator>();
@@ -52,6 +57,9 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IValidator<ChangeUserStatusRequest>, ChangeUserStatusRequestValidator>();
         services.AddScoped<IValidator<CreateCategoryRequest>, CreateCategoryRequestValidator>();
         services.AddScoped<IValidator<UpdateCategoryRequest>, UpdateCategoryRequestValidator>();
+        services.AddScoped<IValidator<ChangeCommentStatusRequest>, ChangeCommentStatusRequestValidator>();
+        services.AddScoped<IValidator<AddCommentReplyRequest>, AddCommentReplyRequestValidator>();
+        services.AddScoped<IValidator<CreateCampaignRequest>, CreateCampaignRequestValidator>();
 
         return services;
     }

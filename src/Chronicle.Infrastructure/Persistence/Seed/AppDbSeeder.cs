@@ -67,6 +67,30 @@ public static class AppDbSeeder
             new MediaAsset { Id = SeedIds.MediaAssets.EditorialRoom, Name = "editorial-room.jpg", Type = "Image", SizeLabel = "9.5 MB", ImageUrl = "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=85", UsageCount = 0, HasAltText = false, Credit = "Editorial Floor", License = "Pending", Category = "Newsroom", CreatedAt = now.AddDays(-7), UpdatedAt = now.AddDays(-7) },
         };
 
+        var comments = new[]
+        {
+            new Comment { Id = SeedIds.Comments.Comment1, ArticleId = SeedIds.Articles.ArchitectureOfTruth, AuthorName = "Budi Santoso", Text = "Koreksi data pada paragraf kedua, angka inflasi seharusnya 5.2% bukan 4.8%.", Status = CommentStatus.Pending, CreatedAt = now.AddDays(-1).AddHours(1) },
+            new Comment { Id = SeedIds.Comments.Comment2, ArticleId = SeedIds.Articles.SovereignGrid, AuthorName = "Sari Wulandari", Text = "Artikel ini perlu sumber tambahan untuk klaim tentang kebijakan fiskal.", Status = CommentStatus.Pending, CreatedAt = now.AddDays(-1).AddHours(2) },
+            new Comment { Id = SeedIds.Comments.Comment3, ArticleId = SeedIds.Articles.CampusReimagined, AuthorName = "Ahmad Fauzi", Text = "Mohon periksa kembali data pada tabel bagian ketiga.", Status = CommentStatus.Pending, CreatedAt = now.AddDays(-1).AddHours(3) },
+            new Comment { Id = SeedIds.Comments.Comment4, ArticleId = SeedIds.Articles.RedIndex, AuthorName = "Dewi Lestari", Text = "Foto yang digunakan tidak sesuai dengan konteks berita.", Status = CommentStatus.Flagged, CreatedAt = now.AddDays(-2) },
+            new Comment { Id = SeedIds.Comments.Comment5, ArticleId = SeedIds.Articles.GeneticResilience, AuthorName = "Rudi Hartono", Text = "Konfirmasi jadwal wawancara sudah sesuai dengan narasumber.", Status = CommentStatus.Approved, CreatedAt = now.AddDays(-2).AddHours(-2) },
+        };
+
+        var commentReplies = new[]
+        {
+            new CommentReply { Id = Guid.Parse("h1111111-1111-1111-1111-111111111111"), CommentId = SeedIds.Comments.Comment4, AuthorName = "Editor", Text = "Sudah diganti dengan foto yang sesuai.", CreatedAt = now.AddDays(-2).AddHours(1) },
+            new CommentReply { Id = Guid.Parse("h2222222-2222-2222-2222-222222222222"), CommentId = SeedIds.Comments.Comment5, AuthorName = "Editor", Text = "Sudah diperbaiki, terima kasih.", CreatedAt = now.AddDays(-2).AddHours(2) },
+        };
+
+        var campaigns = new[]
+        {
+            new Campaign { Id = SeedIds.Campaigns.Campaign1, Title = "Breaking News: Market Update", Type = CampaignType.Push, Audience = "All Subscribers", Status = CampaignStatus.Sent, OpenRate = "42%", SentAt = now.AddHours(-6), CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-6) },
+            new Campaign { Id = SeedIds.Campaigns.Campaign2, Title = "Daily Newsletter - October 24", Type = CampaignType.Newsletter, Audience = "Email Subscribers", Status = CampaignStatus.Sent, OpenRate = "28%", SentAt = now.AddHours(-8), CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-8) },
+            new Campaign { Id = SeedIds.Campaigns.Campaign3, Title = "Weekend Edition Preview", Type = CampaignType.Email, Audience = "Premium Readers", Status = CampaignStatus.Scheduled, CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-4), SentAt = now.AddDays(1) },
+            new Campaign { Id = SeedIds.Campaigns.Campaign4, Title = "Election Coverage Alert", Type = CampaignType.Push, Audience = "All Subscribers", Status = CampaignStatus.Scheduled, CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-3), SentAt = now.AddHours(10) },
+            new Campaign { Id = SeedIds.Campaigns.Campaign5, Title = "Special Report: Climate Summit", Type = CampaignType.Newsletter, Audience = "Climate Desk Followers", Status = CampaignStatus.Draft, CreatedAt = now.AddDays(-1), UpdatedAt = now.AddHours(-2) },
+        };
+
         var activityLogs = new[]
         {
             new ActivityLog { Id = Guid.Parse("f1111111-1111-1111-1111-111111111111"), UserId = SeedIds.Users.Admin, Action = "login", EntityType = "Auth", Description = "User logged in.", CreatedAt = now.AddHours(-8) },
@@ -82,6 +106,9 @@ public static class AppDbSeeder
         await context.Articles.AddRangeAsync(articles, cancellationToken);
         await context.ReviewNotes.AddRangeAsync(reviewNotes, cancellationToken);
         await context.MediaAssets.AddRangeAsync(mediaAssets, cancellationToken);
+        await context.Comments.AddRangeAsync(comments, cancellationToken);
+        await context.CommentReplies.AddRangeAsync(commentReplies, cancellationToken);
+        await context.Campaigns.AddRangeAsync(campaigns, cancellationToken);
         await context.ActivityLogs.AddRangeAsync(activityLogs, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }

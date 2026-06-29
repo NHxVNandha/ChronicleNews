@@ -23,4 +23,5 @@ public sealed class Article : AuditableEntity
     public Category? Category { get; set; }
     public User? Author { get; set; }
     public ICollection<ReviewNote> ReviewNotes { get; set; } = new List<ReviewNote>();
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

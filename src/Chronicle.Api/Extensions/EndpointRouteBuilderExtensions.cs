@@ -4,6 +4,7 @@ using Chronicle.Api.Endpoints.Articles;
 using Chronicle.Api.Endpoints.ActivityLogs;
 using Chronicle.Api.Endpoints.Categories;
 using Chronicle.Api.Endpoints.Dashboard;
+using Chronicle.Api.Endpoints.Engagement;
 using Chronicle.Api.Endpoints.Media;
 using Chronicle.Api.Endpoints.Roles;
 using Chronicle.Api.Endpoints.Users;
@@ -22,6 +23,7 @@ public static class EndpointRouteBuilderExtensions
         app.MapActivityLogEndpoints();
         app.MapDashboardEndpoints();
         app.MapMediaEndpoints();
+        app.MapEngagementEndpoints();
 
         var api = app.MapGroup("/api");
 

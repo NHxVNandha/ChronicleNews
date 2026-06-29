@@ -14,6 +14,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ReviewNote> ReviewNotes => Set<ReviewNote>();
     public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+    public DbSet<Comment> Comments => Set<Comment>();
+    public DbSet<CommentReply> CommentReplies => Set<CommentReply>();
+    public DbSet<Campaign> Campaigns => Set<Campaign>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
