@@ -12,9 +12,9 @@ public static class ArticleEndpoints
     {
         var group = app.MapGroup("/api/articles").WithTags("Articles");
 
-        group.MapGet("/", GetArticlesAsync).RequireAuthorization("EditorialAccess");
+        group.MapGet("/", GetArticlesAsync).AllowAnonymous();
         group.MapGet("/review-queue", GetReviewQueueAsync).RequireAuthorization("ReviewerOrBetter");
-        group.MapGet("/{slug}", GetArticleBySlugAsync).RequireAuthorization("EditorialAccess");
+        group.MapGet("/{slug}", GetArticleBySlugAsync).AllowAnonymous();
         group.MapPost("/", CreateArticleAsync).RequireAuthorization("AuthorOrBetter");
         group.MapPut("/{id:guid}", UpdateArticleAsync).RequireAuthorization("AuthorOrBetter");
         group.MapDelete("/{id:guid}", DeleteArticleAsync).RequireAuthorization("EditorOrAdmin");

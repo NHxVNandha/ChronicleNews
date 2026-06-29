@@ -11,8 +11,8 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("/api/categories").WithTags("Categories");
 
-        group.MapGet("/", GetCategoriesAsync).RequireAuthorization("EditorialAccess");
-        group.MapGet("/{id:guid}", GetCategoryByIdAsync).RequireAuthorization("EditorialAccess");
+        group.MapGet("/", GetCategoriesAsync).AllowAnonymous();
+        group.MapGet("/{id:guid}", GetCategoryByIdAsync).AllowAnonymous();
         group.MapPost("/", CreateCategoryAsync).RequireAuthorization("EditorOrAdmin");
         group.MapPut("/{id:guid}", UpdateCategoryAsync).RequireAuthorization("EditorOrAdmin");
         group.MapDelete("/{id:guid}", DeleteCategoryAsync).RequireAuthorization("EditorOrAdmin");
