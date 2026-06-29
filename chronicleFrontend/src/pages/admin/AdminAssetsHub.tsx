@@ -1,35 +1,53 @@
-import { useMemo, useState } from 'react';
-import { categories, mediaAssets } from '../../data';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/ui';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { getCategories, getMediaAssets, type Category } from '../../services';
+import type { MediaAsset } from '../../data';
 
 type AssetKind = 'All' | 'Image' | 'Video' | 'PDF';
 
 const assetKinds: AssetKind[] = ['All', 'Image', 'Video', 'PDF'];
 
-const assetDetails = mediaAssets.map((asset, index) => ({
-  ...asset,
-  usageCount: [12, 4, 2, 8, 0][index] ?? 0,
-  altStatus: [true, false, true, true, false][index] ?? false,
-  credit: ['Chronicle Visual Desk', 'Studio Portrait Unit', 'Field Reporter Pool', 'Design Systems', 'Editorial Floor'][index] ?? 'Chronicle Desk',
-  license: ['Owned', 'Licensed', 'Owned', 'Owned', 'Pending'][index] ?? 'Owned',
-  category: ['Front Page', 'Profiles', 'Environment', 'Technology', 'Newsroom'][index] ?? 'General',
-}));
-
 export function AdminAssetsHub() {
   const [activeKind, setActiveKind] = useState<AssetKind>('All');
   const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [assetDetails, setAssetDetails] = useState<MediaAsset[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        setLoading(true);
+        const [media, taxonomy] = await Promise.all([getMediaAssets(), getCategories()]);
+        if (!isMounted) return;
+        setAssetDetails(media);
+        setCategories(taxonomy);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load assets.');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredAssets = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return assetDetails.filter((asset) => {
-      const matchesKind = activeKind === 'All' || asset.type === activeKind;
-      const matchesQuery =
-        !normalizedQuery ||
-        asset.name.toLowerCase().includes(normalizedQuery) ||
-        asset.category.toLowerCase().includes(normalizedQuery) ||
-        asset.credit.toLowerCase().includes(normalizedQuery);
+      return assetDetails.filter((asset) => {
+        const matchesKind = activeKind === 'All' || asset.type === activeKind;
+        const matchesQuery =
+          !normalizedQuery ||
+          asset.name.toLowerCase().includes(normalizedQuery) ||
+          (asset.category ?? '').toLowerCase().includes(normalizedQuery) ||
+          (asset.credit ?? '').toLowerCase().includes(normalizedQuery);
 
       return matchesKind && matchesQuery;
     });
@@ -40,6 +58,7 @@ export function AdminAssetsHub() {
 
   return (
     <AdminLayout title="Assets">
+      {error && <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="font-display text-4xl font-bold text-primary">Assets Library</h1>
@@ -93,6 +112,7 @@ export function AdminAssetsHub() {
           </div>
 
           <div className="grid gap-6 p-5 sm:grid-cols-2 xl:grid-cols-3">
+            {loading && Array.from({ length: 6 }).map((_, index) => <div key={index} className="aspect-[4/3] animate-pulse rounded-xl bg-slate-100" />)}
             {filteredAssets.map((asset) => (
               <article key={asset.name} className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-300 hover:shadow-lg">
                 <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
@@ -112,7 +132,7 @@ export function AdminAssetsHub() {
                   </div>
                   <div className="mt-4 grid grid-cols-3 gap-2 rounded-lg bg-slate-50 p-3 text-center text-xs">
                     <div><p className="font-bold text-primary">{asset.size}</p><p className="mt-1 text-slate-500">Size</p></div>
-                    <div><p className="font-bold text-primary">{asset.usageCount}</p><p className="mt-1 text-slate-500">Uses</p></div>
+                     <div><p className="font-bold text-primary">{asset.usageCount}</p><p className="mt-1 text-slate-500">Uses</p></div>
                     <div><p className="font-bold text-primary">{asset.date}</p><p className="mt-1 text-slate-500">Added</p></div>
                   </div>
                   <div className="mt-4 flex gap-2">
@@ -123,10 +143,10 @@ export function AdminAssetsHub() {
                 </div>
               </article>
             ))}
-            {!filteredAssets.length && (
-              <div className="col-span-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-slate-500">
-                No assets match the current filter.
-              </div>
+             {!loading && !filteredAssets.length && (
+               <div className="col-span-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-slate-500">
+                 No assets match the current filter.
+               </div>
             )}
           </div>
         </section>
@@ -135,17 +155,17 @@ export function AdminAssetsHub() {
           <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
             <h2 className="mb-4 font-bold text-primary">Taxonomy Health</h2>
             <div className="space-y-3">
-              {categories.map((category) => (
-                <div key={category.name} className="rounded-lg bg-slate-50 p-3">
-                  <div className="mb-1.5 flex items-center justify-between text-sm">
-                    <span className="font-semibold text-slate-700">{category.name}</span>
-                    <span className="font-bold text-slate-500">{category.count}</span>
+               {categories.map((category) => (
+                 <div key={category.name} className="rounded-lg bg-slate-50 p-3">
+                   <div className="mb-1.5 flex items-center justify-between text-sm">
+                     <span className="font-semibold text-slate-700">{category.name}</span>
+                      <span className="font-bold text-slate-500">{category.count ?? 0}</span>
+                    </div>
+                    <div className="overflow-hidden rounded-full bg-slate-200">
+                     <div className={`h-2.5 rounded-full ${category.tone}`} style={{ width: `${((category.count ?? 0) / Math.max(...categories.map((item) => item.count || 1))) * 100}%` }} />
+                    </div>
                   </div>
-                  <div className="overflow-hidden rounded-full bg-slate-200">
-                    <div className={`h-2.5 rounded-full ${category.tone}`} style={{ width: `${(category.count / Math.max(...categories.map((item) => item.count))) * 100}%` }} />
-                  </div>
-                </div>
-              ))}
+               ))}
             </div>
           </section>
         </aside>

@@ -15,11 +15,17 @@ export type Article = {
 };
 
 export type MediaAsset = {
+  id?: string;
   name: string;
   type: string;
   size: string;
   date: string;
   image: string;
+  usageCount?: number;
+  altStatus?: boolean;
+  credit?: string;
+  license?: string;
+  category?: string;
 };
 
 export const heroImage = '/futuristic-city-skyline.svg';
