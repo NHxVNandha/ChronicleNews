@@ -56,16 +56,16 @@ public static class SeedIds
 
     public static class Campaigns
     {
-        public static readonly Guid Campaign1 = Guid.Parse("g1111111-1111-1111-1111-111111111111");
-        public static readonly Guid Campaign2 = Guid.Parse("g2222222-2222-2222-2222-222222222222");
-        public static readonly Guid Campaign3 = Guid.Parse("g3333333-3333-3333-3333-333333333333");
-        public static readonly Guid Campaign4 = Guid.Parse("g4444444-4444-4444-4444-444444444444");
-        public static readonly Guid Campaign5 = Guid.Parse("g5555555-5555-5555-5555-555555555555");
+        public static readonly Guid Campaign1 = Guid.Parse("a6111111-1111-1111-1111-111111111111");
+        public static readonly Guid Campaign2 = Guid.Parse("a6222222-2222-2222-2222-222222222222");
+        public static readonly Guid Campaign3 = Guid.Parse("a6333333-3333-3333-3333-333333333333");
+        public static readonly Guid Campaign4 = Guid.Parse("a6444444-4444-4444-4444-444444444444");
+        public static readonly Guid Campaign5 = Guid.Parse("a6555555-5555-5555-5555-555555555555");
     }
 
     public static class Optimization
     {
-        public static readonly Guid SeoSettings = Guid.Parse("h1111111-1111-1111-1111-111111111111");
-        public static readonly Guid AiSettings = Guid.Parse("h2222222-2222-2222-2222-222222222222");
+        public static readonly Guid SeoSettings = Guid.Parse("b6111111-1111-1111-1111-111111111111");
+        public static readonly Guid AiSettings = Guid.Parse("b6222222-2222-2222-2222-222222222222");
     }
 }

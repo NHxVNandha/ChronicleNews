@@ -9,11 +9,6 @@ public static class AppDbSeeder
 {
     public static async Task SeedAsync(AppDbContext context, CancellationToken cancellationToken = default)
     {
-        if (await context.Roles.AnyAsync(cancellationToken))
-        {
-            return;
-        }
-
         var now = new DateTime(2026, 6, 25, 8, 0, 0, DateTimeKind.Utc);
         var passwordHasher = new PasswordHasher<object>();
         var passwordHash = passwordHasher.HashPassword(new object(), "Password123!");
@@ -78,8 +73,8 @@ public static class AppDbSeeder
 
         var commentReplies = new[]
         {
-            new CommentReply { Id = Guid.Parse("h1111111-1111-1111-1111-111111111111"), CommentId = SeedIds.Comments.Comment4, AuthorName = "Editor", Text = "Sudah diganti dengan foto yang sesuai.", CreatedAt = now.AddDays(-2).AddHours(1) },
-            new CommentReply { Id = Guid.Parse("h2222222-2222-2222-2222-222222222222"), CommentId = SeedIds.Comments.Comment5, AuthorName = "Editor", Text = "Sudah diperbaiki, terima kasih.", CreatedAt = now.AddDays(-2).AddHours(2) },
+            new CommentReply { Id = Guid.Parse("c6111111-1111-1111-1111-111111111111"), CommentId = SeedIds.Comments.Comment4, AuthorName = "Editor", Text = "Sudah diganti dengan foto yang sesuai.", CreatedAt = now.AddDays(-2).AddHours(1) },
+            new CommentReply { Id = Guid.Parse("c6222222-2222-2222-2222-222222222222"), CommentId = SeedIds.Comments.Comment5, AuthorName = "Editor", Text = "Sudah diperbaiki, terima kasih.", CreatedAt = now.AddDays(-2).AddHours(2) },
         };
 
         var campaigns = new[]
@@ -133,18 +128,48 @@ public static class AppDbSeeder
             new ActivityLog { Id = Guid.Parse("f5555555-5555-5555-5555-555555555555"), UserId = SeedIds.Users.Admin, Action = "article_published", EntityType = "Article", EntityId = SeedIds.Articles.ArchitectureOfTruth.ToString(), Description = "Published article \"The Architecture of Truth\".", CreatedAt = now.AddHours(-4) },
         };
 
-        await context.Roles.AddRangeAsync(roles, cancellationToken);
-        await context.Users.AddRangeAsync(users, cancellationToken);
-        await context.Categories.AddRangeAsync(categories, cancellationToken);
-        await context.Articles.AddRangeAsync(articles, cancellationToken);
-        await context.ReviewNotes.AddRangeAsync(reviewNotes, cancellationToken);
-        await context.MediaAssets.AddRangeAsync(mediaAssets, cancellationToken);
-        await context.Comments.AddRangeAsync(comments, cancellationToken);
-        await context.CommentReplies.AddRangeAsync(commentReplies, cancellationToken);
-        await context.Campaigns.AddRangeAsync(campaigns, cancellationToken);
-        await context.SeoSettings.AddAsync(seoSettings, cancellationToken);
-        await context.AiSettings.AddAsync(aiSettings, cancellationToken);
-        await context.ActivityLogs.AddRangeAsync(activityLogs, cancellationToken);
+        await AddMissingAsync(context.Roles, roles, cancellationToken);
+        await AddMissingAsync(context.Users, users, cancellationToken);
+        await AddMissingAsync(context.Categories, categories, cancellationToken);
+        await AddMissingAsync(context.Articles, articles, cancellationToken);
+        await AddMissingAsync(context.ReviewNotes, reviewNotes, cancellationToken);
+        await AddMissingAsync(context.MediaAssets, mediaAssets, cancellationToken);
+        await AddMissingAsync(context.Comments, comments, cancellationToken);
+        await AddMissingAsync(context.CommentReplies, commentReplies, cancellationToken);
+        await AddMissingAsync(context.Campaigns, campaigns, cancellationToken);
+        await AddMissingAsync(context.ActivityLogs, activityLogs, cancellationToken);
+
+        if (!await context.SeoSettings.AnyAsync(x => x.Id == seoSettings.Id, cancellationToken))
+        {
+            await context.SeoSettings.AddAsync(seoSettings, cancellationToken);
+        }
+
+        if (!await context.AiSettings.AnyAsync(x => x.Id == aiSettings.Id, cancellationToken))
+        {
+            await context.AiSettings.AddAsync(aiSettings, cancellationToken);
+        }
+
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    private static async Task AddMissingAsync<TEntity>(DbSet<TEntity> dbSet, IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        where TEntity : class
+    {
+        var trackedItems = items.ToList();
+        var ids = trackedItems.Select(GetEntityId).ToList();
+        var existingIds = await dbSet
+            .Where(entity => ids.Contains(EF.Property<Guid>(entity, "Id")))
+            .Select(entity => EF.Property<Guid>(entity, "Id"))
+            .ToListAsync(cancellationToken);
+
+        var missing = trackedItems.Where(entity => !existingIds.Contains(GetEntityId(entity))).ToList();
+        if (missing.Count > 0)
+        {
+            await dbSet.AddRangeAsync(missing, cancellationToken);
+        }
+    }
+
+    private static Guid GetEntityId<TEntity>(TEntity entity)
+        where TEntity : class
+        => (Guid)entity.GetType().GetProperty("Id")!.GetValue(entity)!;
 }
