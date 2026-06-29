@@ -1,8 +1,41 @@
-import { Link } from 'react-router-dom';
-import { Field, Icon } from '../../components/ui';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Icon } from '../../components/ui';
+import { useAuth } from '../../context/AuthContext';
 
 export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   const isLogin = mode === 'login';
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('admin@chronicle.press');
+  const [password, setPassword] = useState('Password123!');
+  const [fullName, setFullName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const redirectTo = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/admin';
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+
+    if (!isLogin) {
+      setError('Registration is not available yet. Use a seeded account to sign in.');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      await login(email, password);
+      navigate(redirectTo, { replace: true });
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : 'Unable to sign in.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 p-0 md:p-8">
@@ -18,15 +51,32 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <div className="w-full max-w-md">
             <h2 className="font-display text-4xl font-bold text-primary">{isLogin ? 'Welcome Back' : 'Create your account'}</h2>
             <p className="mt-2 text-slate-600">{isLogin ? 'Sign in to your editorial portal to continue your work.' : 'Join the Chronicle editorial workspace.'}</p>
-            <form className="mt-8 space-y-5">
-              {!isLogin && <Field label="Full Name" placeholder="Johnathan Doe" icon="badge" />}
-              <Field label="Email Address" placeholder="editor@chronicle.com" icon="person" type="email" />
-              <Field label="Password" placeholder="••••••••" icon="lock" type="password" />
-              {!isLogin && <Field label="Confirm Password" placeholder="••••••••" icon="lock_reset" type="password" />}
+            <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+              {!isLogin && (
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Full Name</span>
+                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-4 outline-none focus:border-secondary" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Johnathan Doe" />
+                </label>
+              )}
+              <label className="block">
+                <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Email Address</span>
+                <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-4 outline-none focus:border-secondary" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="editor@chronicle.com" type="email" />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Password</span>
+                <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-4 outline-none focus:border-secondary" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" type="password" />
+              </label>
+              {!isLogin && (
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Confirm Password</span>
+                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-4 outline-none focus:border-secondary" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="••••••••" type="password" />
+                </label>
+              )}
               {isLogin && <label className="flex items-center gap-3 text-slate-600"><input className="h-5 w-5 rounded border-slate-300 accent-blue-600" type="checkbox" /> Stay signed in for 30 days</label>}
-              <Link className="flex w-full items-center justify-center gap-2 rounded-lg bg-secondary py-5 font-bold uppercase tracking-wider text-white shadow-lg transition hover:bg-blue-700" to="/admin">
-                {isLogin ? 'Sign In To Portal' : 'Create Account'} <Icon name="arrow_forward" />
-              </Link>
+              {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-secondary py-5 font-bold uppercase tracking-wider text-white shadow-lg transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60" disabled={submitting} type="submit">
+                {submitting ? 'Signing In...' : isLogin ? 'Sign In To Portal' : 'Create Account'} <Icon name="arrow_forward" />
+              </button>
             </form>
             <p className="mt-8 text-center text-slate-600">{isLogin ? "Don't have an editorial account?" : 'Already have an account?'} <Link className="font-bold text-secondary hover:underline" to={isLogin ? '/register' : '/login'}>{isLogin ? 'Register here' : 'Sign in'}</Link></p>
           </div>

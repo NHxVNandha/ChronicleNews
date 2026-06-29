@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from '../components/ProtectedRoute';
 import {
   AdminActivity,
   AdminAssetsHub,
@@ -59,29 +60,29 @@ export function AppRoutes() {
       <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/login" element={<AuthPage mode="login" />} />
       <Route path="/register" element={<AuthPage mode="register" />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/content" element={<AdminContentHub />} />
-      <Route path="/admin/layouts" element={<AdminLayoutsHub />} />
-      <Route path="/admin/assets" element={<AdminAssetsHub />} />
-      <Route path="/admin/publishing" element={<AdminContentHub />} />
-      <Route path="/admin/optimization" element={<AdminOptimizationHub />} />
-      <Route path="/admin/engagement" element={<AdminEngagementHub />} />
-      <Route path="/admin/monetization" element={<AdminMonetizationHub />} />
-      <Route path="/admin/articles" element={<AdminContentHub />} />
-      <Route path="/admin/articles/new" element={<AdminEditor />} />
-      <Route path="/admin/articles/:slug/edit" element={<AdminEditor />} />
-      <Route path="/admin/review" element={<AdminContentHub />} />
-      <Route path="/admin/calendar" element={<AdminContentHub />} />
-      <Route path="/admin/categories" element={<AdminAssetsHub />} />
-      <Route path="/admin/media" element={<AdminAssetsHub />} />
-      <Route path="/admin/comments" element={<AdminEngagementHub />} />
-      <Route path="/admin/seo" element={<AdminOptimizationHub />} />
-      <Route path="/admin/ai-settings" element={<AdminOptimizationHub />} />
-      <Route path="/admin/notifications" element={<AdminEngagementHub />} />
-      <Route path="/admin/ads" element={<AdminMonetizationHub />} />
-      <Route path="/admin/activity" element={<AdminActivity />} />
-      <Route path="/admin/profile" element={<AdminProfile />} />
-      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin/content" element={<ProtectedRoute><AdminContentHub /></ProtectedRoute>} />
+      <Route path="/admin/layouts" element={<ProtectedRoute><AdminLayoutsHub /></ProtectedRoute>} />
+      <Route path="/admin/assets" element={<ProtectedRoute><AdminAssetsHub /></ProtectedRoute>} />
+      <Route path="/admin/publishing" element={<ProtectedRoute><AdminContentHub /></ProtectedRoute>} />
+      <Route path="/admin/optimization" element={<ProtectedRoute><AdminOptimizationHub /></ProtectedRoute>} />
+      <Route path="/admin/engagement" element={<ProtectedRoute><AdminEngagementHub /></ProtectedRoute>} />
+      <Route path="/admin/monetization" element={<ProtectedRoute><AdminMonetizationHub /></ProtectedRoute>} />
+      <Route path="/admin/articles" element={<ProtectedRoute><AdminContentHub /></ProtectedRoute>} />
+      <Route path="/admin/articles/new" element={<ProtectedRoute><AdminEditor /></ProtectedRoute>} />
+      <Route path="/admin/articles/:slug/edit" element={<ProtectedRoute><AdminEditor /></ProtectedRoute>} />
+      <Route path="/admin/review" element={<ProtectedRoute><AdminContentHub /></ProtectedRoute>} />
+      <Route path="/admin/calendar" element={<ProtectedRoute><AdminContentHub /></ProtectedRoute>} />
+      <Route path="/admin/categories" element={<ProtectedRoute><AdminAssetsHub /></ProtectedRoute>} />
+      <Route path="/admin/media" element={<ProtectedRoute><AdminAssetsHub /></ProtectedRoute>} />
+      <Route path="/admin/comments" element={<ProtectedRoute><AdminEngagementHub /></ProtectedRoute>} />
+      <Route path="/admin/seo" element={<ProtectedRoute><AdminOptimizationHub /></ProtectedRoute>} />
+      <Route path="/admin/ai-settings" element={<ProtectedRoute><AdminOptimizationHub /></ProtectedRoute>} />
+      <Route path="/admin/notifications" element={<ProtectedRoute><AdminEngagementHub /></ProtectedRoute>} />
+      <Route path="/admin/ads" element={<ProtectedRoute><AdminMonetizationHub /></ProtectedRoute>} />
+      <Route path="/admin/activity" element={<ProtectedRoute><AdminActivity /></ProtectedRoute>} />
+      <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
+      <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

@@ -1,11 +1,14 @@
 import { useState, type ReactNode } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { adminItems, adminProfileImage } from '../config/navigation';
 import { Avatar, Icon } from '../components/ui';
+import { useAuth } from '../context/AuthContext';
 
 export function AdminLayout({ children, title }: { children: ReactNode; title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([
     { id: '1', text: '3 articles need review', unread: true },
     { id: '2', text: 'Media upload completed', unread: true },
@@ -18,6 +21,11 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
 
   function markRead(id: string) {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, unread: false } : n)));
+  }
+
+  async function handleSignOut() {
+    await logout();
+    navigate('/login', { replace: true });
   }
 
   const unreadCount = notifications.filter((n) => n.unread).length;
@@ -54,12 +62,10 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
               <button className="flex items-center gap-2 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-3 transition hover:bg-slate-50"><Avatar src={adminProfileImage} alt="Senior editor profile" /><span className="text-sm font-semibold text-slate-600">Editor Profile</span><Icon name="expand_more" className="text-base text-slate-400" /></button>
               <div className="invisible absolute right-0 top-12 z-30 w-64 rounded-xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:opacity-100">
                 <div className="border-b border-slate-100 p-3"><p className="font-bold text-primary">Julian Thorne</p><p className="text-sm text-slate-500">Senior Editorial Manager</p></div>
-                {[
-                  ['Profile', '/admin/profile'],
-                  ['Account Settings', '/admin/settings'],
-                  ['Editorial Preferences', '/admin/settings'],
-                  ['Sign Out', '/'],
-                ].map(([item, to]) => <Link key={item} className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50" to={to}>{item}<Icon name="chevron_right" className="text-base" /></Link>)}
+                <Link className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50" to="/admin/profile">Profile<Icon name="chevron_right" className="text-base" /></Link>
+                <Link className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50" to="/admin/settings">Account Settings<Icon name="chevron_right" className="text-base" /></Link>
+                <Link className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50" to="/admin/settings">Editorial Preferences<Icon name="chevron_right" className="text-base" /></Link>
+                <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-50" onClick={() => void handleSignOut()} type="button">Sign Out<Icon name="chevron_right" className="text-base" /></button>
               </div>
             </div>
             <div className="sm:hidden"><Avatar src={adminProfileImage} alt="Senior editor profile" /></div>
