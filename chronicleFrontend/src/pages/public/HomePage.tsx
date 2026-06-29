@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PublicErrorBanner, PublicLoadingBlock, PublicLoadingGrid } from '../../components/public/PublicAsyncState';
 import { ArticleCard } from '../../components/ui';
 import { heroImage } from '../../data';
 import { useArticles } from '../../hooks/useArticles';
@@ -6,8 +7,8 @@ import { useCategories } from '../../hooks/useCategories';
 import { Footer, PublicHeader } from '../../layouts/PublicLayout';
 
 export function HomePage() {
-  const { articles, error: articleError } = useArticles({ sort: 'newest', limit: 5 });
-  const { categories, error: categoryError } = useCategories();
+  const { articles, error: articleError, loading: articlesLoading } = useArticles({ sort: 'newest', limit: 5 });
+  const { categories, error: categoryError, loading: categoriesLoading } = useCategories();
   const error = articleError || categoryError;
 
   const featured = articles[0];
@@ -16,8 +17,8 @@ export function HomePage() {
     <>
       <PublicHeader dark />
       <main className="container-page space-y-16 py-12">
-        {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
-        {featured && (
+        {error && <PublicErrorBanner message={error} />}
+        {articlesLoading ? <PublicLoadingBlock className="h-[420px] lg:h-[600px]" /> : featured && (
           <section className="grid overflow-hidden rounded-xl bg-white editorial-shadow lg:grid-cols-12">
             <div className="relative h-[420px] lg:col-span-7 lg:h-[600px]">
               <img className="h-full w-full object-cover" src={heroImage} alt="Futuristic city skyline" />
@@ -39,9 +40,7 @@ export function HomePage() {
             <h2 className="font-display text-3xl font-bold italic text-primary">Latest Reports</h2>
             <Link className="font-bold uppercase tracking-wider text-secondary" to="/archive">View Archive</Link>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {articles.slice(1, 5).map((article) => <ArticleCard key={article.slug} article={article} compact />)}
-          </div>
+          {articlesLoading ? <PublicLoadingGrid count={4} /> : <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">{articles.slice(1, 5).map((article) => <ArticleCard key={article.slug} article={article} compact />)}</div>}
         </section>
 
         <section className="grid gap-10 border-t border-slate-200 pt-16 lg:grid-cols-12">
@@ -49,7 +48,7 @@ export function HomePage() {
             <h2 className="font-display inline-block border-b-4 border-secondary pb-2 text-3xl font-bold text-primary">Editorial Desk</h2>
             <p className="mt-6 text-lg leading-8 text-slate-600">Curated reporting from trusted editors, with clear taxonomy and transparent publication workflows.</p>
           </div>
-          <div className="grid gap-6 lg:col-span-8 md:grid-cols-2">
+          {categoriesLoading ? <div className="grid gap-6 lg:col-span-8 md:grid-cols-2"><PublicLoadingGrid count={4} /></div> : <div className="grid gap-6 lg:col-span-8 md:grid-cols-2">
             {categories.map((category) => (
               <div key={category.id ?? category.name} className="rounded-xl bg-white p-6 soft-shadow">
                 <div className={`mb-5 h-2 w-14 rounded-full ${category.tone ?? 'bg-secondary'}`} />
@@ -58,7 +57,7 @@ export function HomePage() {
                 <p className="mt-5 text-sm font-bold uppercase tracking-wider text-secondary">{category.count ?? 0} Articles</p>
               </div>
             ))}
-          </div>
+          </div>}
         </section>
 
         <section className="relative overflow-hidden rounded-2xl bg-primary p-10 text-white editorial-shadow lg:p-16">

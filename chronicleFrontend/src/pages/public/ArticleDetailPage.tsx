@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { PublicErrorBanner, PublicLoadingBlock } from '../../components/public/PublicAsyncState';
 import { Avatar, Icon } from '../../components/ui';
 import { authorProfileImage, toSlug } from '../../config/navigation';
 import { getPublicArticleDetail, type PublicArticleDetail } from '../../services';
@@ -35,9 +36,9 @@ export function ArticleDetailPage() {
   if (!article) {
     return (
       <>
-        <PublicHeader />
-        <main className="container-page py-16">
-          <div className="rounded-lg bg-white p-8 text-slate-600">{error || 'Loading article...'}</div>
+      <PublicHeader />
+      <main className="container-page py-16">
+          {error ? <PublicErrorBanner message={error} /> : <PublicLoadingBlock className="h-96" />}
         </main>
         <Footer />
       </>
