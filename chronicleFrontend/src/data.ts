@@ -1,4 +1,5 @@
 export type Article = {
+  id?: string;
   slug: string;
   title: string;
   summary: string;

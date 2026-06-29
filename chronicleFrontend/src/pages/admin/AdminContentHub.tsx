@@ -2,16 +2,34 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
-import { articles } from '../../data';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { Icon } from '../../components/ui';
+import type { Article } from '../../data';
+import { deleteArticle, getArticles, updateArticle } from '../../services';
 
 export function AdminContentHub() {
   const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 350);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    const load = async () => {
+      try {
+        setLoading(true);
+        const result = await getArticles();
+        if (isMounted) setArticles(result);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load articles.');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void load();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const drafts = articles.filter((article) => article.status === 'Draft');
@@ -19,6 +37,16 @@ export function AdminContentHub() {
   const scheduledArticles = articles.filter((article) => article.status === 'Scheduled');
   const publishedArticles = articles.filter((article) => article.status === 'Published');
   const totalViews = publishedArticles.reduce((total, article) => total + Number.parseInt(article.views.replace(/[^\d]/g, ''), 10), 0);
+
+  async function handleDelete(slug: string) {
+    await deleteArticle(slug);
+    setArticles((current) => current.filter((article) => article.slug !== slug));
+  }
+
+  async function handlePublish(slug: string) {
+    const updated = await updateArticle(slug, { status: 'Published' });
+    setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
+  }
 
   return (
     <AdminLayout title="Content">
@@ -55,6 +83,7 @@ export function AdminContentHub() {
         </div>
       ) : (
         <>
+          {error && <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="font-display text-4xl font-bold text-primary">Content Workspace</h1>
@@ -95,7 +124,7 @@ export function AdminContentHub() {
                 <h2 className="font-display text-3xl font-bold text-primary">Content Library</h2>
                 <p className="mt-1 text-slate-600">Filter published, draft, scheduled, review, and archived content in one editorial table.</p>
               </div>
-              <ArticleDataTable articles={articles} showSelection={false} showFilters={false} />
+              <ArticleDataTable articles={articles} showSelection={false} showFilters={false} onDelete={handleDelete} onPublish={handlePublish} />
             </section>
 
             <aside className="space-y-6">

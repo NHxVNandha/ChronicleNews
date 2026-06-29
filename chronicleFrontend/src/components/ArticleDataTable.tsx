@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Article } from '../data';
 import { Icon } from './ui';
@@ -16,16 +16,22 @@ const statusTone: Record<ArticleStatus, string> = {
   Archived: 'bg-slate-200 text-slate-600',
 };
 
-export function ArticleDataTable({ articles, compact = false, showSelection = true, showFilters = true }: { articles: Article[]; compact?: boolean; showSelection?: boolean; showFilters?: boolean }) {
+export function ArticleDataTable({ articles, compact = false, showSelection = true, showFilters = true, onDelete, onPublish }: { articles: Article[]; compact?: boolean; showSelection?: boolean; showFilters?: boolean; onDelete?: (slug: string) => Promise<void> | void; onPublish?: (slug: string) => Promise<void> | void }) {
   const [rows, setRows] = useState(articles);
   const [activeStatus, setActiveStatus] = useState<StatusFilter>('All');
   const [query, setQuery] = useState('');
 
-  const setArticleStatus = (slug: string, status: ArticleStatus) => {
+  useEffect(() => {
+    setRows(articles);
+  }, [articles]);
+
+  const setArticleStatus = async (slug: string, status: ArticleStatus) => {
+    await onPublish?.(slug);
     setRows((currentRows) => currentRows.map((article) => article.slug === slug ? { ...article, status, updatedAt: 'Just now' } : article));
   };
 
-  const deleteArticle = (slug: string) => {
+  const removeArticle = async (slug: string) => {
+    await onDelete?.(slug);
     setRows((currentRows) => currentRows.filter((article) => article.slug !== slug));
   };
 
@@ -110,10 +116,10 @@ export function ArticleDataTable({ articles, compact = false, showSelection = tr
                 {!compact && <td className="px-4 py-4 text-sm font-bold text-primary">{article.views}</td>}
                 <td className="px-4 py-4 text-right align-top">
                   <div className="flex flex-col items-end gap-1.5">
-                    {!compact && article.status !== 'Published' && <button className="rounded-md bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700" onClick={() => setArticleStatus(article.slug, 'Published')} type="button">Publish</button>}
+                    {!compact && article.status !== 'Published' && <button className="rounded-md bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700" onClick={() => void setArticleStatus(article.slug, 'Published')} type="button">Publish</button>}
                     <Link className="inline-flex rounded-md p-1.5 text-slate-500 hover:bg-blue-50 hover:text-secondary" to={`/admin/articles/${article.slug}/edit`}><Icon name="edit" /></Link>
                     <Link className="inline-flex rounded-md p-1.5 text-slate-500 hover:bg-blue-50 hover:text-primary" to={`/news/${article.slug}`}><Icon name="visibility" /></Link>
-                    <button className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600" onClick={() => deleteArticle(article.slug)} type="button"><Icon name="delete" /></button>
+                    <button className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600" onClick={() => void removeArticle(article.slug)} type="button"><Icon name="delete" /></button>
                   </div>
                 </td>
               </tr>

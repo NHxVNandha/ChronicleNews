@@ -1,5 +1,5 @@
-import { articles, type Article } from '../data';
-import { simulateDelay } from './apiClient';
+import type { Article } from '../data';
+import { apiClient } from './apiClient';
 
 export type ArticleFilter = {
   query?: string;
@@ -10,73 +10,258 @@ export type ArticleFilter = {
   limit?: number;
 };
 
-function applyFilters(data: Article[], filter?: ArticleFilter): Article[] {
-  if (!filter) return data;
+type BackendArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  body?: string;
+  categoryId: string;
+  categoryName: string;
+  authorId: string;
+  authorName: string;
+  status: 'Draft' | 'NeedsReview' | 'Scheduled' | 'Published' | 'Archived';
+  featured: boolean;
+  featuredImageUrl?: string | null;
+  views: number;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  scheduledAt?: string | null;
+  publishedAt?: string | null;
+};
 
-  let result = [...data];
+export type ArticleEditorRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  body: string;
+  categoryId: string;
+  categoryName: string;
+  authorName: string;
+  status: Article['status'];
+  featured: boolean;
+  featuredImageUrl?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+};
 
-  if (filter.query) {
-    const q = filter.query.toLowerCase();
-    result = result.filter(
-      (a) =>
-        a.title.toLowerCase().includes(q) ||
-        a.summary.toLowerCase().includes(q) ||
-        a.category.toLowerCase().includes(q) ||
-        a.author.toLowerCase().includes(q),
-    );
-  }
+function toFrontendStatus(status: BackendArticle['status']): Article['status'] {
+  if (status === 'NeedsReview') return 'Needs Review';
+  return status;
+}
 
-  if (filter.category) {
-    result = result.filter((a) => a.category === filter.category);
-  }
+function formatDateLabel(value?: string | null) {
+  if (!value) return 'N/A';
+  return new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
 
-  if (filter.status) {
-    result = result.filter((a) => a.status === filter.status);
-  }
+function formatUpdatedLabel(value: string) {
+  return new Date(value).toLocaleString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
-  if (filter.featured !== undefined) {
-    result = result.filter((a) => a.featured === filter.featured);
-  }
+function formatViews(value: number) {
+  return value >= 1000 ? `${Math.round(value / 1000)}K` : `${value}`;
+}
 
-  if (filter.sort === 'newest') {
-    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  } else if (filter.sort === 'oldest') {
-    result.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  } else if (filter.sort === 'popular') {
-    result.sort((a, b) => parseInt(b.views.replace(/\D/g, '')) - parseInt(a.views.replace(/\D/g, '')));
-  }
+function mapArticle(article: BackendArticle): Article {
+  return {
+    id: article.id,
+    slug: article.slug,
+    title: article.title,
+    summary: article.summary,
+    category: article.categoryName,
+    date: formatDateLabel(article.publishedAt ?? article.createdAt),
+    author: article.authorName,
+    readTime: '5 min read',
+    image: article.featuredImageUrl || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
+    status: toFrontendStatus(article.status),
+    updatedAt: formatUpdatedLabel(article.updatedAt),
+    views: formatViews(article.views),
+    featured: article.featured,
+  };
+}
 
-  if (filter.limit) {
-    result = result.slice(0, filter.limit);
-  }
+async function getArticleEntityBySlug(slug: string) {
+  return apiClient<BackendArticle>(`/api/articles/${slug}`);
+}
 
-  return result;
+function mapEditorArticle(article: BackendArticle): ArticleEditorRecord {
+  return {
+    id: article.id,
+    slug: article.slug,
+    title: article.title,
+    summary: article.summary,
+    body: article.body ?? '',
+    categoryId: article.categoryId,
+    categoryName: article.categoryName,
+    authorName: article.authorName,
+    status: toFrontendStatus(article.status),
+    featured: article.featured,
+    featuredImageUrl: article.featuredImageUrl,
+    seoTitle: article.seoTitle,
+    seoDescription: article.seoDescription,
+  };
 }
 
 export async function getArticles(filter?: ArticleFilter): Promise<Article[]> {
-  return simulateDelay(applyFilters(articles, filter));
+  const params = new URLSearchParams();
+  if (filter?.query) params.set('query', filter.query);
+  if (filter?.featured !== undefined) params.set('featured', String(filter.featured));
+  if (filter?.sort) params.set('sort', filter.sort);
+
+  if (filter?.status) {
+    params.set('status', filter.status === 'Needs Review' ? 'NeedsReview' : filter.status);
+  }
+
+  const response = await apiClient<BackendArticle[]>(`/api/articles?${params.toString()}`);
+  let items = response.map(mapArticle);
+
+  if (filter?.category) {
+    items = items.filter((article) => article.category === filter.category);
+  }
+
+  if (filter?.limit) {
+    items = items.slice(0, filter.limit);
+  }
+
+  return items;
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
-  return simulateDelay(articles.find((a) => a.slug === slug));
+  try {
+    return mapArticle(await getArticleEntityBySlug(slug));
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getArticleEditorBySlug(slug: string): Promise<ArticleEditorRecord | undefined> {
+  try {
+    return mapEditorArticle(await getArticleEntityBySlug(slug));
+  } catch {
+    return undefined;
+  }
 }
 
 export async function getFeaturedArticle(): Promise<Article | undefined> {
-  return simulateDelay(articles.find((a) => a.featured));
+  const items = await getArticles({ featured: true, limit: 1 });
+  return items[0];
 }
 
-export type UpdateArticlePayload = Partial<Pick<Article, 'title' | 'summary' | 'status' | 'category'>>;
+export type UpdateArticlePayload = Partial<Pick<Article, 'title' | 'summary' | 'status' | 'category' | 'featured'>>;
+
+export type SaveArticlePayload = {
+  title: string;
+  summary: string;
+  body: string;
+  category: string;
+  featured?: boolean;
+  featuredImageUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+async function resolveCategoryId(categoryName: string, fallbackCategoryId?: string) {
+  const categories = await apiClient<Array<{ id: string; name: string }>>('/api/categories');
+  const category = categories.find((item) => item.name === categoryName) ?? categories.find((item) => item.id === fallbackCategoryId);
+  if (!category) {
+    throw new Error('Category was not found.');
+  }
+  return category.id;
+}
+
+export async function createArticle(payload: SaveArticlePayload) {
+  const categoryId = await resolveCategoryId(payload.category);
+  const response = await apiClient<BackendArticle>('/api/articles', {
+    method: 'POST',
+    body: JSON.stringify({
+      title: payload.title,
+      summary: payload.summary,
+      body: payload.body,
+      categoryId,
+      featured: payload.featured ?? false,
+      featuredImageUrl: payload.featuredImageUrl,
+      seoTitle: payload.seoTitle,
+      seoDescription: payload.seoDescription,
+      status: 'Draft',
+    }),
+  });
+
+  return mapEditorArticle(response);
+}
+
+export async function saveArticle(slug: string, payload: SaveArticlePayload) {
+  const current = await getArticleEntityBySlug(slug);
+  const categoryId = await resolveCategoryId(payload.category, current.categoryId);
+
+  const response = await apiClient<BackendArticle>(`/api/articles/${current.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      title: payload.title,
+      summary: payload.summary,
+      body: payload.body,
+      categoryId,
+      featured: payload.featured ?? current.featured,
+      featuredImageUrl: payload.featuredImageUrl ?? current.featuredImageUrl,
+      seoTitle: payload.seoTitle ?? current.seoTitle,
+      seoDescription: payload.seoDescription ?? current.seoDescription,
+    }),
+  });
+
+  return mapEditorArticle(response);
+}
+
+export async function publishArticle(slug: string) {
+  const current = await getArticleEntityBySlug(slug);
+  await apiClient(`/api/articles/${current.id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status: 'Published' }),
+  });
+
+  return getArticleEditorBySlug(slug);
+}
 
 export async function updateArticle(slug: string, payload: UpdateArticlePayload): Promise<Article> {
-  const index = articles.findIndex((a) => a.slug === slug);
-  if (index === -1) throw new Error(`Article not found: ${slug}`);
-  articles[index] = { ...articles[index], ...payload };
-  return simulateDelay(articles[index]);
+  const current = await getArticleEntityBySlug(slug);
+  const categoryName = payload.category ?? current.categoryName;
+  const categoryId = await resolveCategoryId(categoryName, current.categoryId);
+
+  await apiClient(`/api/articles/${current.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      title: payload.title ?? current.title,
+      summary: payload.summary ?? current.summary,
+      body: current.body ?? '<p>Updated from admin table.</p>',
+      categoryId,
+      featured: payload.featured ?? current.featured,
+      featuredImageUrl: current.featuredImageUrl,
+      seoTitle: current.seoTitle,
+      seoDescription: current.seoDescription,
+    }),
+  });
+
+  if (payload.status && payload.status !== mapArticle(current).status) {
+    await apiClient(`/api/articles/${current.id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: payload.status === 'Needs Review' ? 'NeedsReview' : payload.status }),
+    });
+  }
+
+  return (await getArticleBySlug(slug))!;
 }
 
 export async function deleteArticle(slug: string): Promise<void> {
-  const index = articles.findIndex((a) => a.slug === slug);
-  if (index === -1) throw new Error(`Article not found: ${slug}`);
-  articles.splice(index, 1);
-  return simulateDelay(undefined, 150);
+  const current = await getArticleEntityBySlug(slug);
+  await apiClient(`/api/articles/${current.id}`, {
+    method: 'DELETE',
+  });
 }
