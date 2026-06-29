@@ -1,39 +1,65 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Icon, ImagePanel } from '../../components/ui';
+import { ArticleCard } from '../../components/ui';
 import { toSlug, topicList } from '../../config/navigation';
+import type { Article } from '../../data';
+import { getArticles } from '../../services';
 import { MinimalFooter, PublicHeader } from '../../layouts/PublicLayout';
 
 export function NewsPage() {
-  const topStories = [
-    {
-      title: 'The Reshaping of International Trade: A Digital Renaissance',
-      category: 'Global Affairs',
-      summary: 'Exploring how emerging economies are bypassing traditional financial structures through decentralized digital networks and new algorithmic protocols.',
-      image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1500&q=85',
-    },
-    { title: 'Quantum Supremacy in Commercial Computing', category: 'Technology', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85' },
-    { title: 'The New Minimalists: Architecture of Silence', category: 'Culture', image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85' },
-  ];
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [error, setError] = useState('');
 
-  const latestNews = [
-    { title: 'Central Banks Pivot on Inflation Targets Amid Global Shifts', category: 'Economics', time: '2 Hours Ago', summary: 'Recent data suggests a fundamental shift in how monetary policy will be conducted over the next decade as labor markets tighten globally.', image: 'https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=900&q=85' },
-    { title: 'Reclaiming the Wild: Success Stories from the Great Northern Corridor', category: 'Environment', time: '4 Hours Ago', summary: 'New biodiversity reports indicate a significant rebound in keystone species across the newly protected territories of the arctic rim.', image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=85' },
-    { title: 'The Neural Link: Breakthroughs in Brain-Computer Interfacing', category: 'Health', time: '6 Hours Ago', summary: 'Clinical trials show unprecedented accuracy in non-invasive neural monitoring, opening new doors for prosthetic technology and rehabilitation.', image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=900&q=85' },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const articleData = await getArticles({ sort: 'newest', limit: 8 });
+        if (isMounted) setArticles(articleData);
+      } catch (loadError) {
+        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load news feed.');
+      }
+    };
+    void load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  const trending = [
-    ['Politics', 'Election Integrity and the Rise of AI-Generated Content'],
-    ['Tech', "Silicon Valley's Great Decentralization Continues"],
-    ['Lifestyle', 'The Psychology of Remote Work: Three Years Later'],
-    ['Markets', 'Why Rare Earth Minerals are the New Oil'],
-  ];
+  const topStories = articles.slice(0, 3);
+  const latestNews = articles.slice(3);
 
   return (
     <>
       <PublicHeader />
       <main className="container-page py-12">
-        <section className="mb-12"><div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-2"><h2 className="font-display text-4xl font-bold text-primary">Top Stories</h2><span className="text-sm font-bold uppercase tracking-[0.2em] text-secondary">Live Updates</span></div><div className="grid gap-6 md:h-[600px] md:grid-cols-12"><article className="group relative min-h-[440px] cursor-pointer overflow-hidden rounded-lg bg-primary md:col-span-8 md:min-h-0"><ImagePanel image={topStories[0].image} className="absolute inset-0 transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/30 to-transparent" /><div className="absolute bottom-0 left-0 z-10 p-8 text-white"><span className="mb-4 inline-block bg-secondary px-3 py-1 text-sm font-bold uppercase tracking-widest">{topStories[0].category}</span><h3 className="font-display mb-4 max-w-3xl text-4xl font-bold leading-tight md:text-5xl group-hover:underline">{topStories[0].title}</h3><p className="line-clamp-2 max-w-2xl text-lg leading-8 text-white/80">{topStories[0].summary}</p><div className="mt-6 flex items-center gap-4 text-sm font-bold text-white/60"><span>Elena Sterling</span><span>•</span><span>12 Min Read</span></div></div></article><div className="flex flex-col gap-6 md:col-span-4">{topStories.slice(1).map((story) => <article key={story.title} className="group relative min-h-[260px] flex-1 cursor-pointer overflow-hidden rounded-lg bg-primary"><ImagePanel image={story.image} className="absolute inset-0 transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-primary/95 to-transparent" /><div className="absolute bottom-0 left-0 z-10 p-6 text-white"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-blue-200">{story.category}</span><h4 className="font-display text-2xl font-semibold leading-tight transition group-hover:text-blue-200">{story.title}</h4></div></article>)}</div></div></section>
-        <div className="grid gap-8 lg:grid-cols-12"><section className="lg:col-span-8"><div className="mb-6 border-b border-slate-200 pb-2"><h2 className="font-display text-3xl font-semibold text-primary">Latest News</h2></div><div className="space-y-10">{latestNews.map((item, index) => <article key={item.title} className={`group grid gap-6 md:grid-cols-3 ${index ? 'border-t border-slate-200 pt-10' : ''}`}><div className="aspect-video overflow-hidden rounded-lg md:col-span-1"><ImagePanel image={item.image} className="h-full w-full cursor-pointer transition duration-500 group-hover:scale-105" /></div><div className="md:col-span-2"><div className="mb-2 flex items-center gap-3"><span className="text-sm font-bold uppercase tracking-wider text-secondary">{item.category}</span><span className="text-slate-400">•</span><time className="text-sm font-bold text-slate-400">{item.time}</time></div><h3 className="font-display mb-2 text-2xl font-semibold text-primary transition group-hover:text-secondary">{item.title}</h3><p className="line-clamp-2 leading-7 text-slate-600">{item.summary}</p></div></article>)}</div><nav className="mt-12 flex items-center justify-center gap-4 border-t border-slate-200 pt-8"><button className="flex items-center gap-2 font-bold text-slate-400 transition hover:text-primary"><Icon name="arrow_back" />Previous</button><div className="flex gap-2"><button className="h-10 w-10 rounded-full bg-primary font-bold text-white">1</button><button className="h-10 w-10 rounded-full font-bold hover:bg-slate-100">2</button><button className="h-10 w-10 rounded-full font-bold hover:bg-slate-100">3</button></div><button className="flex items-center gap-2 font-bold text-primary transition hover:text-secondary">Next<Icon name="arrow_forward" /></button></nav></section><aside className="space-y-12 lg:col-span-4"><div className="rounded-lg border border-slate-200 bg-slate-100 p-6"><h3 className="font-display mb-6 text-2xl font-semibold text-primary">Trending Now</h3><ol className="space-y-6">{trending.map(([topic, title], index) => <li key={title} className="group flex cursor-pointer gap-4"><span className="font-display text-4xl font-bold text-slate-300 transition group-hover:text-blue-200">0{index + 1}</span><div><span className="text-[10px] font-bold uppercase tracking-widest text-secondary">{topic}</span><h4 className="mt-1 font-bold leading-tight transition group-hover:text-secondary">{title}</h4></div></li>)}</ol></div><div className="relative overflow-hidden rounded-lg bg-primary p-6 text-white"><div className="relative z-10"><h3 className="font-display mb-4 text-3xl font-semibold">The Briefing</h3><p className="mb-6 leading-7 text-white/80">Our daily digest of the most critical stories, delivered with context and clarity every morning.</p><input className="mb-4 w-full rounded-md border border-white/20 bg-white/10 px-4 py-3 outline-none placeholder:text-white/40 focus:border-secondary" placeholder="Email Address" /><button className="w-full rounded-md bg-secondary py-3 font-bold text-white">Subscribe Now</button><p className="mt-4 text-center text-xs text-white/40">By subscribing, you agree to our Privacy Policy and Terms.</p></div><div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-secondary/20 blur-3xl" /></div><div className="border-t border-slate-200 pt-6"><h3 className="mb-6 text-sm font-bold uppercase tracking-widest text-slate-500">Explore Topics</h3><div className="flex flex-wrap gap-2">{topicList.map((topic) => <Link key={topic} className="rounded-full bg-slate-200 px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-secondary hover:text-white" to={`/topics/${toSlug(topic)}`}>{topic}</Link>)}</div></div></aside></div>
+        {error && <div className="mb-8 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
+        {topStories.length > 0 && (
+          <section className="mb-12">
+            <div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-2"><h2 className="font-display text-4xl font-bold text-primary">Top Stories</h2><span className="text-sm font-bold uppercase tracking-[0.2em] text-secondary">Live Updates</span></div>
+            <div className="grid gap-8 lg:grid-cols-3">
+              {topStories.map((story, index) => (
+                <article key={story.slug} className={`rounded-xl bg-white p-4 ${index === 0 ? 'lg:col-span-2' : ''}`}>
+                  <Link to={`/news/${story.slug}`} className="block overflow-hidden rounded-lg"><img className="aspect-video w-full object-cover" src={story.image} alt="" /></Link>
+                  <div className="mt-4"><span className="text-sm font-bold uppercase tracking-widest text-secondary">{story.category}</span><Link className="mt-2 block font-display text-2xl font-bold text-primary hover:text-secondary" to={`/news/${story.slug}`}>{story.title}</Link><p className="mt-2 line-clamp-2 text-slate-600">{story.summary}</p></div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="grid gap-8 lg:grid-cols-12">
+          <section className="lg:col-span-8">
+            <div className="mb-6 border-b border-slate-200 pb-2"><h2 className="font-display text-3xl font-semibold text-primary">Latest News</h2></div>
+            <div className="grid gap-6 md:grid-cols-2">
+              {latestNews.map((article) => <ArticleCard key={article.slug} article={article} compact />)}
+            </div>
+          </section>
+          <aside className="space-y-12 lg:col-span-4">
+            <div className="rounded-lg border border-slate-200 bg-slate-100 p-6"><h3 className="font-display mb-6 text-2xl font-semibold text-primary">Trending Topics</h3><ol className="space-y-4">{topicList.slice(0, 4).map((item, index) => <li key={item} className="flex items-start gap-3"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-sm font-bold text-primary">{index + 1}</span><Link className="font-semibold text-slate-700 hover:text-secondary" to={`/topics/${toSlug(item)}`}>{item}</Link></li>)}</ol></div>
+            <div><h3 className="mb-4 border-b border-slate-200 pb-2 text-xl font-bold text-primary">Quick Browse</h3><div className="flex flex-wrap gap-2">{topicList.map((topic) => <Link key={topic} className="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-blue-50 hover:text-secondary" to={`/topics/${toSlug(topic)}`}>{topic}</Link>)}</div></div>
+          </aside>
+        </div>
       </main>
       <MinimalFooter />
     </>

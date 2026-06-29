@@ -48,6 +48,12 @@ export type ArticleEditorRecord = {
   seoDescription?: string | null;
 };
 
+export type PublicArticleDetail = ArticleEditorRecord & {
+  image: string;
+  date: string;
+  readTime: string;
+};
+
 function toFrontendStatus(status: BackendArticle['status']): Article['status'] {
   if (status === 'NeedsReview') return 'Needs Review';
   return status;
@@ -147,6 +153,21 @@ export async function getArticleBySlug(slug: string): Promise<Article | undefine
 export async function getArticleEditorBySlug(slug: string): Promise<ArticleEditorRecord | undefined> {
   try {
     return mapEditorArticle(await getArticleEntityBySlug(slug));
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getPublicArticleDetail(slug: string): Promise<PublicArticleDetail | undefined> {
+  try {
+    const article = await getArticleEntityBySlug(slug);
+    const editor = mapEditorArticle(article);
+    return {
+      ...editor,
+      image: article.featuredImageUrl || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
+      date: formatDateLabel(article.publishedAt ?? article.createdAt),
+      readTime: '5 min read',
+    };
   } catch {
     return undefined;
   }

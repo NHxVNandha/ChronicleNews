@@ -6,13 +6,14 @@ export {
   getArticles,
   getArticleBySlug,
   getArticleEditorBySlug,
+  getPublicArticleDetail,
   getFeaturedArticle,
   saveArticle,
   publishArticle,
   updateArticle,
   deleteArticle,
 } from './articleService';
-export type { ArticleEditorRecord, ArticleFilter, SaveArticlePayload, UpdateArticlePayload } from './articleService';
+export type { ArticleEditorRecord, ArticleFilter, PublicArticleDetail, SaveArticlePayload, UpdateArticlePayload } from './articleService';
 export { getMediaAssets } from './mediaService';
 export { getCategories } from './categoryService';
 export type { Category } from './categoryService';
