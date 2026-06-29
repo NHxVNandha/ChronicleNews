@@ -58,6 +58,15 @@ public static class AppDbSeeder
             new ReviewNote { Id = Guid.Parse("e2222222-2222-2222-2222-222222222222"), ArticleId = SeedIds.Articles.CampusReimagined, CreatedByUserId = SeedIds.Users.Editor, Note = "Perjelas konteks kebijakan universitas dan tambahkan kutipan narasumber.", CreatedAt = now.AddHours(-9) },
         };
 
+        var mediaAssets = new[]
+        {
+            new MediaAsset { Id = SeedIds.MediaAssets.UrbanSkyline, Name = "urban-skyline-v1.jpg", Type = "Image", SizeLabel = "12.4 MB", ImageUrl = "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=900&q=85", UsageCount = 12, HasAltText = true, Credit = "Chronicle Visual Desk", License = "Owned", Category = "Front Page", CreatedAt = now.AddDays(-2), UpdatedAt = now.AddDays(-2) },
+            new MediaAsset { Id = SeedIds.MediaAssets.CeoPortrait, Name = "ceo-portrait-series.png", Type = "Image", SizeLabel = "8.1 MB", ImageUrl = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=900&q=85", UsageCount = 4, HasAltText = false, Credit = "Studio Portrait Unit", License = "Licensed", Category = "Profiles", CreatedAt = now.AddDays(-4), UpdatedAt = now.AddDays(-4) },
+            new MediaAsset { Id = SeedIds.MediaAssets.RainforestBroll, Name = "rainforest-broll-h264.mp4", Type = "Video", SizeLabel = "45.8 MB", ImageUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=85", UsageCount = 2, HasAltText = true, Credit = "Field Reporter Pool", License = "Owned", Category = "Environment", CreatedAt = now.AddDays(-5), UpdatedAt = now.AddDays(-5) },
+            new MediaAsset { Id = SeedIds.MediaAssets.TechAbstract, Name = "tech-abstract-blue.jpg", Type = "Image", SizeLabel = "6.2 MB", ImageUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85", UsageCount = 8, HasAltText = true, Credit = "Design Systems", License = "Owned", Category = "Technology", CreatedAt = now.AddDays(-6), UpdatedAt = now.AddDays(-6) },
+            new MediaAsset { Id = SeedIds.MediaAssets.EditorialRoom, Name = "editorial-room.jpg", Type = "Image", SizeLabel = "9.5 MB", ImageUrl = "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=85", UsageCount = 0, HasAltText = false, Credit = "Editorial Floor", License = "Pending", Category = "Newsroom", CreatedAt = now.AddDays(-7), UpdatedAt = now.AddDays(-7) },
+        };
+
         var activityLogs = new[]
         {
             new ActivityLog { Id = Guid.Parse("f1111111-1111-1111-1111-111111111111"), UserId = SeedIds.Users.Admin, Action = "login", EntityType = "Auth", Description = "User logged in.", CreatedAt = now.AddHours(-8) },
@@ -72,6 +81,7 @@ public static class AppDbSeeder
         await context.Categories.AddRangeAsync(categories, cancellationToken);
         await context.Articles.AddRangeAsync(articles, cancellationToken);
         await context.ReviewNotes.AddRangeAsync(reviewNotes, cancellationToken);
+        await context.MediaAssets.AddRangeAsync(mediaAssets, cancellationToken);
         await context.ActivityLogs.AddRangeAsync(activityLogs, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }

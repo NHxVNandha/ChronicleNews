@@ -12,6 +12,7 @@ public interface IAppDbContext
     DbSet<Article> Articles { get; }
     DbSet<ReviewNote> ReviewNotes { get; }
     DbSet<ActivityLog> ActivityLogs { get; }
+    DbSet<MediaAsset> MediaAssets { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

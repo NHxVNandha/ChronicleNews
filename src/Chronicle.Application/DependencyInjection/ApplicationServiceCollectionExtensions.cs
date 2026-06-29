@@ -3,6 +3,7 @@ using Chronicle.Application.Abstractions.Articles;
 using Chronicle.Application.Abstractions.ActivityLogs;
 using Chronicle.Application.Abstractions.Categories;
 using Chronicle.Application.Abstractions.Dashboard;
+using Chronicle.Application.Abstractions.Media;
 using Chronicle.Application.Abstractions.Roles;
 using Chronicle.Application.Abstractions.Users;
 using Chronicle.Application.ActivityLogs.Services;
@@ -16,6 +17,7 @@ using Chronicle.Application.Categories.Dtos;
 using Chronicle.Application.Categories.Services;
 using Chronicle.Application.Categories.Validators;
 using Chronicle.Application.Dashboard.Services;
+using Chronicle.Application.Media.Services;
 using Chronicle.Application.Roles.Services;
 using Chronicle.Application.Users.Dtos;
 using Chronicle.Application.Users.Services;
@@ -36,6 +38,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IMediaService, MediaService>();
 
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenRequestValidator>();

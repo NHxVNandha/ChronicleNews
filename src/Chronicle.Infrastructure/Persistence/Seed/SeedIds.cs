@@ -35,4 +35,13 @@ public static class SeedIds
         public static readonly Guid GeneticResilience = Guid.Parse("d5555555-5555-5555-5555-555555555555");
         public static readonly Guid TruthMachine = Guid.Parse("d6666666-6666-6666-6666-666666666666");
     }
+
+    public static class MediaAssets
+    {
+        public static readonly Guid UrbanSkyline = Guid.Parse("e1111111-1111-1111-1111-111111111111");
+        public static readonly Guid CeoPortrait = Guid.Parse("e2222222-2222-2222-2222-222222222222");
+        public static readonly Guid RainforestBroll = Guid.Parse("e3333333-3333-3333-3333-333333333333");
+        public static readonly Guid TechAbstract = Guid.Parse("e4444444-4444-4444-4444-444444444444");
+        public static readonly Guid EditorialRoom = Guid.Parse("e5555555-5555-5555-5555-555555555555");
+    }
 }
