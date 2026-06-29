@@ -22,3 +22,5 @@ export { getDashboardSummary, getDashboardPipeline, getDashboardRecentActivity }
 export type { DashboardSummary, DashboardPipeline, DashboardRecentActivity } from './dashboardService';
 export { getActivityLogs } from './activityLogService';
 export type { ActivityLogFilter, ActivityLogItem } from './activityLogService';
+export { getRoles, getUsers, updateUserRole, updateUserStatus } from './userService';
+export type { RoleRecord, UserRecord } from './userService';
