@@ -158,20 +158,9 @@ public static class AppDbSeeder
         await AddMissingAsync(context.Campaigns, campaigns, cancellationToken);
         await AddMissingAsync(context.ActivityLogs, activityLogs, cancellationToken);
 
-        if (!await context.SeoSettings.AnyAsync(x => x.Id == seoSettings.Id, cancellationToken))
-        {
-            await context.SeoSettings.AddAsync(seoSettings, cancellationToken);
-        }
-
-        if (!await context.AiSettings.AnyAsync(x => x.Id == aiSettings.Id, cancellationToken))
-        {
-            await context.AiSettings.AddAsync(aiSettings, cancellationToken);
-        }
-
-        if (!await context.PublicSiteSettings.AnyAsync(x => x.Id == publicSiteSettings.Id, cancellationToken))
-        {
-            await context.PublicSiteSettings.AddAsync(publicSiteSettings, cancellationToken);
-        }
+        await AddMissingAsync(context.SeoSettings, [seoSettings], cancellationToken);
+        await AddMissingAsync(context.AiSettings, [aiSettings], cancellationToken);
+        await AddMissingAsync(context.PublicSiteSettings, [publicSiteSettings], cancellationToken);
 
         await context.SaveChangesAsync(cancellationToken);
     }
