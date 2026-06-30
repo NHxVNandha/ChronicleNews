@@ -147,7 +147,6 @@ export function AdminOptimizationHub() {
           </div>
         </div>
       ) : (
-      <>
       <div className="space-y-8 lg:space-y-10">
       <AdminPageHeader
         eyebrow="Quality Control"
@@ -521,7 +520,7 @@ export function AdminOptimizationHub() {
           </div>}
 
         </div>
-      </>
+      </div>
       )}
     </AdminLayout>
   );
