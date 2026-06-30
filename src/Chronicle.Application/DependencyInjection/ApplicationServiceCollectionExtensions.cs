@@ -6,6 +6,7 @@ using Chronicle.Application.Abstractions.Dashboard;
 using Chronicle.Application.Abstractions.Engagement;
 using Chronicle.Application.Abstractions.Media;
 using Chronicle.Application.Abstractions.Optimization;
+using Chronicle.Application.Abstractions.PublicSite;
 using Chronicle.Application.Abstractions.Roles;
 using Chronicle.Application.Abstractions.Users;
 using Chronicle.Application.ActivityLogs.Services;
@@ -26,6 +27,7 @@ using Chronicle.Application.Media.Services;
 using Chronicle.Application.Optimization.Dtos;
 using Chronicle.Application.Optimization.Services;
 using Chronicle.Application.Optimization.Validators;
+using Chronicle.Application.PublicSite.Services;
 using Chronicle.Application.Roles.Services;
 using Chronicle.Application.Users.Dtos;
 using Chronicle.Application.Users.Services;
@@ -49,6 +51,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IMediaService, MediaService>();
         services.AddScoped<IEngagementService, EngagementService>();
         services.AddScoped<IOptimizationService, OptimizationService>();
+        services.AddScoped<IPublicSiteService, PublicSiteService>();
 
         services.AddScoped<IValidator<LoginRequest>, LoginRequestValidator>();
         services.AddScoped<IValidator<RefreshTokenRequest>, RefreshTokenRequestValidator>();

@@ -68,4 +68,9 @@ public static class SeedIds
         public static readonly Guid SeoSettings = Guid.Parse("b6111111-1111-1111-1111-111111111111");
         public static readonly Guid AiSettings = Guid.Parse("b6222222-2222-2222-2222-222222222222");
     }
+
+    public static class PublicSite
+    {
+        public static readonly Guid Settings = Guid.Parse("b6333333-3333-3333-3333-333333333333");
+    }
 }

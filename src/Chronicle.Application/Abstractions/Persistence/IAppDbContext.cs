@@ -18,6 +18,7 @@ public interface IAppDbContext
     DbSet<Campaign> Campaigns { get; }
     DbSet<SeoSettings> SeoSettings { get; }
     DbSet<AiSettings> AiSettings { get; }
+    DbSet<PublicSiteSettings> PublicSiteSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

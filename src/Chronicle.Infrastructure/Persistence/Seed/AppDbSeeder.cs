@@ -119,6 +119,25 @@ public static class AppDbSeeder
             UpdatedAt = now.AddDays(-1),
         };
 
+        var publicSiteSettings = new PublicSiteSettings
+        {
+            Id = SeedIds.PublicSite.Settings,
+            BrandName = "Chronicle",
+            AboutHeadline = "Journalism of Integrity and Depth",
+            AboutSummary = "Chronicle News is dedicated to uncovering the stories that define our era, prioritizing objective truth over sensationalism.",
+            MissionTitle = "Our Mission",
+            MissionBody = "In an age of fragmented attention and fleeting headlines, Chronicle stands as a sanctuary for deep reporting. We believe that journalism is a public trust, requiring rigorous fact-checking and an uncompromising commitment to nuance.",
+            MissionBodySecondary = "Our team of investigative journalists, political analysts, and cultural critics work across six continents to bring readers stories that challenge perspectives and ignite meaningful dialogue. We do not just report the news; we explain why it matters.",
+            EditorialDeskSummary = "Led by award-winning editors who have dedicated their careers to the pursuit of truth.",
+            ContactHeading = "Send a tip, correction, or newsroom inquiry.",
+            ContactSummary = "Whether you have a story lead, a press inquiry, or feedback on our reporting, our editorial desk is listening.",
+            EditorialEmail = "editorial@chronicle.press",
+            SecureTipLine = "Signal: +44 20 7946 0123",
+            HeadquartersAddress = "12 Fleet Street, London, EC4Y 1AU",
+            CreatedAt = now.AddDays(-30),
+            UpdatedAt = now.AddDays(-1),
+        };
+
         var activityLogs = new[]
         {
             new ActivityLog { Id = Guid.Parse("f1111111-1111-1111-1111-111111111111"), UserId = SeedIds.Users.Admin, Action = "login", EntityType = "Auth", Description = "User logged in.", CreatedAt = now.AddHours(-8) },
@@ -147,6 +166,11 @@ public static class AppDbSeeder
         if (!await context.AiSettings.AnyAsync(x => x.Id == aiSettings.Id, cancellationToken))
         {
             await context.AiSettings.AddAsync(aiSettings, cancellationToken);
+        }
+
+        if (!await context.PublicSiteSettings.AnyAsync(x => x.Id == publicSiteSettings.Id, cancellationToken))
+        {
+            await context.PublicSiteSettings.AddAsync(publicSiteSettings, cancellationToken);
         }
 
         await context.SaveChangesAsync(cancellationToken);

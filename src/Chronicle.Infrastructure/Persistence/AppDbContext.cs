@@ -19,6 +19,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Campaign> Campaigns => Set<Campaign>();
     public DbSet<SeoSettings> SeoSettings => Set<SeoSettings>();
     public DbSet<AiSettings> AiSettings => Set<AiSettings>();
+    public DbSet<PublicSiteSettings> PublicSiteSettings => Set<PublicSiteSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

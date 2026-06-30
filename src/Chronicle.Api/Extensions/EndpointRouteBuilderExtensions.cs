@@ -7,6 +7,7 @@ using Chronicle.Api.Endpoints.Dashboard;
 using Chronicle.Api.Endpoints.Engagement;
 using Chronicle.Api.Endpoints.Media;
 using Chronicle.Api.Endpoints.Optimization;
+using Chronicle.Api.Endpoints.PublicSite;
 using Chronicle.Api.Endpoints.Roles;
 using Chronicle.Api.Endpoints.Users;
 
@@ -26,6 +27,7 @@ public static class EndpointRouteBuilderExtensions
         app.MapMediaEndpoints();
         app.MapEngagementEndpoints();
         app.MapOptimizationEndpoints();
+        app.MapPublicSiteEndpoints();
 
         var api = app.MapGroup("/api");
 
