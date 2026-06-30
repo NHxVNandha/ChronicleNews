@@ -13,9 +13,12 @@ public sealed class TestWebApplicationFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Development");
         builder.ConfigureAppConfiguration((_, configBuilder) =>
         {
+            var testConnectionString = Environment.GetEnvironmentVariable("TEST_SQL_CONNECTION_STRING")
+                ?? $"Server=localhost;Database={_databaseName};Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+
             configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:DefaultConnection"] = $"Server=localhost;Database={_databaseName};Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
+                ["ConnectionStrings:DefaultConnection"] = testConnectionString,
                 ["Jwt:Issuer"] = "Chronicle.Api",
                 ["Jwt:Audience"] = "Chronicle.Frontend",
                 ["Jwt:Key"] = "ChronicleSuperSecretKey1234567890",

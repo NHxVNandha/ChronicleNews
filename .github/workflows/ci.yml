@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Chronicle123!
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Chronicle123! -Q 'SELECT 1' -C || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      TEST_SQL_CONNECTION_STRING: Server=localhost,1433;Database=ChronicleCiTests;User Id=sa;Password=Chronicle123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore backend
+        run: dotnet restore Chronicle.slnx
+
+      - name: Build backend
+        run: dotnet build Chronicle.slnx --no-restore
+
+      - name: Run backend integration tests
+        run: dotnet test tests/Chronicle.IntegrationTests/Chronicle.IntegrationTests.csproj --no-restore
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: chronicleFrontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: chronicleFrontend
+
+      - name: Run frontend tests
+        run: npm run test
+        working-directory: chronicleFrontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: chronicleFrontend
