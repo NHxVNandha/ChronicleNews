@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { Icon } from '../../components/ui';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { getCategories, getMediaAssets, type Category } from '../../services';
@@ -59,38 +60,42 @@ export function AdminAssetsHub() {
   return (
     <AdminLayout title="Assets">
       {error && <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="font-display text-4xl font-bold text-primary">Assets Library</h1>
-          <p className="mt-2 max-w-3xl text-slate-600">Manage newsroom media, validate asset quality, and keep image, video, and file usage organized in one editorial media workspace.</p>
-        </div>
-        <button className="rounded-lg bg-primary px-5 py-3 font-bold text-white" type="button">Upload Media</button>
-      </div>
+      <div className="space-y-8 lg:space-y-10">
+        <AdminPageHeader
+          eyebrow="Media Operations"
+          title="Assets Library"
+          description="Manage newsroom media, validate asset quality, and keep image, video, and file usage organized in one editorial media workspace."
+          actions={<button className="rounded-xl bg-secondary px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-950/20" type="button">Upload Media</button>}
+        />
 
-      <section className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="grid place-items-center rounded-xl border-2 border-dashed border-slate-300 bg-white p-10 text-center soft-shadow">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <AdminStatCard label="Storage Used" value="81.2 GB" helper="Media storage pool" icon="storage" tone="blue" variant="primary" />
+          <AdminStatCard label="Missing Alt Text" value={missingAlt} helper="Needs editorial fixes" icon="warning" tone="amber" />
+          <AdminStatCard label="Unused Files" value={unusedAssets} helper="Unused media assets" icon="folder_delete" />
+          <AdminStatCard label="License Pending" value="1" helper="Needs rights review" icon="gavel" tone="red" />
+        </div>
+
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid place-items-center rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
           <div>
             <Icon name="cloud_upload" className="text-5xl text-secondary" />
             <h2 className="font-display mt-3 text-3xl font-bold text-primary">Drop assets to upload</h2>
             <p className="mt-2 max-w-xl text-slate-600">Images, video, PDF, and editorial files for articles and multimedia packages.</p>
           </div>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-bold text-primary">Asset Health</h2>
-            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{missingAlt} need fixes</span>
-          </div>
+        <AdminPanel action={<AdminStatusBadge status="pending">{missingAlt} need fixes</AdminStatusBadge>}>
+          <AdminSectionHeader title="Asset Health" bordered={false} />
           <div className="space-y-3">
             <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-slate-600">Storage used</span><span className="font-bold text-primary">81.2 GB</span></div>
             <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-slate-600">Missing alt text</span><span className="font-bold text-amber-700">{missingAlt}</span></div>
             <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-slate-600">Unused files</span><span className="font-bold text-primary">{unusedAssets}</span></div>
             <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3"><span className="text-slate-600">License pending</span><span className="font-bold text-red-700">1</span></div>
           </div>
-        </div>
+        </AdminPanel>
       </section>
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white soft-shadow">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
@@ -152,8 +157,8 @@ export function AdminAssetsHub() {
         </section>
 
         <aside>
-          <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-            <h2 className="mb-4 font-bold text-primary">Taxonomy Health</h2>
+          <AdminPanel>
+            <AdminSectionHeader title="Taxonomy Health" bordered={false} />
             <div className="space-y-3">
                {categories.map((category) => (
                  <div key={category.name} className="rounded-lg bg-slate-50 p-3">
@@ -167,8 +172,9 @@ export function AdminAssetsHub() {
                   </div>
                ))}
             </div>
-          </section>
+          </AdminPanel>
         </aside>
+      </div>
       </div>
     </AdminLayout>
   );
