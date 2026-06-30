@@ -29,3 +29,5 @@ export { addCommentReply, changeCommentStatus, createCampaign, getCampaigns, get
 export type { Campaign, CommentStatus as EngagementCommentStatus, ModerationComment, SubscriberSummary } from './engagementService';
 export { getSeoSettings, updateSeoSettings, getAiSettings, updateAiSettings } from './optimizationService';
 export type { AiSettings, SeoSettings } from './optimizationService';
+export { getPublicSiteSettings } from './publicSiteService';
+export type { PublicSiteSettings } from './publicSiteService';
