@@ -27,6 +27,7 @@ await app.InitializeApplicationAsync();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
+app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAppSwagger();
