@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
 import { Icon } from '../../components/ui';
 import { useTeamAccess } from '../../hooks/admin/useTeamAccess';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
@@ -103,10 +104,12 @@ export function AdminSettings() {
 
   return (
     <AdminLayout title="Workspace Settings">
-      <div className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-primary">Workspace Settings</h1>
-        <p className="mt-2 max-w-3xl text-slate-600">Configure editorial identity, publishing workflow, team roles, permissions, and integrations.</p>
-      </div>
+      <div className="space-y-8 lg:space-y-10">
+      <AdminPageHeader
+        eyebrow="Workspace Controls"
+        title="Workspace Settings"
+        description="Configure editorial identity, publishing workflow, team roles, permissions, and integrations."
+      />
 
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1.5">
         {tabs.map((tab) => (
@@ -117,7 +120,7 @@ export function AdminSettings() {
       </div>
 
       {activeTab === 'general' && (
-        <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+        <AdminPanel>
           <div className="mb-6 flex items-center gap-6">
             <div className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-primary text-3xl font-bold text-white">C</div>
             <div className="flex-1">
@@ -141,19 +144,13 @@ export function AdminSettings() {
             </div>
             <button className="rounded-lg bg-primary px-6 py-3 font-bold !text-white" type="button">Save Changes</button>
           </div>
-        </section>
+        </AdminPanel>
       )}
 
       {activeTab === 'workflow' && (
-        <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-bold text-primary">Publishing Rules</h3>
-              <p className="text-sm text-slate-600">Toggle editorial gates and automated publishing behaviors.</p>
-            </div>
-            <span className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-bold text-secondary">{enabledRuleCount} / {publishingRules.length} active</span>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+        <AdminPanel>
+          <AdminSectionHeader title="Publishing Rules" description="Toggle editorial gates and automated publishing behaviors." meta={<span className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-bold text-secondary">{enabledRuleCount} / {publishingRules.length} active</span>} bordered={false} />
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {publishingRules.map((rule) => (
               <button key={rule.label} className={`flex items-center justify-between rounded-xl border p-5 text-left transition ${rule.enabled ? 'border-secondary bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`} type="button" onClick={() => togglePublishingRule(rule.label)}>
                 <span className="font-semibold text-slate-700">{rule.label}</span>
@@ -163,51 +160,22 @@ export function AdminSettings() {
               </button>
             ))}
           </div>
-        </section>
+        </AdminPanel>
       )}
 
       {activeTab === 'team' && (
         <div className="space-y-6">
           {teamError && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{teamError}</div>}
-          <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-            <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-primary">Team Access Management</h3>
-                <p className="text-sm text-slate-600">Define role capacity, granular permissions, and assign members.</p>
-              </div>
-              <button className="flex w-fit items-center gap-2 rounded-lg bg-secondary px-5 py-3 font-bold !text-white" type="button"><Icon name="person_add" /> Invite User</button>
-            </div>
+          <AdminPanel action={<button className="flex w-fit items-center gap-2 rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20" type="button"><Icon name="person_add" className="text-[18px]" /> Invite User</button>}>
+            <AdminSectionHeader title="Team Access Management" description="Define role capacity, granular permissions, and assign members." bordered={false} />
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {roleCounts.map((item) => (
-                <article key={item.role} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-                  <div className="mb-4 flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <span className={`mb-3 inline-flex rounded-full px-3 py-1 text-sm font-bold ${item.tone}`}>{item.role}</span>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-display text-3xl font-bold text-primary">{item.users}</p>
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">users</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <label className="flex-1"><span className="mb-1 block text-xs font-bold uppercase tracking-widest text-slate-500">Label</span><input className="w-full rounded-lg border border-slate-200 bg-white p-3 outline-none focus:border-secondary" defaultValue={item.role} /></label>
-                    <label className="w-20"><span className="mb-1 block text-xs font-bold uppercase tracking-widest text-slate-500">Users</span><input className="w-full rounded-lg border border-slate-200 bg-white p-3 outline-none focus:border-secondary" value={item.users} readOnly type="number" /></label>
-                  </div>
-                  <div className="mt-3 flex gap-2">
-                    <button className="flex-1 rounded-lg bg-primary px-3 py-2 text-sm font-bold !text-white" type="button">Update</button>
-                    <button className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-600" type="button">Reset</button>
-                  </div>
-                </article>
+                <AdminStatCard key={item.role} label={item.role} value={item.users} helper={item.description} tone={item.role === 'Admin' ? 'blue' : item.role === 'Editor' ? 'amber' : 'default'} />
               ))}
             </div>
-          </section>
+          </AdminPanel>
 
-          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 p-5">
-              <h3 className="text-lg font-bold text-primary">Permission Matrix</h3>
-              <p className="text-sm text-slate-500">Toggle capabilities available to each role.</p>
-            </div>
+          <AdminPanel title="Permission Matrix" description="Toggle capabilities available to each role." className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-slate-50 text-xs uppercase tracking-widest text-slate-500">
@@ -236,16 +204,9 @@ export function AdminSettings() {
                 </tbody>
               </table>
             </div>
-          </section>
+          </AdminPanel>
 
-          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <div className="flex items-center justify-between border-b border-slate-200 p-5">
-              <div>
-                <h3 className="text-lg font-bold text-primary">Team Members</h3>
-                <p className="text-sm text-slate-500">Assign members into Admin, Editor, Author, or Reviewer access.</p>
-              </div>
-              <button className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold" type="button">Manage Invites</button>
-            </div>
+          <AdminPanel title="Team Members" description="Assign members into Admin, Editor, Author, or Reviewer access." action={<button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700" type="button">Manage Invites</button>} className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-slate-50 text-xs uppercase tracking-widest text-slate-500">
@@ -279,15 +240,14 @@ export function AdminSettings() {
                 </tbody>
               </table>
             </div>
-          </section>
+          </AdminPanel>
         </div>
       )}
 
       {activeTab === 'integrations' && (
         <div className="space-y-6">
           <section className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-              <h3 className="mb-4 text-lg font-bold text-primary">API Keys</h3>
+            <AdminPanel title="API Keys">
               <div className="space-y-3">
                 <div className="flex items-center justify-between rounded-lg bg-slate-50 p-4">
                   <div>
@@ -305,9 +265,8 @@ export function AdminSettings() {
                 </div>
               </div>
               <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-white py-3 font-bold text-primary transition hover:border-secondary" type="button"><Icon name="add" /> Generate New Key</button>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-              <h3 className="mb-4 text-lg font-bold text-primary">Webhooks</h3>
+            </AdminPanel>
+            <AdminPanel title="Webhooks">
               <div className="space-y-3">
                 <div className="flex items-center justify-between rounded-lg bg-slate-50 p-4">
                   <div>
@@ -325,10 +284,10 @@ export function AdminSettings() {
                 </div>
               </div>
               <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-white py-3 font-bold text-primary transition hover:border-secondary" type="button"><Icon name="add" /> Add Webhook</button>
-            </div>
+            </AdminPanel>
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+          <AdminPanel>
             <div className="flex items-start gap-4">
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-slate-100 text-slate-500"><Icon name="cloud_download" /></span>
               <div className="flex-1">
@@ -341,9 +300,10 @@ export function AdminSettings() {
                 </div>
               </div>
             </div>
-          </section>
+          </AdminPanel>
         </div>
       )}
+      </div>
     </AdminLayout>
   );
 }

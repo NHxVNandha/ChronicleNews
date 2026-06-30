@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { Field, Icon } from '../../components/ui';
@@ -147,37 +148,39 @@ export function AdminOptimizationHub() {
         </div>
       ) : (
       <>
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="font-display text-4xl font-bold text-primary">Optimization Center</h1>
-          <p className="mt-2 max-w-3xl text-slate-600">SEO, content quality, AI/KBBI editorial correction, and performance analytics in one quality-control command center.</p>
-        </div>
-        <div className="flex flex-col items-start gap-3">
-          {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
-          <button className="w-fit rounded-lg bg-primary px-5 py-3 font-bold !text-white disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
-        </div>
+      <div className="space-y-8 lg:space-y-10">
+      <AdminPageHeader
+        eyebrow="Quality Control"
+        title="Optimization Center"
+        description="SEO, content quality, AI/KBBI editorial correction, and performance analytics in one command center."
+        actions={
+          <div className="flex flex-col items-start gap-3">
+            {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
+            <button className="w-fit rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
+          </div>
+        }
+      />
+      {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <AdminStatCard label="SEO Score" value={seoScore} delta={`${scoreFactors.length} tracked factors`} icon="travel_explore" tone="blue" variant="primary" />
+        <AdminStatCard label="Readability" value={readabilityScore} delta={readabilityLabel} icon="description" tone={readabilityScore >= 70 ? 'emerald' : 'amber'} />
+        <AdminStatCard label="Keyword Density" value={`${keywordDensity}%`} delta={`Keyword: ${currentKeyword}`} icon="search" />
+        <AdminStatCard label="AI Provider" value={aiSettings?.provider ?? 'OpenAI'} delta={aiSettings?.modelName ?? 'Model not set'} icon="auto_fix_high" />
       </div>
-      {error && <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
       <div className="min-w-0 space-y-6">
-        <div className="flex gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
+        <div className="flex gap-1 rounded-2xl border border-slate-200 bg-slate-100 p-1.5">
           {optTabs.map((tab) => (
-            <button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold transition ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)}>
+            <button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)}>
               <Icon name={tab.icon} className="text-lg" />{tab.label}
             </button>
           ))}
         </div>
 
           {currentTab === 'seo' && <div className="space-y-5">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-secondary text-white"><Icon name="travel_explore" /></span>
-              <div className="flex-1">
-                <h2 className="font-display text-2xl font-bold text-primary">Search Visibility</h2>
-                <p className="text-sm text-slate-500">How your site appears in search engines and social platforms</p>
-              </div>
-            </div>
-
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+            <AdminPanel>
+              <AdminSectionHeader icon={<Icon name="travel_explore" className="text-[20px]" />} title="Search Visibility" description="How your site appears in search engines and social platforms." bordered={false} />
               <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-center gap-5">
                   <div className="relative">
@@ -192,16 +195,10 @@ export function AdminOptimizationHub() {
                   {scoreFactors.map((factor) => <ScoreBar key={factor.label} {...factor} />)}
                 </div>
               </div>
-            </section>
+            </AdminPanel>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-primary">SEO Management</h3>
-                  <p className="mt-1 text-sm text-slate-600">Meta defaults, keyword analysis, structured data, and link health.</p>
-                </div>
-                <span className="rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-bold text-emerald-700">Auto-scan enabled</span>
-              </div>
+            <AdminPanel action={<AdminStatusBadge status="approved">Auto-scan enabled</AdminStatusBadge>}>
+              <AdminSectionHeader title="SEO Management" description="Meta defaults, keyword analysis, structured data, and link health." bordered={false} />
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="space-y-4">
                   <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Meta Title</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" value={seoSettings?.defaultMetaTitle ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, defaultMetaTitle: e.target.value } : current)} placeholder="Chronicle News — Independent Journalism" /></label>
@@ -251,9 +248,9 @@ export function AdminOptimizationHub() {
                   </div>
                 </div>
               </div>
-            </section>
+            </AdminPanel>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+            <AdminPanel>
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h3 className="font-display text-2xl font-bold text-primary">Social Preview</h3>
@@ -299,16 +296,10 @@ export function AdminOptimizationHub() {
                   <p className="mt-2 text-center text-xs text-slate-400">Live preview — updates as you type</p>
                 </div>
               </div>
-            </section>
+            </AdminPanel>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-primary">Sitemap & Crawl</h3>
-                  <p className="mt-1 text-sm text-slate-600">XML sitemap, robots.txt, and crawl settings for search engine bots.</p>
-                </div>
-                <span className="rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-bold text-emerald-700">Indexed: 1,482 pages</span>
-              </div>
+            <AdminPanel action={<AdminStatusBadge status="approved">Indexed: 1,482 pages</AdminStatusBadge>}>
+              <AdminSectionHeader title="Sitemap & Crawl" description="XML sitemap, robots.txt, and crawl settings for search engine bots." bordered={false} />
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between rounded-lg border border-slate-200 p-4">
@@ -344,19 +335,13 @@ export function AdminOptimizationHub() {
                   </div>
                 </div>
               </div>
-            </section>
+            </AdminPanel>
           </div>}
 
           {currentTab === 'content' && <div className="space-y-5">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-600 text-white"><Icon name="description" /></span>
-              <div className="flex-1">
-                <h2 className="font-display text-2xl font-bold text-primary">Content Quality</h2>
-                <p className="text-sm text-slate-500">Article-level quality checks: readability, links, images, and originality</p>
-              </div>
-            </div>
+            <AdminSectionHeader icon={<Icon name="description" className="text-[20px]" />} title="Content Quality" description="Article-level quality checks: readability, links, images, and originality" />
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+            <AdminPanel>
               <div className="grid gap-6 lg:grid-cols-4">
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
                   <div className="flex items-center justify-between">
@@ -412,9 +397,9 @@ export function AdminOptimizationHub() {
                   <button className="mt-4 w-full rounded-lg bg-white py-2 text-sm font-bold text-primary shadow-sm" type="button">Run Full Check</button>
                 </div>
               </div>
-            </section>
+            </AdminPanel>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+            <AdminPanel>
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h3 className="font-display text-2xl font-bold text-primary">Content Performance</h3>
@@ -454,15 +439,12 @@ export function AdminOptimizationHub() {
                   </tbody>
                 </table>
               </div>
-            </section>
+            </AdminPanel>
           </div>}
 
           {currentTab === 'ai' && <div className="space-y-5">
-            <section className="rounded-xl border border-purple-100 bg-purple-50 p-6 soft-shadow">
-              <div className="mb-5">
-                <h3 className="font-display text-2xl font-bold text-primary">AI & KBBI Settings</h3>
-                <p className="mt-1 text-sm text-slate-600">Configure provider, model, KBBI rules, and editor approval safety.</p>
-              </div>
+            <AdminPanel tone="accent">
+              <AdminSectionHeader title="AI & KBBI Settings" description="Configure provider, model, KBBI rules, and editor approval safety." bordered={false} />
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <label className="block"><span className="mb-2 block font-bold text-slate-600">Provider</span><select className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.provider ?? 'OpenAI'} onChange={(e) => setAiSettings((current) => current ? { ...current, provider: e.target.value } : current)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label>
                 <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Model Name</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.modelName ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, modelName: e.target.value } : current)} /></label>
@@ -472,10 +454,10 @@ export function AdminOptimizationHub() {
                 <label className="block"><span className="mb-2 block font-bold text-slate-600">Max Tokens</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.maxTokens ?? 0} onChange={(e) => setAiSettings((current) => current ? { ...current, maxTokens: Number(e.target.value) } : current)} type="number" /></label>
               </div>
               <label className="mt-5 block"><span className="mb-2 block font-bold text-slate-600">System Prompt Editorial</span><textarea className="w-full rounded-lg border border-purple-100 bg-white p-4 outline-none focus:border-secondary" rows={4} value={aiSettings?.systemPrompt ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, systemPrompt: e.target.value } : current)} /></label>
-            </section>
+            </AdminPanel>
 
             <section className="grid gap-6 lg:grid-cols-2">
-              <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+              <AdminPanel title="Editorial Language Rules">
                 <h3 className="text-lg font-bold text-primary">Editorial Language Rules</h3>
                 <div className="mt-5 grid gap-4">
                   <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Bahasa Utama</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.primaryLanguage ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, primaryLanguage: e.target.value } : current)} /></label>
@@ -483,8 +465,8 @@ export function AdminOptimizationHub() {
                   <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Gaya Penulisan</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.writingStyle ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, writingStyle: e.target.value } : current)} /></label>
                   <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Nada</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.tone ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, tone: e.target.value } : current)} /></label>
                 </div>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
+              </AdminPanel>
+              <AdminPanel title="Rules Checklist">
                 <h3 className="mb-5 text-lg font-bold text-primary">Rules Checklist</h3>
                 {rules.map((rule, index) => (
                   <div key={rule} className="flex items-center justify-between border-b border-slate-100 py-3 last:border-b-0">
@@ -494,18 +476,11 @@ export function AdminOptimizationHub() {
                     </span>
                   </div>
                 ))}
-              </div>
+              </AdminPanel>
             </section>
 
-            <section className="rounded-xl border border-slate-200 bg-white p-6 soft-shadow">
-              <div className="mb-6 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Section</p>
-                  <h3 className="font-display text-2xl font-bold text-primary">Safety & Guardrails</h3>
-                  <p className="mt-1 text-sm text-slate-600">Safeguards to ensure AI-assisted edits never bypass human judgment.</p>
-                </div>
-                <span className="rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-bold text-emerald-700">Editor approval required</span>
-              </div>
+            <AdminPanel action={<AdminStatusBadge status="approved">Editor approval required</AdminStatusBadge>}>
+              <AdminSectionHeader title="Safety & Guardrails" description="Safeguards to ensure AI-assisted edits never bypass human judgment." bordered={false} />
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-center">
@@ -542,7 +517,7 @@ export function AdminOptimizationHub() {
                   </div>
                 </div>
               </div>
-            </section>
+            </AdminPanel>
           </div>}
 
         </div>

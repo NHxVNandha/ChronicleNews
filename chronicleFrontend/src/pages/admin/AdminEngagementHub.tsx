@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
@@ -10,13 +11,6 @@ type SocialPost = {
   text: string;
   scheduled: string;
   status: 'Scheduled' | 'Published' | 'Draft';
-};
-
-const statusStyles: Record<CommentStatus, string> = {
-  Pending: 'bg-amber-100 text-amber-700',
-  Approved: 'bg-emerald-100 text-emerald-700',
-  Hidden: 'bg-slate-100 text-slate-600',
-  Flagged: 'bg-red-100 text-red-700',
 };
 
 const statusTabs: { key: CommentStatus | 'All'; label: string }[] = [
@@ -191,26 +185,45 @@ export function AdminEngagementHub() {
           <SkeletonBlock className="h-[600px]" />
         </div>
       ) : (
-      <div className="space-y-10">
+      <div className="space-y-10 lg:space-y-12">
         {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
-        {/* ── Section 1: Comments Moderation ── */}
-        <div className="space-y-5">
-          <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-amber-600 text-white"><Icon name="forum" /></span>
-            <div className="flex-1">
-              <h2 className="font-display text-2xl font-bold text-primary">Comments Moderation</h2>
-              <p className="text-sm text-slate-500">Internal editorial comments, corrections, and review notes across articles</p>
-            </div>
-          </div>
+        <AdminPageHeader
+          eyebrow="Audience Operations"
+          title="Engagement Center"
+          description="Comments, campaigns, and audience signals grouped into one modern moderation and outreach workspace."
+        />
 
-          <div className="rounded-xl border border-slate-200 bg-white soft-shadow">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {newsletterStats.map((stat, index) => (
+            <AdminStatCard
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              delta={stat.delta}
+              icon={index === 0 ? 'groups' : index === 1 ? 'mark_email_read' : index === 2 ? 'ads_click' : 'error'}
+              tone={index === 0 ? 'blue' : 'default'}
+              variant={index === 0 ? 'primary' : 'compact'}
+            />
+          ))}
+        </div>
+
+        {/* ── Section 1: Comments Moderation ── */}
+        <AdminPanel>
+          <AdminSectionHeader
+            icon={<Icon name="forum" className="text-[20px]" />}
+            title="Comments Moderation"
+            description="Internal editorial comments, corrections, and review notes across articles."
+            bordered={false}
+          />
+
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="flex flex-col gap-4 border-b border-slate-200 p-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 {statusTabs.map((tab) => (
                   <button
                     key={tab.key}
-                    className={`rounded-lg px-4 py-2 text-sm font-bold transition ${statusFilter === tab.key ? 'bg-primary !text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                    className={`rounded-xl px-4 py-2 text-sm font-bold transition ${statusFilter === tab.key ? 'bg-slate-950 !text-white shadow-lg shadow-slate-950/10' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                     type="button"
                     onClick={() => setStatusFilter(tab.key)}
                   >
@@ -222,14 +235,14 @@ export function AdminEngagementHub() {
                 <div className="relative">
                   <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
                   <input
-                    className="w-48 rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-secondary"
+                    className="w-48 rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
                     placeholder="Search comments..."
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                   />
                 </div>
                 <select
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-secondary"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
                   value={articleFilter}
                   onChange={(e) => setArticleFilter(e.target.value)}
                 >
@@ -237,7 +250,7 @@ export function AdminEngagementHub() {
                   {sampleArticles.map((title) => <option key={title} value={title}>{title}</option>)}
                 </select>
                 <button
-                  className="rounded-lg bg-emerald-100 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-200"
+                  className="rounded-xl bg-emerald-100 px-4 py-2.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-200"
                   type="button"
                   onClick={() => setComments((current) => current.map((c) => ({ ...c, status: 'Approved' as CommentStatus })))}
                 >
@@ -248,8 +261,8 @@ export function AdminEngagementHub() {
 
             <div className="divide-y divide-slate-200">
               {filteredComments.length === 0 ? (
-                <div className="flex flex-col items-center gap-3 py-16 text-slate-400">
-                  <Icon name="inbox" className="text-5xl" />
+                  <div className="flex flex-col items-center gap-3 py-16 text-slate-400">
+                    <Icon name="inbox" className="text-5xl" />
                   <p className="text-lg font-semibold">No comments found</p>
                   <p className="text-sm">Try adjusting your filters or search terms.</p>
                 </div>
@@ -259,14 +272,14 @@ export function AdminEngagementHub() {
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-3">
-                          <span className={`rounded-full px-3 py-1 text-xs font-bold ${statusStyles[comment.status]}`}>{comment.status}</span>
+                          <AdminStatusBadge status={comment.status === 'Pending' ? 'pending' : comment.status === 'Approved' ? 'approved' : comment.status === 'Hidden' ? 'hidden' : 'flagged'}>{comment.status}</AdminStatusBadge>
                           <span className="text-sm font-semibold text-slate-700">{comment.author}</span>
                           <span className="text-xs text-slate-400">{comment.date}</span>
                           <span className="text-xs text-slate-400">on <span className="font-semibold text-slate-600">{comment.articleTitle}</span></span>
                         </div>
                         <p className="mt-3 text-primary">{comment.text}</p>
                         {comment.replies.length > 0 && (
-                          <div className="ml-6 mt-3 space-y-2 border-l-2 border-slate-200 pl-4">
+                          <div className="ml-6 mt-3 space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4">
                             {comment.replies.map((reply, i) => (
                               <div key={i}>
                                 <div className="flex items-center gap-2 text-xs">
@@ -287,23 +300,23 @@ export function AdminEngagementHub() {
                               onChange={(e) => setReplyText(e.target.value)}
                               onKeyDown={(e) => e.key === 'Enter' && handleReply(comment.id)}
                             />
-                            <button className="rounded-lg bg-secondary px-4 py-2 text-sm font-bold !text-white" type="button" onClick={() => handleReply(comment.id)}>Send</button>
-                            <button className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold text-slate-600" type="button" onClick={() => { setReplyOpen(null); setReplyText(''); }}>Cancel</button>
+                            <button className="rounded-xl bg-secondary px-4 py-2 text-sm font-bold !text-white" type="button" onClick={() => handleReply(comment.id)}>Send</button>
+                            <button className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-bold text-slate-600" type="button" onClick={() => { setReplyOpen(null); setReplyText(''); }}>Cancel</button>
                           </div>
                         )}
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         {comment.status !== 'Approved' && (
-                          <button className="rounded-lg bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Approved')}>Approve</button>
+                          <button className="rounded-xl bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Approved')}>Approve</button>
                         )}
                         {comment.status !== 'Hidden' && (
-                          <button className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Hidden')}>Hide</button>
+                          <button className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Hidden')}>Hide</button>
                         )}
                         {comment.status !== 'Flagged' && (
-                          <button className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Flagged')}>Flag</button>
+                          <button className="rounded-xl bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200" type="button" onClick={() => void updateCommentStatus(comment.id, 'Flagged')}>Flag</button>
                         )}
                         <button
-                          className={`rounded-lg px-3 py-2 text-xs font-bold ${replyOpen === comment.id ? 'bg-primary !text-white' : 'bg-blue-100 text-secondary hover:bg-blue-200'}`}
+                          className={`rounded-xl px-3 py-2 text-xs font-bold ${replyOpen === comment.id ? 'bg-slate-950 !text-white' : 'bg-blue-100 text-secondary hover:bg-blue-200'}`}
                           type="button"
                           onClick={() => setReplyOpen(replyOpen === comment.id ? null : comment.id)}
                         >
@@ -316,7 +329,7 @@ export function AdminEngagementHub() {
               )}
             </div>
           </div>
-        </div>
+        </AdminPanel>
 
         {/* ── Section 2: Audience Analytics ── */}
         <div className="space-y-5">
@@ -328,16 +341,9 @@ export function AdminEngagementHub() {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {readerMetrics.map((metric) => (
-              <div key={metric.label} className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-5 soft-shadow">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-purple-50 text-purple-600"><Icon name={metric.icon} className="text-xl" /></span>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{metric.label}</p>
-                  <p className="mt-1 text-2xl font-bold text-primary">{metric.value}</p>
-                  <p className="text-sm font-bold text-emerald-600">{metric.delta}</p>
-                </div>
-              </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {readerMetrics.map((metric, index) => (
+              <AdminStatCard key={metric.label} label={metric.label} value={metric.value} delta={metric.delta} icon={metric.icon} tone={index === 0 ? 'blue' : 'default'} variant={index === 0 ? 'primary' : 'compact'} />
             ))}
           </div>
 
