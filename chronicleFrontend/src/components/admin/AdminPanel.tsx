@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 type AdminPanelProps = {
   title?: string;
@@ -29,7 +30,12 @@ export function AdminPanel({ title, description, action, children, tone = 'defau
   const hasHeader = title || description || action;
 
   return (
-    <section className={`rounded-2xl ${toneClasses[tone]} ${className}`}>
+    <motion.section
+      className={`rounded-2xl ${toneClasses[tone]} ${className}`}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+    >
       {hasHeader && (
         <div className={`mb-5 border-b ${headerBorder} ${paddingClasses[padding]} pb-4`}>
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -42,6 +48,6 @@ export function AdminPanel({ title, description, action, children, tone = 'defau
         </div>
       )}
       <div className={`${hasHeader ? 'px-6 pb-6' : paddingClasses[padding]} ${contentClassName}`}>{children}</div>
-    </section>
+    </motion.section>
   );
 }

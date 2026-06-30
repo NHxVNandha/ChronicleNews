@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 type AdminInfoCardProps = {
   leading?: ReactNode;
@@ -11,7 +12,11 @@ type AdminInfoCardProps = {
 
 export function AdminInfoCard({ leading, title, description, meta, action, className = '' }: AdminInfoCardProps) {
   return (
-    <div className={`flex items-start gap-4 rounded-xl p-3 transition duration-200 hover:bg-slate-50 ${className}`}>
+    <motion.div
+      className={`flex items-start gap-4 rounded-xl p-3 transition duration-200 hover:bg-slate-50 ${className}`}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.16, ease: 'easeOut' }}
+    >
       {leading && <div className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">{leading}</div>}
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-slate-800">{title}</p>
@@ -19,6 +24,6 @@ export function AdminInfoCard({ leading, title, description, meta, action, class
       </div>
       {meta && <div className="shrink-0">{meta}</div>}
       {action && <div className="shrink-0">{action}</div>}
-    </div>
+    </motion.div>
   );
 }

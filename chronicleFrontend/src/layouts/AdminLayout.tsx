@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { adminItems, adminProfileImage } from '../config/navigation';
 import { Avatar, Icon } from '../components/ui';
@@ -94,17 +95,19 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
           </div>
           </div>
         </header>
+        <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[90] bg-slate-950/50 backdrop-blur-sm md:hidden">
-            <aside className="flex h-full w-[86vw] max-w-sm flex-col bg-slate-950 p-6 text-slate-300 shadow-2xl">
+          <motion.div className="fixed inset-0 z-[90] bg-slate-950/50 backdrop-blur-sm md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.aside className="flex h-full w-[86vw] max-w-sm flex-col bg-slate-950 p-6 text-slate-300 shadow-2xl" initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ duration: 0.22, ease: 'easeOut' }}>
               <div className="mb-8 flex items-center justify-between"><div><h1 className="font-display text-3xl font-bold text-white">CHRONICLE</h1><p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">Editorial Desk</p></div><button className="rounded-xl border border-white/10 bg-white/5 p-2 text-white" onClick={() => setIsOpen(false)} type="button" aria-label="Close admin navigation"><Icon name="close" className="text-[20px]" /></button></div>
               <nav className="flex flex-1 flex-col gap-1.5 overflow-y-auto">
                 {adminItems.map((item) => <NavLink key={item.to} end={item.to === '/admin'} to={item.to} onClick={() => setIsOpen(false)} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-semibold transition ${isActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}><span className={`grid h-9 w-9 place-items-center rounded-xl ${item.to === '/admin' ? 'bg-white/5' : 'bg-white/5'}`}><Icon name={item.icon} className="text-[20px]" /></span>{item.label}</NavLink>)}
               </nav>
               <Link to="/admin/articles/new" onClick={() => setIsOpen(false)} className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-secondary py-3.5 text-sm font-bold !text-white shadow-lg shadow-blue-950/20"><Icon name="add" className="text-[20px]" /> Create New Post</Link>
-            </aside>
-          </div>
+            </motion.aside>
+          </motion.div>
         )}
+        </AnimatePresence>
         <div className="p-6 lg:p-10 xl:p-12">{children}</div>
       </main>
     </div>
