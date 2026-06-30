@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Icon } from '../../components/ui';
+import { useActivityLogs } from '../../hooks/admin/useActivityLogs';
 import { AdminLayout } from '../../layouts/AdminLayout';
-import { getActivityLogs, type ActivityLogItem } from '../../services';
 
 function getActivityIcon(action: string) {
   if (action.includes('publish')) return 'publish';
@@ -19,29 +18,7 @@ function formatRelativeTime(value: string) {
 }
 
 export function AdminActivity() {
-  const [events, setEvents] = useState<ActivityLogItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const result = await getActivityLogs({ page: 1, pageSize: 20 });
-        if (isMounted) setEvents(result);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load activity logs.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { events, loading, error } = useActivityLogs();
 
   return (
     <AdminLayout title="Activity Log">

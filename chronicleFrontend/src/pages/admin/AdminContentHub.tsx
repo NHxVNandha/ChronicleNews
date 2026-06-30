@@ -1,36 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { Icon } from '../../components/ui';
-import type { Article } from '../../data';
-import { deleteArticle, getArticles, updateArticle } from '../../services';
+import { useAdminArticles } from '../../hooks/admin/useAdminArticles';
+import { deleteArticle, updateArticle } from '../../services';
 
 export function AdminContentHub() {
-  const [loading, setLoading] = useState(true);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const result = await getArticles();
-        if (isMounted) setArticles(result);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load articles.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { articles, setArticles, loading, error } = useAdminArticles();
 
   const drafts = articles.filter((article) => article.status === 'Draft');
   const reviewQueue = articles.filter((article) => article.status === 'Needs Review' || article.status === 'Draft');

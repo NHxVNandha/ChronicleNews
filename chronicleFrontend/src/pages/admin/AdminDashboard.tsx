@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonBlock, SkeletonLine, SkeletonStatCard } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
+import { useDashboardData } from '../../hooks/admin/useDashboardData';
 import { AdminLayout } from '../../layouts/AdminLayout';
-import { getArticles, getDashboardPipeline, getDashboardRecentActivity, getDashboardSummary, type DashboardRecentActivity } from '../../services';
-import type { Article } from '../../data';
 
 const snapshotData = [
   { label: 'Readers Online', value: '1,247', icon: 'online_prediction', color: 'bg-blue-50 text-secondary' },
@@ -27,42 +25,7 @@ const scheduleSnapshot = [
 ];
 
 export function AdminDashboard() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [summary, setSummary] = useState({ publishedArticles: 0, draftQueue: 0, mediaAssets: 0, monthlyReaders: 0 });
-  const [pipeline, setPipeline] = useState({ draft: 0, needsReview: 0, scheduled: 0, published: 0 });
-  const [recentActivity, setRecentActivity] = useState<DashboardRecentActivity[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const [summaryData, pipelineData, activityData, articlesData] = await Promise.all([
-          getDashboardSummary(),
-          getDashboardPipeline(),
-          getDashboardRecentActivity(),
-          getArticles({ sort: 'popular', limit: 4 }),
-        ]);
-
-        if (!isMounted) return;
-        setSummary(summaryData);
-        setPipeline(pipelineData);
-        setRecentActivity(activityData);
-        setArticles(articlesData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load dashboard data.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { summary, pipeline, recentActivity, articles, loading, error } = useDashboardData();
 
   const metrics = [
     { label: 'Published Articles', value: `${summary.publishedArticles}`, delta: `${summary.mediaAssets.toLocaleString()} assets`, icon: 'article' },

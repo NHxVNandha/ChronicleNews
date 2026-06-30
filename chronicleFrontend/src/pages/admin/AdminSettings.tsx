@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Icon } from '../../components/ui';
+import { useTeamAccess } from '../../hooks/admin/useTeamAccess';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { AdminLayout } from '../../layouts/AdminLayout';
-import { getRoles, getUsers, updateUserRole, updateUserStatus, type RoleRecord } from '../../services';
+import { updateUserRole, updateUserStatus } from '../../services';
 
 type RoleName = 'Admin' | 'Editor' | 'Author' | 'Reviewer';
-
-type TeamMember = {
-  id: string;
-  name: string;
-  role: RoleName;
-  roleId?: string;
-  email: string;
-  status: 'Active' | 'Invited' | 'Disabled';
-  lastLoginAt?: string | null;
-};
 
 const teamAccessRoles: { role: RoleName; users: number; description: string; tone: string }[] = [
   { role: 'Admin', users: 3, description: 'Full workspace control, billing, settings, and role management.', tone: 'bg-primary text-white' },
@@ -35,42 +26,8 @@ const tabs: { id: TabName; label: string; icon: string }[] = [
 ];
 
 export function AdminSettings() {
-  const [loading, setLoading] = useState(true);
+  const { availableRoles, teamMembers, setTeamMembers, loading, error: teamError, setError: setTeamError } = useTeamAccess();
   const [activeTab, setActiveTab] = useState<TabName>('general');
-  const [teamError, setTeamError] = useState('');
-  const [availableRoles, setAvailableRoles] = useState<RoleRecord[]>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const [roles, users] = await Promise.all([getRoles(), getUsers()]);
-
-        if (!isMounted) return;
-
-        setAvailableRoles(roles);
-        setTeamMembers(users.map((user) => ({
-          id: user.id,
-          name: user.fullName,
-          role: user.role as RoleName,
-          roleId: roles.find((role) => role.name === user.role)?.id,
-          email: user.email,
-          status: user.status,
-          lastLoginAt: user.lastLoginAt,
-        })));
-      } catch (loadError) {
-        if (isMounted) setTeamError(loadError instanceof Error ? loadError.message : 'Failed to load team settings.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const [publishingRules, setPublishingRules] = useState([
     { label: 'Require editor approval', enabled: true },
@@ -79,12 +36,6 @@ export function AdminSettings() {
     { label: 'Send publish notifications', enabled: false },
   ]);
   const [permissionMatrix, setPermissionMatrix] = useState<Record<RoleName, boolean[]>>({ Admin: [true, true, true, true, true], Editor: [true, true, true, true, false], Author: [true, true, false, true, false], Reviewer: [false, true, false, false, false] });
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-    { id: '1', name: 'Julian Thorne', role: 'Admin', email: 'julian@chronicle.press', status: 'Active' },
-    { id: '2', name: 'Eleanor Vance', role: 'Editor', email: 'eleanor@chronicle.press', status: 'Active' },
-    { id: '3', name: 'Marcus Chen', role: 'Author', email: 'marcus@chronicle.press', status: 'Invited' },
-    { id: '4', name: 'Sasha Grey', role: 'Reviewer', email: 'sasha@chronicle.press', status: 'Active' },
-  ]);
 
   function togglePublishingRule(label: string) {
     setPublishingRules((current) => current.map((rule) => rule.label === label ? { ...rule, enabled: !rule.enabled } : rule));
