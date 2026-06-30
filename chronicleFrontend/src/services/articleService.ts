@@ -1,5 +1,9 @@
 import type { Article } from '../data';
 import { apiClient } from './apiClient';
+import { mapArticle, mapEditorArticle, mapPublicArticleDetail } from './mappers/articleMappers';
+import type { ArticleEditorRecord, BackendArticle, BackendCategory, PublicArticleDetail } from './models/articleModels';
+
+export type { ArticleEditorRecord, PublicArticleDetail } from './models/articleModels';
 
 export type ArticleFilter = {
   query?: string;
@@ -10,112 +14,8 @@ export type ArticleFilter = {
   limit?: number;
 };
 
-type BackendArticle = {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string;
-  body?: string;
-  categoryId: string;
-  categoryName: string;
-  authorId: string;
-  authorName: string;
-  status: 'Draft' | 'NeedsReview' | 'Scheduled' | 'Published' | 'Archived';
-  featured: boolean;
-  featuredImageUrl?: string | null;
-  views: number;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  scheduledAt?: string | null;
-  publishedAt?: string | null;
-};
-
-export type ArticleEditorRecord = {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string;
-  body: string;
-  categoryId: string;
-  categoryName: string;
-  authorName: string;
-  status: Article['status'];
-  featured: boolean;
-  featuredImageUrl?: string | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
-};
-
-export type PublicArticleDetail = ArticleEditorRecord & {
-  image: string;
-  date: string;
-  readTime: string;
-};
-
-function toFrontendStatus(status: BackendArticle['status']): Article['status'] {
-  if (status === 'NeedsReview') return 'Needs Review';
-  return status;
-}
-
-function formatDateLabel(value?: string | null) {
-  if (!value) return 'N/A';
-  return new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function formatUpdatedLabel(value: string) {
-  return new Date(value).toLocaleString('en-US', {
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function formatViews(value: number) {
-  return value >= 1000 ? `${Math.round(value / 1000)}K` : `${value}`;
-}
-
-function mapArticle(article: BackendArticle): Article {
-  return {
-    id: article.id,
-    slug: article.slug,
-    title: article.title,
-    summary: article.summary,
-    category: article.categoryName,
-    date: formatDateLabel(article.publishedAt ?? article.createdAt),
-    author: article.authorName,
-    readTime: '5 min read',
-    image: article.featuredImageUrl || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
-    status: toFrontendStatus(article.status),
-    updatedAt: formatUpdatedLabel(article.updatedAt),
-    views: formatViews(article.views),
-    featured: article.featured,
-  };
-}
-
 async function getArticleEntityBySlug(slug: string) {
   return apiClient<BackendArticle>(`/api/articles/${slug}`);
-}
-
-function mapEditorArticle(article: BackendArticle): ArticleEditorRecord {
-  return {
-    id: article.id,
-    slug: article.slug,
-    title: article.title,
-    summary: article.summary,
-    body: article.body ?? '',
-    categoryId: article.categoryId,
-    categoryName: article.categoryName,
-    authorName: article.authorName,
-    status: toFrontendStatus(article.status),
-    featured: article.featured,
-    featuredImageUrl: article.featuredImageUrl,
-    seoTitle: article.seoTitle,
-    seoDescription: article.seoDescription,
-  };
 }
 
 export async function getArticles(filter?: ArticleFilter): Promise<Article[]> {
@@ -160,14 +60,7 @@ export async function getArticleEditorBySlug(slug: string): Promise<ArticleEdito
 
 export async function getPublicArticleDetail(slug: string): Promise<PublicArticleDetail | undefined> {
   try {
-    const article = await getArticleEntityBySlug(slug);
-    const editor = mapEditorArticle(article);
-    return {
-      ...editor,
-      image: article.featuredImageUrl || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
-      date: formatDateLabel(article.publishedAt ?? article.createdAt),
-      readTime: '5 min read',
-    };
+    return mapPublicArticleDetail(await getArticleEntityBySlug(slug));
   } catch {
     return undefined;
   }
@@ -192,7 +85,7 @@ export type SaveArticlePayload = {
 };
 
 async function resolveCategoryId(categoryName: string, fallbackCategoryId?: string) {
-  const categories = await apiClient<Array<{ id: string; name: string }>>('/api/categories');
+  const categories = await apiClient<BackendCategory[]>('/api/categories');
   const category = categories.find((item) => item.name === categoryName) ?? categories.find((item) => item.id === fallbackCategoryId);
   if (!category) {
     throw new Error('Category was not found.');
