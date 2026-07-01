@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { queryKeys } from '../../lib/queryKeys';
 import { getRoles, getUsers, type RoleRecord } from '../../services';
 
 export type TeamMemberRecord = {
@@ -18,7 +19,7 @@ export function useTeamAccess() {
   const [error, setError] = useState('');
 
   const teamAccessQuery = useQuery({
-    queryKey: ['team', 'access'],
+    queryKey: queryKeys.team.access,
     queryFn: async () => {
       const [roles, users] = await Promise.all([getRoles(), getUsers()]);
       return { roles, users };

@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { queryKeys } from '../../lib/queryKeys';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { Field, Icon } from '../../components/ui';
 import { articles } from '../../data';
@@ -117,7 +118,7 @@ export function AdminOptimizationHub() {
 
   const formValues = watch();
   const optimizationQuery = useQuery({
-    queryKey: ['optimization', 'settings'],
+    queryKey: queryKeys.optimization.settings,
     queryFn: async () => {
       const [seo, ai] = await Promise.all([getSeoSettings(), getAiSettings()]);
       return { seo, ai };
@@ -214,7 +215,7 @@ export function AdminOptimizationHub() {
         writingStyle: ai.writingStyle,
         tone: ai.tone,
       });
-      void queryClient.invalidateQueries({ queryKey: ['optimization', 'settings'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.optimization.settings });
       setStatusMessage('Optimization settings saved.');
       toast.success('Optimization settings saved.');
       setTimeout(() => setStatusMessage(''), 3000);

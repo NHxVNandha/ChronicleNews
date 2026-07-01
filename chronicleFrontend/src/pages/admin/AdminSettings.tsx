@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
 import { Icon } from '../../components/ui';
+import { queryKeys } from '../../lib/queryKeys';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useTeamAccess } from '../../hooks/admin/useTeamAccess';
@@ -74,7 +75,7 @@ export function AdminSettings() {
   const updateUserRoleMutation = useMutation({
     mutationFn: ({ memberId, fullName, roleId }: { memberId: string; fullName: string; roleId: string }) => updateUserRole(memberId, { fullName, roleId }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['team', 'access'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.team.access });
       toast.success('Role updated.');
     },
     onError: (updateError) => {
@@ -87,7 +88,7 @@ export function AdminSettings() {
   const updateUserStatusMutation = useMutation({
     mutationFn: ({ memberId, status }: { memberId: string; status: 'Active' | 'Disabled' }) => updateUserStatus(memberId, status),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['team', 'access'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.team.access });
       toast.success('Status updated.');
     },
     onError: (updateError) => {

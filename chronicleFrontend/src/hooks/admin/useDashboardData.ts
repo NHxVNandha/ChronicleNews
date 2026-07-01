@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Article } from '../../data';
+import { queryKeys } from '../../lib/queryKeys';
 import { getArticles, getDashboardPipeline, getDashboardRecentActivity, getDashboardSummary, type DashboardPipeline, type DashboardRecentActivity, type DashboardSummary } from '../../services';
 
 const defaultSummary: DashboardSummary = { publishedArticles: 0, draftQueue: 0, mediaAssets: 0, monthlyReaders: 0 };
@@ -7,7 +8,7 @@ const defaultPipeline: DashboardPipeline = { draft: 0, needsReview: 0, scheduled
 
 export function useDashboardData() {
   const dashboardQuery = useQuery({
-    queryKey: ['dashboard', 'overview'],
+    queryKey: queryKeys.dashboard.overview,
     queryFn: async () => {
       const [summary, pipeline, recentActivity, articles] = await Promise.all([
         getDashboardSummary(),

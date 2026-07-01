@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import type { Article } from '../../data';
+import { queryKeys } from '../../lib/queryKeys';
 import { getArticles, type ArticleFilter } from '../../services';
 
 export function useAdminArticles(filter?: ArticleFilter) {
   const [articles, setArticles] = useState<Article[]>([]);
   const filterKey = useMemo(() => JSON.stringify(filter ?? {}), [filter]);
   const articlesQuery = useQuery({
-    queryKey: ['articles', filterKey],
+    queryKey: queryKeys.articles.list(filterKey),
     queryFn: () => getArticles(filter),
   });
 

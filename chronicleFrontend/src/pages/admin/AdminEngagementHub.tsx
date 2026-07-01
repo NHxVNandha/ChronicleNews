@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { queryKeys } from '../../lib/queryKeys';
 import { SkeletonBlock } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
 import { addCommentReply, changeCommentStatus, createCampaign, getCampaigns, getComments, getSubscriberSummary, type Campaign as NotifCampaign, type EngagementCommentStatus as CommentStatus, type ModerationComment, type SubscriberSummary } from '../../services';
@@ -114,7 +115,7 @@ export function AdminEngagementHub() {
 
   const pushValues = watchPush();
   const engagementQuery = useQuery({
-    queryKey: ['engagement', 'overview'],
+    queryKey: queryKeys.engagement.overview,
     queryFn: async () => {
       const [comments, campaigns, subscribers] = await Promise.all([
         getComments(),
@@ -146,7 +147,7 @@ export function AdminEngagementHub() {
     mutationFn: ({ id, status }: { id: string; status: CommentStatus }) => changeCommentStatus(id, status),
     onSuccess: (updated, variables) => {
       setComments((current) => current.map((c) => c.id === variables.id ? updated : c));
-      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
       toast.success(`Comment ${variables.status.toLowerCase()}.`);
     },
   });
@@ -157,7 +158,7 @@ export function AdminEngagementHub() {
       setComments((current) => current.map((c) => c.id === variables.commentId ? { ...c, replies: [...c.replies, reply] } : c));
       setReplyText('');
       setReplyOpen(null);
-      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
       toast.success('Reply added.');
     },
   });
@@ -166,7 +167,7 @@ export function AdminEngagementHub() {
     mutationFn: ({ title, type, audience }: { title: string; type: 'Newsletter'; audience: string }) => createCampaign({ title, type, audience }),
     onSuccess: (created) => {
       setCampaigns((current) => [created, ...current]);
-      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
       toast.success('Campaign created.');
     },
   });
