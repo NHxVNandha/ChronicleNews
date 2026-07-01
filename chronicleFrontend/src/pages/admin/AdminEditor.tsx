@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -31,6 +32,7 @@ const defaultEditorValues: EditorFormValues = {
 };
 
 export function AdminEditor() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { slug } = useParams();
   const [editingArticle, setEditingArticle] = useState<ArticleEditorRecord | undefined>();
@@ -101,25 +103,69 @@ export function AdminEditor() {
     });
   }
 
+  const saveDraftMutation = useMutation({
+    mutationFn: async (values: EditorFormValues) => {
+      if (slug && isEditing) {
+        return saveArticle(slug, { ...values, featured: editingArticle?.featured ?? false });
+      }
+
+      return createArticle({ ...values, featured: false });
+    },
+    onSuccess: (article) => {
+      syncEditorForm(article);
+      if (!slug || !isEditing) {
+        navigate(`/admin/articles/${article.slug}/edit`, { replace: true });
+      }
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+      void queryClient.invalidateQueries({ queryKey: ['dashboard', 'overview'] });
+      setStatusMessage('Draft saved successfully.');
+      toast.success('Draft saved.');
+      setTimeout(() => setStatusMessage(''), 3000);
+    },
+    onError: (saveError) => {
+      const message = saveError instanceof Error ? saveError.message : 'Failed to save article.';
+      setError(message);
+      toast.error(message);
+    },
+  });
+
+  const publishArticleMutation = useMutation({
+    mutationFn: async (values: EditorFormValues) => {
+      let currentArticle: ArticleEditorRecord;
+
+      if (!slug) {
+        currentArticle = await createArticle({ ...values, featured: false });
+      } else {
+        currentArticle = await saveArticle(slug, { ...values, featured: editingArticle?.featured ?? false });
+      }
+
+      const published = await publishArticle(currentArticle.slug);
+      return published ?? currentArticle;
+    },
+    onSuccess: (article) => {
+      syncEditorForm(article);
+      if (!slug) {
+        navigate(`/admin/articles/${article.slug}/edit`, { replace: true });
+      }
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+      void queryClient.invalidateQueries({ queryKey: ['dashboard', 'overview'] });
+      setShowPublish(false);
+      setStatusMessage('Article published successfully!');
+      toast.success('Article published successfully.');
+      setTimeout(() => setStatusMessage(''), 3000);
+    },
+    onError: (publishError) => {
+      const message = publishError instanceof Error ? publishError.message : 'Failed to publish article.';
+      setError(message);
+      toast.error(message);
+    },
+  });
+
   async function persistDraft(values: EditorFormValues) {
     try {
       setSaving(true);
       setError('');
-      if (slug && isEditing) {
-        const saved = await saveArticle(slug, { ...values, featured: editingArticle?.featured ?? false });
-        syncEditorForm(saved);
-      } else {
-        const created = await createArticle({ ...values, featured: false });
-        syncEditorForm(created);
-        navigate(`/admin/articles/${created.slug}/edit`, { replace: true });
-      }
-      setStatusMessage('Draft saved successfully.');
-      toast.success('Draft saved.');
-      setTimeout(() => setStatusMessage(''), 3000);
-    } catch (saveError) {
-      const message = saveError instanceof Error ? saveError.message : 'Failed to save article.';
-      setError(message);
-      toast.error(message);
+      await saveDraftMutation.mutateAsync(values);
     } finally {
       setSaving(false);
     }
@@ -133,31 +179,7 @@ export function AdminEditor() {
     try {
       setSaving(true);
       setError('');
-
-      let currentSlug = slug;
-      if (!currentSlug) {
-        const created = await createArticle({ ...values, featured: false });
-        syncEditorForm(created);
-        currentSlug = created.slug;
-        navigate(`/admin/articles/${created.slug}/edit`, { replace: true });
-      } else {
-        const saved = await saveArticle(currentSlug, { ...values, featured: editingArticle?.featured ?? false });
-        syncEditorForm(saved);
-      }
-
-      const published = await publishArticle(currentSlug);
-      if (published) {
-        syncEditorForm(published);
-      }
-
-      setShowPublish(false);
-      setStatusMessage('Article published successfully!');
-      toast.success('Article published successfully.');
-      setTimeout(() => setStatusMessage(''), 3000);
-    } catch (publishError) {
-      const message = publishError instanceof Error ? publishError.message : 'Failed to publish article.';
-      setError(message);
-      toast.error(message);
+      await publishArticleMutation.mutateAsync(values);
     } finally {
       setSaving(false);
     }

@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdminEditor } from './AdminEditor';
@@ -118,12 +119,15 @@ describe('AdminEditor', () => {
   });
 
   function renderEditor() {
+    const queryClient = new QueryClient();
     return render(
-      <MemoryRouter initialEntries={['/admin/articles/existing-story/edit']}>
-        <Routes>
-          <Route path="/admin/articles/:slug/edit" element={<AdminEditor />} />
-        </Routes>
-      </MemoryRouter>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/admin/articles/existing-story/edit']}>
+          <Routes>
+            <Route path="/admin/articles/:slug/edit" element={<AdminEditor />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
   }
 
