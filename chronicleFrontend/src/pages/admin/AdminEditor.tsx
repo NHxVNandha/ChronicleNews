@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { AiEditorialAssistant } from '../../components/AiEditorialAssistant';
 import { AdminPageHeader, AdminPanel, AdminStatusBadge } from '../../components/admin';
 import { ArticlePreviewPanel } from '../../components/ArticlePreviewPanel';
@@ -9,23 +12,41 @@ import { Field, Icon } from '../../components/ui';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { createArticle, getArticleEditorBySlug, getCategories, publishArticle, saveArticle, type ArticleEditorRecord, type Category } from '../../services';
 
+const editorSchema = z.object({
+  title: z.string(),
+  summary: z.string(),
+  featuredImageUrl: z.string(),
+  category: z.string(),
+  body: z.string(),
+});
+
+type EditorFormValues = z.infer<typeof editorSchema>;
+
+const defaultEditorValues: EditorFormValues = {
+  title: '',
+  summary: '',
+  featuredImageUrl: '',
+  category: 'Technology',
+  body: '',
+};
+
 export function AdminEditor() {
   const navigate = useNavigate();
   const { slug } = useParams();
   const [editingArticle, setEditingArticle] = useState<ArticleEditorRecord | undefined>();
   const isEditing = Boolean(editingArticle);
   const [categoryOptions, setCategoryOptions] = useState<Category[]>([]);
-
-  const [title, setTitle] = useState(editingArticle?.title ?? '');
-  const [summary, setSummary] = useState(editingArticle?.summary ?? '');
-  const [image, setImage] = useState(editingArticle?.featuredImageUrl ?? '');
-  const [category, setCategory] = useState(editingArticle?.categoryName ?? 'Technology');
-  const [body, setBody] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [showPublish, setShowPublish] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const { register, reset, watch, handleSubmit, setValue } = useForm<EditorFormValues>({
+    resolver: zodResolver(editorSchema),
+    defaultValues: defaultEditorValues,
+  });
+
+  const formValues = watch();
 
   useEffect(() => {
     let isMounted = true;
@@ -40,11 +61,13 @@ export function AdminEditor() {
 
         setCategoryOptions(categories);
         setEditingArticle(article);
-        setTitle(article?.title ?? '');
-        setSummary(article?.summary ?? '');
-        setImage(article?.featuredImageUrl ?? '');
-        setCategory(article?.categoryName ?? categories[0]?.name ?? 'Technology');
-        setBody(article?.body ?? '');
+        reset({
+          title: article?.title ?? '',
+          summary: article?.summary ?? '',
+          featuredImageUrl: article?.featuredImageUrl ?? '',
+          category: article?.categoryName ?? categories[0]?.name ?? 'Technology',
+          body: article?.body ?? '',
+        });
       } catch (loadError) {
         if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load editor data.');
       }
@@ -54,28 +77,39 @@ export function AdminEditor() {
     return () => {
       isMounted = false;
     };
-  }, [slug]);
+  }, [reset, slug]);
 
   const previewArticle = {
-    title: title || 'Untitled Article',
-    summary: summary || 'No summary provided.',
-    image: image || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
-    category,
+    title: formValues.title || 'Untitled Article',
+    summary: formValues.summary || 'No summary provided.',
+    image: formValues.featuredImageUrl || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85',
+    category: formValues.category,
     author: editingArticle?.authorName ?? 'Staff Reporter',
     date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     readTime: '5 min read',
   };
 
-  async function handleSaveDraft() {
+  function syncEditorForm(article: ArticleEditorRecord) {
+    setEditingArticle(article);
+    reset({
+      title: article.title,
+      summary: article.summary,
+      featuredImageUrl: article.featuredImageUrl ?? '',
+      category: article.categoryName,
+      body: article.body,
+    });
+  }
+
+  async function persistDraft(values: EditorFormValues) {
     try {
       setSaving(true);
       setError('');
       if (slug && isEditing) {
-        const saved = await saveArticle(slug, { title, summary, body, category, featuredImageUrl: image, featured: editingArticle?.featured ?? false });
-        setEditingArticle(saved);
+        const saved = await saveArticle(slug, { ...values, featured: editingArticle?.featured ?? false });
+        syncEditorForm(saved);
       } else {
-        const created = await createArticle({ title, summary, body, category, featuredImageUrl: image, featured: false });
-        setEditingArticle(created);
+        const created = await createArticle({ ...values, featured: false });
+        syncEditorForm(created);
         navigate(`/admin/articles/${created.slug}/edit`, { replace: true });
       }
       setStatusMessage('Draft saved successfully.');
@@ -90,25 +124,29 @@ export function AdminEditor() {
     }
   }
 
-  async function handlePublishNow() {
+  const handleSaveDraft = handleSubmit(async (values) => {
+    await persistDraft(values);
+  });
+
+  async function handlePublishNow(values: EditorFormValues) {
     try {
       setSaving(true);
       setError('');
 
       let currentSlug = slug;
       if (!currentSlug) {
-        const created = await createArticle({ title, summary, body, category, featuredImageUrl: image, featured: false });
-        setEditingArticle(created);
+        const created = await createArticle({ ...values, featured: false });
+        syncEditorForm(created);
         currentSlug = created.slug;
         navigate(`/admin/articles/${created.slug}/edit`, { replace: true });
       } else {
-        const saved = await saveArticle(currentSlug, { title, summary, body, category, featuredImageUrl: image, featured: editingArticle?.featured ?? false });
-        setEditingArticle(saved);
+        const saved = await saveArticle(currentSlug, { ...values, featured: editingArticle?.featured ?? false });
+        syncEditorForm(saved);
       }
 
       const published = await publishArticle(currentSlug);
       if (published) {
-        setEditingArticle(published);
+        syncEditorForm(published);
       }
 
       setShowPublish(false);
@@ -124,13 +162,17 @@ export function AdminEditor() {
     }
   }
 
+  const submitPublishNow = handleSubmit(async (values) => {
+    await handlePublishNow(values);
+  });
+
   return (
     <AdminLayout title={isEditing ? 'Edit Article' : 'Create Article'}>
       {showPreview && <ArticlePreviewPanel article={previewArticle} onClose={() => setShowPreview(false)} />}
       {showPublish && (
         <PublishConfirmModal
           title={previewArticle.title}
-          onPublish={() => { void handlePublishNow(); }}
+          onPublish={() => { void submitPublishNow(); }}
           onSchedule={(date) => { setShowPublish(false); setStatusMessage(`Scheduled for ${new Date(date).toLocaleString()}`); setTimeout(() => setStatusMessage(''), 3000); }}
           onClose={() => setShowPublish(false)}
         />
@@ -158,12 +200,12 @@ export function AdminEditor() {
             <div className="space-y-8 lg:space-y-10">
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Article Title</label>
-                <textarea className="mt-3 w-full resize-none border-0 bg-transparent font-display text-4xl font-bold leading-tight tracking-tight text-slate-950 outline-none lg:text-5xl" value={title} onChange={(e) => setTitle(e.target.value)} rows={2} placeholder="Enter a compelling headline..." />
+                <textarea className="mt-3 w-full resize-none border-0 bg-transparent font-display text-4xl font-bold leading-tight tracking-tight text-slate-950 outline-none lg:text-5xl" rows={2} placeholder="Enter a compelling headline..." {...register('title')} />
               </div>
 
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Deck / Summary</label>
-                <textarea className="mt-3 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-5 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300 focus:bg-white" value={summary} onChange={(e) => setSummary(e.target.value)} rows={3} placeholder="Write a brief, punchy summary to appear in previews..." />
+                <textarea className="mt-3 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-5 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300 focus:bg-white" rows={3} placeholder="Write a brief, punchy summary to appear in previews..." {...register('summary')} />
               </div>
 
               <div>
@@ -172,7 +214,7 @@ export function AdminEditor() {
                   <span className="text-xs font-semibold text-slate-500">16:9 recommended</span>
                 </div>
                 <div className="grid aspect-video place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 text-center transition hover:border-secondary">
-                  {image ? <img className="h-full w-full object-cover" src={image} alt="" /> : (
+                  {formValues.featuredImageUrl ? <img className="h-full w-full object-cover" src={formValues.featuredImageUrl} alt="" /> : (
                     <div>
                       <Icon name="add_photo_alternate" className="text-5xl text-slate-400" />
                       <p className="mt-3 font-bold text-slate-600">Select a featured image</p>
@@ -182,7 +224,7 @@ export function AdminEditor() {
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   {['https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85', 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85', 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=85'].map((url) => (
-                    <button key={url} className={`aspect-video overflow-hidden rounded-xl border-2 transition ${image === url ? 'border-secondary ring-2 ring-secondary/30' : 'border-transparent hover:border-slate-300'}`} type="button" onClick={() => setImage(url)}>
+                    <button key={url} className={`aspect-video overflow-hidden rounded-xl border-2 transition ${formValues.featuredImageUrl === url ? 'border-secondary ring-2 ring-secondary/30' : 'border-transparent hover:border-slate-300'}`} type="button" onClick={() => setValue('featuredImageUrl', url, { shouldDirty: true })}>
                       <img className="h-full w-full object-cover" src={url} alt="" />
                     </button>
                   ))}
@@ -199,7 +241,7 @@ export function AdminEditor() {
 
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Article Body</label>
-                <textarea className="mt-3 min-h-[420px] w-full rounded-2xl border border-slate-200 bg-white p-6 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300" value={body} onChange={(e) => setBody(e.target.value)} placeholder={isEditing ? 'Continue editing this story draft or published article...' : 'Start writing your story here...'} />
+                <textarea className="mt-3 min-h-[420px] w-full rounded-2xl border border-slate-200 bg-white p-6 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300" placeholder={isEditing ? 'Continue editing this story draft or published article...' : 'Start writing your story here...'} {...register('body')} />
               </div>
             </div>
           </AdminPanel>
@@ -227,7 +269,7 @@ export function AdminEditor() {
             <AdminPanel title="Preview & Publish" description="Review the public layout before sending it live." tone="accent">
               <div className="grid grid-cols-2 gap-2">
                 <button className="rounded-xl bg-white px-3 py-2 text-sm font-bold text-primary shadow-sm transition hover:bg-slate-50" type="button" onClick={() => setShowPreview(true)}>Preview</button>
-                <button className="rounded-xl bg-secondary px-3 py-2 text-sm font-bold !text-white shadow-sm transition hover:bg-blue-600" type="button">Confirm</button>
+                <button className="rounded-xl bg-secondary px-3 py-2 text-sm font-bold !text-white shadow-sm transition hover:bg-blue-600" type="button" onClick={() => setShowPublish(true)}>Confirm</button>
               </div>
             </AdminPanel>
 
@@ -236,7 +278,7 @@ export function AdminEditor() {
                 <Field label="Tags" placeholder="Add tags..." icon="tag" />
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-[0.12em] text-slate-500">Category</span>
-                  <select className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 outline-none transition focus:border-slate-300 focus:bg-white" value={category} onChange={(e) => setCategory(e.target.value)}>
+                  <select className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 outline-none transition focus:border-slate-300 focus:bg-white" {...register('category')}>
                     {categoryOptions.map((item) => <option key={item.id} value={item.name}>{item.name}</option>)}
                   </select>
                 </label>
