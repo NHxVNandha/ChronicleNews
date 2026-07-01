@@ -1,5 +1,25 @@
 import { useState } from 'react';
+import { DayPicker } from 'react-day-picker';
 import { Icon } from './ui';
+
+function formatDateInput(value: Date | undefined) {
+  if (!value) {
+    return '';
+  }
+
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, '0');
+  const day = `${value.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function combineScheduledDate(date: Date | undefined, time: string) {
+  if (!date || !time) {
+    return '';
+  }
+
+  return `${formatDateInput(date)}T${time}`;
+}
 
 export function PublishConfirmModal({
   title,
@@ -13,7 +33,8 @@ export function PublishConfirmModal({
   onClose: () => void;
 }) {
   const [mode, setMode] = useState<'now' | 'schedule'>('now');
-  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleDay, setScheduleDay] = useState<Date | undefined>();
+  const [scheduleTime, setScheduleTime] = useState('09:00');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
@@ -32,9 +53,17 @@ export function PublishConfirmModal({
             <button className={`flex-1 rounded-lg py-3 text-center font-bold transition ${mode === 'schedule' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-white'}`} type="button" onClick={() => setMode('schedule')}>Schedule</button>
           </div>
           {mode === 'schedule' && (
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-600">Schedule Date & Time</label>
-              <input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" type="datetime-local" value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} />
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-600">Schedule Date</label>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <DayPicker mode="single" selected={scheduleDay} onSelect={setScheduleDay} className="mx-auto" />
+                </div>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-600">Schedule Time</label>
+                <input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" type="time" value={scheduleTime} onChange={(e) => setScheduleTime(e.target.value)} />
+              </div>
             </div>
           )}
           <div className="space-y-3">
@@ -45,7 +74,7 @@ export function PublishConfirmModal({
         </div>
         <div className="flex justify-end gap-3 border-t border-slate-200 p-6">
           <button className="rounded-lg border border-slate-200 px-6 py-3 font-bold text-slate-600 hover:bg-slate-50" type="button" onClick={onClose}>Cancel</button>
-          <button className="rounded-lg bg-secondary px-6 py-3 font-bold !text-white" type="button" onClick={() => { if (mode === 'now') onPublish(); else onSchedule(scheduleDate); }}>{mode === 'now' ? 'Publish Now' : 'Schedule Publication'}</button>
+          <button className="rounded-lg bg-secondary px-6 py-3 font-bold !text-white" type="button" onClick={() => { if (mode === 'now') onPublish(); else onSchedule(combineScheduledDate(scheduleDay, scheduleTime)); }}>{mode === 'now' ? 'Publish Now' : 'Schedule Publication'}</button>
         </div>
       </div>
     </div>

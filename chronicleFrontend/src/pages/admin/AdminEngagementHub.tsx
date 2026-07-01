@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { DayPicker } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -60,6 +61,25 @@ type PushFormValues = z.infer<typeof pushSchema>;
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 type SocialFormValues = z.infer<typeof socialSchema>;
 
+function formatDateInput(value: Date | undefined) {
+  if (!value) {
+    return '';
+  }
+
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, '0');
+  const day = `${value.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function combineScheduleValue(date: Date | undefined, time: string) {
+  if (!date || !time) {
+    return '';
+  }
+
+  return `${formatDateInput(date)}T${time}`;
+}
+
 export function AdminEngagementHub() {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<ModerationComment[]>([]);
@@ -74,6 +94,10 @@ export function AdminEngagementHub() {
   const [pushHistory, setPushHistory] = useState<{ title: string; sent: string; status: string }[]>([]);
   const [newsletterStatus, setNewsletterStatus] = useState('');
   const [socialPostsList, setSocialPostsList] = useState<SocialPost[]>(socialPosts);
+  const [pushScheduleDay, setPushScheduleDay] = useState<Date | undefined>();
+  const [pushScheduleTime, setPushScheduleTime] = useState('09:00');
+  const [socialScheduleDay, setSocialScheduleDay] = useState<Date | undefined>();
+  const [socialScheduleTime, setSocialScheduleTime] = useState('09:00');
   const { register: registerPush, handleSubmit: handlePushSubmit, watch: watchPush, reset: resetPush, formState: { errors: pushErrors } } = useForm<PushFormValues>({
     resolver: zodResolver(pushSchema),
     defaultValues: { pushTitle: '', pushBody: '', pushSchedule: 'now' },
@@ -82,7 +106,7 @@ export function AdminEngagementHub() {
     resolver: zodResolver(newsletterSchema),
     defaultValues: { newsletterTitle: '' },
   });
-  const { register: registerSocial, handleSubmit: handleSocialSubmit, reset: resetSocial, formState: { errors: socialErrors } } = useForm<SocialFormValues>({
+  const { register: registerSocial, handleSubmit: handleSocialSubmit, reset: resetSocial, setValue: setSocialValue, formState: { errors: socialErrors } } = useForm<SocialFormValues>({
     resolver: zodResolver(socialSchema),
     defaultValues: { socialPlatform: 'Twitter / X', socialText: '', socialSchedule: '' },
   });
@@ -135,10 +159,18 @@ export function AdminEngagementHub() {
   }
 
   const handleSendPush = handlePushSubmit((values) => {
+    if (values.pushSchedule !== 'now' && !pushScheduleDay) {
+      toast.error('Choose a schedule date before sending the notification.');
+      return;
+    }
+
     const now = new Date().toLocaleString('id-ID');
     const status = values.pushSchedule === 'now' ? 'Sent' : 'Scheduled';
-    setPushHistory((prev) => [{ title: values.pushTitle, sent: values.pushSchedule === 'now' ? now : values.pushSchedule, status }, ...prev]);
+    const scheduledAt = values.pushSchedule === 'now' ? now : combineScheduleValue(pushScheduleDay, pushScheduleTime);
+    setPushHistory((prev) => [{ title: values.pushTitle, sent: scheduledAt, status }, ...prev]);
     resetPush({ pushTitle: '', pushBody: '', pushSchedule: 'now' });
+    setPushScheduleDay(undefined);
+    setPushScheduleTime('09:00');
     toast.success(status === 'Sent' ? 'Notification sent.' : 'Notification scheduled.');
   });
 
@@ -160,6 +192,8 @@ export function AdminEngagementHub() {
     };
     setSocialPostsList((prev) => [newPost, ...prev]);
     resetSocial({ socialPlatform: values.socialPlatform, socialText: '', socialSchedule: '' });
+    setSocialScheduleDay(undefined);
+    setSocialScheduleTime('09:00');
     toast.success('Social post scheduled.');
   });
 
@@ -458,7 +492,13 @@ export function AdminEngagementHub() {
                     <span className="text-sm font-semibold text-slate-700">Schedule</span>
                   </label>
                   {pushValues.pushSchedule !== 'now' && (
-                    <input type="datetime-local" className="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" {...registerPush('pushSchedule')} />
+                    <div className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1fr_180px]">
+                      <DayPicker mode="single" selected={pushScheduleDay} onSelect={setPushScheduleDay} className="mx-auto" />
+                      <div>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">Send Time</label>
+                        <input type="time" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" value={pushScheduleTime} onChange={(e) => setPushScheduleTime(e.target.value)} />
+                      </div>
+                    </div>
                   )}
                 </div>
                 {pushErrors.pushSchedule && <p className="text-sm font-semibold text-red-600">{pushErrors.pushSchedule.message}</p>}
@@ -626,7 +666,13 @@ export function AdminEngagementHub() {
                 </label>
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Schedule</span>
-                  <input type="datetime-local" className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" {...registerSocial('socialSchedule')} />
+                  <div className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1fr_180px]">
+                    <DayPicker mode="single" selected={socialScheduleDay} onSelect={(date) => { setSocialScheduleDay(date); setSocialValue('socialSchedule', combineScheduleValue(date, socialScheduleTime), { shouldDirty: true, shouldValidate: true }); }} className="mx-auto" />
+                    <div>
+                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">Post Time</label>
+                      <input type="time" className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 outline-none focus:border-secondary" value={socialScheduleTime} onChange={(e) => { const nextTime = e.target.value; setSocialScheduleTime(nextTime); setSocialValue('socialSchedule', combineScheduleValue(socialScheduleDay, nextTime), { shouldDirty: true, shouldValidate: true }); }} />
+                    </div>
+                  </div>
                   {socialErrors.socialSchedule && <p className="mt-2 text-sm font-semibold text-red-600">{socialErrors.socialSchedule.message}</p>}
                 </label>
                 <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={() => void handleScheduleSocial()}>Schedule Post</button>

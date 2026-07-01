@@ -1,6 +1,11 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AdminEngagementHub } from './AdminEngagementHub';
+
+vi.mock('react-day-picker', () => ({
+  DayPicker: ({ onSelect }: { onSelect?: (date: Date) => void }) => (
+    <button type="button" onClick={() => onSelect?.(new Date('2026-07-02T00:00:00'))}>Pick July 2</button>
+  ),
+}));
 
 const {
   mockedToastError,
@@ -84,8 +89,13 @@ describe('AdminEngagementHub', () => {
     mockedAddCommentReply.mockResolvedValue({});
   });
 
+  async function renderEngagementHub() {
+    const { AdminEngagementHub } = await import('./AdminEngagementHub');
+    return render(<AdminEngagementHub />);
+  }
+
   it('shows validation feedback for invalid push notification form', async () => {
-    render(<AdminEngagementHub />);
+    await renderEngagementHub();
 
     const pushTitle = await screen.findByPlaceholderText('Breaking: ...');
     fireEvent.change(pushTitle, { target: { value: 'Hey' } });
@@ -98,7 +108,7 @@ describe('AdminEngagementHub', () => {
   });
 
   it('creates newsletter campaign and schedules a social post', async () => {
-    render(<AdminEngagementHub />);
+    await renderEngagementHub();
 
     const campaignTitle = await screen.findByPlaceholderText('e.g. Weekend Edition');
     fireEvent.change(campaignTitle, { target: { value: 'Weekend Edition' } });
@@ -112,12 +122,13 @@ describe('AdminEngagementHub', () => {
     expect(screen.getByText('"Weekend Edition" will be sent to subscribers.')).toBeInTheDocument();
 
     const composePostSection = screen.getByText('Compose Post').closest('section');
-    const socialScheduleInput = composePostSection?.querySelector('input[type="datetime-local"]');
-    expect(socialScheduleInput).not.toBeNull();
+    const dayPickerTrigger = composePostSection?.querySelector('button[type="button"]');
+    expect(dayPickerTrigger).not.toBeNull();
 
     fireEvent.change(screen.getByPlaceholderText('Write your post...'), { target: { value: 'Chronicle explainer on newsroom automation is live now.' } });
     fireEvent.change(screen.getByDisplayValue('Twitter / X'), { target: { value: 'LinkedIn' } });
-    fireEvent.change(socialScheduleInput as HTMLInputElement, { target: { value: '2026-07-02T09:00' } });
+    fireEvent.click(dayPickerTrigger as HTMLButtonElement);
+    fireEvent.change(screen.getByDisplayValue('09:00'), { target: { value: '09:00' } });
     fireEvent.click(screen.getByRole('button', { name: 'Schedule Post' }));
 
     await waitFor(() => {
