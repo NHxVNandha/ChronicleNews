@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -101,6 +101,7 @@ const defaultOptimizationValues: OptimizationFormValues = {
 };
 
 export function AdminOptimizationHub() {
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
@@ -158,10 +159,8 @@ export function AdminOptimizationHub() {
     }
   }, [optimizationQuery.error]);
 
-  const handleSaveAll = handleSubmit(async (values) => {
-    try {
-      setSaving(true);
-      setError('');
+  const saveOptimizationMutation = useMutation({
+    mutationFn: async (values: OptimizationFormValues) => {
       const seoPayload: SeoSettings = {
         defaultMetaTitle: values.defaultMetaTitle,
         metaDescription: values.metaDescription,
@@ -185,10 +184,15 @@ export function AdminOptimizationHub() {
         writingStyle: values.writingStyle,
         tone: values.tone,
       };
+
       const [seo, ai] = await Promise.all([
         updateSeoSettings(seoPayload),
         updateAiSettings(aiPayload),
       ]);
+
+      return { seo, ai };
+    },
+    onSuccess: ({ seo, ai }) => {
       reset({
         defaultMetaTitle: seo.defaultMetaTitle,
         metaDescription: seo.metaDescription,
@@ -210,13 +214,23 @@ export function AdminOptimizationHub() {
         writingStyle: ai.writingStyle,
         tone: ai.tone,
       });
+      void queryClient.invalidateQueries({ queryKey: ['optimization', 'settings'] });
       setStatusMessage('Optimization settings saved.');
       toast.success('Optimization settings saved.');
       setTimeout(() => setStatusMessage(''), 3000);
-    } catch (saveError) {
+    },
+    onError: (saveError) => {
       const message = saveError instanceof Error ? saveError.message : 'Failed to save optimization settings.';
       setError(message);
       toast.error(message);
+    },
+  });
+
+  const handleSaveAll = handleSubmit(async (values) => {
+    try {
+      setSaving(true);
+      setError('');
+      await saveOptimizationMutation.mutateAsync(values);
     } finally {
       setSaving(false);
     }

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DayPicker } from 'react-day-picker';
@@ -82,6 +82,7 @@ function combineScheduleValue(date: Date | undefined, time: string) {
 }
 
 export function AdminEngagementHub() {
+  const queryClient = useQueryClient();
   const [comments, setComments] = useState<ModerationComment[]>([]);
   const [campaigns, setCampaigns] = useState<NotifCampaign[]>([]);
   const [subscribers, setSubscribers] = useState<SubscriberSummary[]>([]);
@@ -141,21 +142,44 @@ export function AdminEngagementHub() {
     }
   }, [engagementQuery.error]);
 
+  const updateCommentStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: CommentStatus }) => changeCommentStatus(id, status),
+    onSuccess: (updated, variables) => {
+      setComments((current) => current.map((c) => c.id === variables.id ? updated : c));
+      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      toast.success(`Comment ${variables.status.toLowerCase()}.`);
+    },
+  });
+
+  const addCommentReplyMutation = useMutation({
+    mutationFn: ({ commentId, text }: { commentId: string; text: string }) => addCommentReply(commentId, text),
+    onSuccess: (reply, variables) => {
+      setComments((current) => current.map((c) => c.id === variables.commentId ? { ...c, replies: [...c.replies, reply] } : c));
+      setReplyText('');
+      setReplyOpen(null);
+      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      toast.success('Reply added.');
+    },
+  });
+
+  const createCampaignMutation = useMutation({
+    mutationFn: ({ title, type, audience }: { title: string; type: 'Newsletter'; audience: string }) => createCampaign({ title, type, audience }),
+    onSuccess: (created) => {
+      setCampaigns((current) => [created, ...current]);
+      void queryClient.invalidateQueries({ queryKey: ['engagement', 'overview'] });
+      toast.success('Campaign created.');
+    },
+  });
+
   const sampleArticles = Array.from(new Set(comments.map((comment) => comment.articleTitle)));
 
   async function updateCommentStatus(id: string, status: CommentStatus) {
-    const updated = await changeCommentStatus(id, status);
-    setComments((current) => current.map((c) => c.id === id ? updated : c));
-    toast.success(`Comment ${status.toLowerCase()}.`);
+    await updateCommentStatusMutation.mutateAsync({ id, status });
   }
 
   async function handleReply(commentId: string) {
     if (!replyText.trim()) return;
-    const reply = await addCommentReply(commentId, replyText.trim());
-    setComments((current) => current.map((c) => c.id === commentId ? { ...c, replies: [...c.replies, reply] } : c));
-    setReplyText('');
-    setReplyOpen(null);
-    toast.success('Reply added.');
+    await addCommentReplyMutation.mutateAsync({ commentId, text: replyText.trim() });
   }
 
   const handleSendPush = handlePushSubmit((values) => {
@@ -175,11 +199,9 @@ export function AdminEngagementHub() {
   });
 
   const handleSendNewsletter = handleNewsletterSubmit(async (values) => {
-    const created = await createCampaign({ title: values.newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
-    setCampaigns((current) => [created, ...current]);
+    await createCampaignMutation.mutateAsync({ title: values.newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
     setNewsletterStatus(`"${values.newsletterTitle}" will be sent to subscribers.`);
     resetNewsletter({ newsletterTitle: '' });
-    toast.success('Campaign created.');
   });
 
   const handleScheduleSocial = handleSocialSubmit((values) => {
