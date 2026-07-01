@@ -1,14 +1,27 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { AdminCommandPalette } from '../components/admin';
 import { adminItems, adminProfileImage } from '../config/navigation';
 import { Avatar, Icon } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
+import { getArticles } from '../services';
+
+type CommandArticle = {
+  slug: string;
+  title: string;
+  status: string;
+  category?: string;
+};
 
 export function AdminLayout({ children, title }: { children: ReactNode; title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [commandArticles, setCommandArticles] = useState<CommandArticle[]>([]);
+  const [isLoadingCommandArticles, setIsLoadingCommandArticles] = useState(false);
+  const [hasLoadedCommandArticles, setHasLoadedCommandArticles] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([
@@ -58,6 +71,79 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
     setShowProfileMenu(false);
   }
 
+  function openCommandPalette() {
+    closeMenus();
+    setIsOpen(false);
+    setIsCommandOpen(true);
+  }
+
+  function handleCommandNavigate(path: string) {
+    closeMenus();
+    setIsOpen(false);
+    setIsCommandOpen(false);
+    navigate(path);
+  }
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
+
+      if (isTypingTarget) {
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        if (isCommandOpen) {
+          setIsCommandOpen(false);
+          return;
+        }
+
+        openCommandPalette();
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isCommandOpen]);
+
+  useEffect(() => {
+    if (!isCommandOpen || hasLoadedCommandArticles) {
+      return;
+    }
+
+    let isMounted = true;
+
+    async function loadCommandArticles() {
+      try {
+        setIsLoadingCommandArticles(true);
+        const result = await getArticles({ limit: 12 });
+        if (!isMounted) {
+          return;
+        }
+
+        setCommandArticles(result.map((article) => ({
+          slug: article.slug,
+          title: article.title,
+          status: article.status,
+          category: article.category,
+        })));
+        setHasLoadedCommandArticles(true);
+      } finally {
+        if (isMounted) {
+          setIsLoadingCommandArticles(false);
+        }
+      }
+    }
+
+    void loadCommandArticles();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [hasLoadedCommandArticles, isCommandOpen]);
+
   return (
     <div className="admin-shell bg-[#f5f7fb] text-slate-700">
       <aside className="admin-sidebar bg-slate-950 text-slate-300">
@@ -94,7 +180,7 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
             <div className="flex items-center gap-3">
             <label className="relative hidden md:block">
               <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-slate-400" />
-              <input className="w-72 rounded-xl border border-transparent bg-slate-100 px-4 py-2.5 pl-10 text-sm outline-none transition focus:border-slate-300 focus:bg-white" placeholder="Quick search..." />
+              <input className="w-72 rounded-xl border border-transparent bg-slate-100 px-4 py-2.5 pl-10 text-sm outline-none transition focus:border-slate-300 focus:bg-white" data-testid="admin-command-trigger" placeholder="Quick search..." readOnly onClick={openCommandPalette} onFocus={(event) => { event.currentTarget.blur(); openCommandPalette(); }} />
             </label>
             <div className="relative">
               <button className="relative grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50" type="button" onClick={toggleNotifications}><Icon name="notifications" className="text-[20px]" />{unreadCount > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-4 ring-white">{unreadCount}</span>}</button>
@@ -155,6 +241,7 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
           </motion.div>
         )}
         </AnimatePresence>
+        <AdminCommandPalette open={isCommandOpen} onOpenChange={setIsCommandOpen} articles={commandArticles} isLoadingArticles={isLoadingCommandArticles} onNavigate={handleCommandNavigate} />
         <div className="p-6 lg:p-10 xl:p-12">{children}</div>
       </main>
     </div>
