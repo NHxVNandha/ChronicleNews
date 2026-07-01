@@ -145,10 +145,20 @@ export function AdminEngagementHub() {
 
   const updateCommentStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: CommentStatus }) => changeCommentStatus(id, status),
+    onMutate: async ({ id, status }) => {
+      const previousComments = comments;
+      setComments((current) => current.map((c) => c.id === id ? { ...c, status } : c));
+      return { previousComments };
+    },
     onSuccess: (updated, variables) => {
       setComments((current) => current.map((c) => c.id === variables.id ? updated : c));
       void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
       toast.success(`Comment ${variables.status.toLowerCase()}.`);
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousComments) {
+        setComments(context.previousComments);
+      }
     },
   });
 
@@ -165,10 +175,29 @@ export function AdminEngagementHub() {
 
   const createCampaignMutation = useMutation({
     mutationFn: ({ title, type, audience }: { title: string; type: 'Newsletter'; audience: string }) => createCampaign({ title, type, audience }),
+    onMutate: async ({ title, type, audience }) => {
+      const previousCampaigns = campaigns;
+      const optimisticCampaign: NotifCampaign = {
+        id: `optimistic-${Date.now()}`,
+        title,
+        type,
+        audience,
+        sent: '',
+        openRate: '',
+        status: 'Draft',
+      };
+      setCampaigns((current) => [optimisticCampaign, ...current]);
+      return { previousCampaigns };
+    },
     onSuccess: (created) => {
-      setCampaigns((current) => [created, ...current]);
+      setCampaigns((current) => [created, ...current.filter((campaign) => !campaign.id.startsWith('optimistic-'))]);
       void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
       toast.success('Campaign created.');
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousCampaigns) {
+        setCampaigns(context.previousCampaigns);
+      }
     },
   });
 

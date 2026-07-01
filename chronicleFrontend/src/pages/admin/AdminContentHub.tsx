@@ -16,25 +16,40 @@ export function AdminContentHub() {
 
   const deleteArticleMutation = useMutation({
     mutationFn: deleteArticle,
-    onSuccess: (_, slug) => {
+    onMutate: async (slug) => {
+      const previousArticles = articles;
       setArticles((current) => current.filter((article) => article.slug !== slug));
+      return { previousArticles };
+    },
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
       toast.success('Article moved out of the content list.');
     },
-    onError: (deleteError) => {
+    onError: (deleteError, _, context) => {
+      if (context?.previousArticles) {
+        setArticles(context.previousArticles);
+      }
       toast.error(deleteError instanceof Error ? deleteError.message : 'Failed to delete article.');
     },
   });
 
   const publishArticleMutation = useMutation({
     mutationFn: (slug: string) => updateArticle(slug, { status: 'Published' }),
+    onMutate: async (slug) => {
+      const previousArticles = articles;
+      setArticles((current) => current.map((article) => article.slug === slug ? { ...article, status: 'Published' } : article));
+      return { previousArticles };
+    },
     onSuccess: (updated, slug) => {
       setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
       void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.overview });
       toast.success('Article published.');
     },
-    onError: (publishError) => {
+    onError: (publishError, _, context) => {
+      if (context?.previousArticles) {
+        setArticles(context.previousArticles);
+      }
       toast.error(publishError instanceof Error ? publishError.message : 'Failed to publish article.');
     },
   });
