@@ -1,5 +1,4 @@
 import { Icon } from '../ui';
-import { motion } from 'framer-motion';
 
 type AdminStatCardProps = {
   label: string;
@@ -22,11 +21,7 @@ const toneMap = {
 
 export function AdminStatCard({ label, value, delta, helper, icon, variant = 'compact', tone = 'default', className = '' }: AdminStatCardProps) {
   return (
-    <motion.div
-      className={`rounded-2xl border p-5 transition duration-200 ${toneMap[tone]} ${className}`}
-      whileHover={{ y: -3 }}
-      transition={{ duration: 0.18, ease: 'easeOut' }}
-    >
+    <div className={`rounded-2xl border p-5 transition duration-200 hover:-translate-y-[3px] ${toneMap[tone]} ${className}`}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{label}</p>
@@ -36,6 +31,6 @@ export function AdminStatCard({ label, value, delta, helper, icon, variant = 'co
       </div>
       {delta && <p className={`mt-3 text-sm font-semibold ${tone === 'blue' ? 'text-slate-300' : 'text-secondary'}`}>{delta}</p>}
       {helper && <p className={`mt-1 text-sm ${tone === 'blue' ? 'text-slate-400' : 'text-slate-500'}`}>{helper}</p>}
-    </motion.div>
+    </div>
   );
 }
