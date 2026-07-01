@@ -170,13 +170,9 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function Icon({ name, className = '' }: { name: string; className?: string }) {
-  const LucideIcon = iconMap[name];
+  const LucideIcon = iconMap[name] ?? CircleAlert;
 
-  if (LucideIcon) {
-    return <LucideIcon aria-hidden="true" className={`inline-block h-[1em] w-[1em] shrink-0 ${className}`} strokeWidth={1.9} />;
-  }
-
-  return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
+  return <LucideIcon aria-hidden="true" className={`inline-block h-[1em] w-[1em] shrink-0 ${className}`} strokeWidth={1.9} />;
 }
 
 export function Avatar({ src, alt, size = 'h-10 w-10' }: { src: string; alt: string; size?: string }) {
