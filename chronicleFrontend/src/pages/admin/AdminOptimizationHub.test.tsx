@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdminOptimizationHub } from './AdminOptimizationHub';
 
@@ -81,8 +82,17 @@ describe('AdminOptimizationHub', () => {
     mockedUpdateAiSettings.mockImplementation(async (payload) => payload);
   });
 
+  function renderOptimizationHub() {
+    const queryClient = new QueryClient();
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <AdminOptimizationHub />
+      </QueryClientProvider>,
+    );
+  }
+
   it('shows validation feedback and blocks save when required optimization fields are invalid', async () => {
-    render(<AdminOptimizationHub />);
+    renderOptimizationHub();
 
     await screen.findByText('Optimization Center');
     const defaultMetaTitle = screen.getAllByPlaceholderText('Chronicle News — Independent Journalism')[0];
@@ -98,7 +108,7 @@ describe('AdminOptimizationHub', () => {
   });
 
   it('saves seo and ai settings with updated form values', async () => {
-    render(<AdminOptimizationHub />);
+    renderOptimizationHub();
 
     await screen.findByText('Optimization Center');
     const defaultMetaTitle = screen.getAllByPlaceholderText('Chronicle News — Independent Journalism')[0];

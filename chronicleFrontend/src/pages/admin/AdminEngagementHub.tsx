@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DayPicker } from 'react-day-picker';
@@ -81,7 +82,6 @@ function combineScheduleValue(date: Date | undefined, time: string) {
 }
 
 export function AdminEngagementHub() {
-  const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<ModerationComment[]>([]);
   const [campaigns, setCampaigns] = useState<NotifCampaign[]>([]);
   const [subscribers, setSubscribers] = useState<SubscriberSummary[]>([]);
@@ -112,34 +112,34 @@ export function AdminEngagementHub() {
   });
 
   const pushValues = watchPush();
+  const engagementQuery = useQuery({
+    queryKey: ['engagement', 'overview'],
+    queryFn: async () => {
+      const [comments, campaigns, subscribers] = await Promise.all([
+        getComments(),
+        getCampaigns(),
+        getSubscriberSummary(),
+      ]);
+
+      return { comments, campaigns, subscribers };
+    },
+  });
 
   useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const [commentData, campaignData, subscriberData] = await Promise.all([
-          getComments(),
-          getCampaigns(),
-          getSubscriberSummary(),
-        ]);
+    if (!engagementQuery.data) {
+      return;
+    }
 
-        if (!isMounted) return;
-        setComments(commentData);
-        setCampaigns(campaignData);
-        setSubscribers(subscriberData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load engagement data.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
+    setComments(engagementQuery.data.comments);
+    setCampaigns(engagementQuery.data.campaigns);
+    setSubscribers(engagementQuery.data.subscribers);
+  }, [engagementQuery.data]);
 
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  useEffect(() => {
+    if (engagementQuery.error) {
+      setError(engagementQuery.error instanceof Error ? engagementQuery.error.message : 'Failed to load engagement data.');
+    }
+  }, [engagementQuery.error]);
 
   const sampleArticles = Array.from(new Set(comments.map((comment) => comment.articleTitle)));
 
@@ -240,7 +240,7 @@ export function AdminEngagementHub() {
 
   return (
     <AdminLayout title="Engagement">
-      {loading ? (
+      {engagementQuery.isLoading ? (
         <div className="space-y-8">
           <SkeletonBlock className="h-12" />
           <SkeletonBlock className="h-[600px]" />

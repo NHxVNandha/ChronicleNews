@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -100,7 +101,6 @@ const defaultOptimizationValues: OptimizationFormValues = {
 };
 
 export function AdminOptimizationHub() {
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
@@ -115,46 +115,48 @@ export function AdminOptimizationHub() {
   });
 
   const formValues = watch();
+  const optimizationQuery = useQuery({
+    queryKey: ['optimization', 'settings'],
+    queryFn: async () => {
+      const [seo, ai] = await Promise.all([getSeoSettings(), getAiSettings()]);
+      return { seo, ai };
+    },
+  });
 
   useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const [seo, ai] = await Promise.all([getSeoSettings(), getAiSettings()]);
-        if (!isMounted) return;
-        reset({
-          defaultMetaTitle: seo.defaultMetaTitle,
-          metaDescription: seo.metaDescription,
-          focusKeyword: seo.focusKeyword,
-          robotsTxt: seo.robotsTxt,
-          enableCrawling: seo.enableCrawling,
-          indexArticlePages: seo.indexArticlePages,
-          indexCategoryPages: seo.indexCategoryPages,
-          noIndexAuthorPages: seo.noIndexAuthorPages,
-          provider: ai.provider,
-          modelName: ai.modelName,
-          baseUrl: ai.baseUrl,
-          apiKeyHint: ai.apiKeyHint,
-          temperature: ai.temperature,
-          maxTokens: ai.maxTokens,
-          systemPrompt: ai.systemPrompt,
-          primaryLanguage: ai.primaryLanguage,
-          languageStandard: ai.languageStandard,
-          writingStyle: ai.writingStyle,
-          tone: ai.tone,
-        });
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load optimization settings.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
+    if (!optimizationQuery.data) {
+      return;
+    }
 
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, [reset]);
+    const { seo, ai } = optimizationQuery.data;
+    reset({
+      defaultMetaTitle: seo.defaultMetaTitle,
+      metaDescription: seo.metaDescription,
+      focusKeyword: seo.focusKeyword,
+      robotsTxt: seo.robotsTxt,
+      enableCrawling: seo.enableCrawling,
+      indexArticlePages: seo.indexArticlePages,
+      indexCategoryPages: seo.indexCategoryPages,
+      noIndexAuthorPages: seo.noIndexAuthorPages,
+      provider: ai.provider,
+      modelName: ai.modelName,
+      baseUrl: ai.baseUrl,
+      apiKeyHint: ai.apiKeyHint,
+      temperature: ai.temperature,
+      maxTokens: ai.maxTokens,
+      systemPrompt: ai.systemPrompt,
+      primaryLanguage: ai.primaryLanguage,
+      languageStandard: ai.languageStandard,
+      writingStyle: ai.writingStyle,
+      tone: ai.tone,
+    });
+  }, [optimizationQuery.data, reset]);
+
+  useEffect(() => {
+    if (optimizationQuery.error) {
+      setError(optimizationQuery.error instanceof Error ? optimizationQuery.error.message : 'Failed to load optimization settings.');
+    }
+  }, [optimizationQuery.error]);
 
   const handleSaveAll = handleSubmit(async (values) => {
     try {
@@ -245,7 +247,7 @@ export function AdminOptimizationHub() {
 
   return (
     <AdminLayout title="Optimization">
-      {loading ? (
+      {optimizationQuery.isLoading ? (
         <div className="space-y-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-2">

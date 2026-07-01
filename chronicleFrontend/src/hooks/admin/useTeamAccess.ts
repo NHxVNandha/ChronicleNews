@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { getRoles, getUsers, type RoleRecord } from '../../services';
 
@@ -14,19 +15,24 @@ export type TeamMemberRecord = {
 export function useTeamAccess() {
   const [availableRoles, setAvailableRoles] = useState<RoleRecord[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMemberRecord[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const teamAccessQuery = useQuery({
+    queryKey: ['team', 'access'],
+    queryFn: async () => {
+      const [roles, users] = await Promise.all([getRoles(), getUsers()]);
+      return { roles, users };
+    },
+  });
+
   useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const [roles, users] = await Promise.all([getRoles(), getUsers()]);
-        if (!isMounted) return;
-        setAvailableRoles(roles);
-        setTeamMembers(users.map((user) => ({
+    if (!teamAccessQuery.data) {
+      return;
+    }
+
+    const { roles, users } = teamAccessQuery.data;
+    setAvailableRoles(roles);
+    setTeamMembers(users.map((user) => ({
           id: user.id,
           name: user.fullName,
           role: user.role as TeamMemberRecord['role'],
@@ -35,18 +41,13 @@ export function useTeamAccess() {
           status: user.status,
           lastLoginAt: user.lastLoginAt,
         })));
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load team settings.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
+  }, [teamAccessQuery.data]);
 
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  useEffect(() => {
+    if (teamAccessQuery.error) {
+      setError(teamAccessQuery.error instanceof Error ? teamAccessQuery.error.message : 'Failed to load team settings.');
+    }
+  }, [teamAccessQuery.error]);
 
-  return { availableRoles, teamMembers, setTeamMembers, loading, error, setError };
+  return { availableRoles, teamMembers, setTeamMembers, loading: teamAccessQuery.isLoading, error, setError };
 }

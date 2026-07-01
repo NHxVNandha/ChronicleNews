@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-day-picker', () => ({
@@ -91,7 +92,12 @@ describe('AdminEngagementHub', () => {
 
   async function renderEngagementHub() {
     const { AdminEngagementHub } = await import('./AdminEngagementHub');
-    return render(<AdminEngagementHub />);
+    const queryClient = new QueryClient();
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <AdminEngagementHub />
+      </QueryClientProvider>,
+    );
   }
 
   it('shows validation feedback for invalid push notification form', async () => {
