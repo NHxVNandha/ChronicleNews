@@ -3,6 +3,9 @@ export const queryKeys = {
     all: ['articles'] as const,
     list: (filterKey: string) => ['articles', filterKey] as const,
   },
+  categories: {
+    all: ['categories'] as const,
+  },
   dashboard: {
     overview: ['dashboard', 'overview'] as const,
   },

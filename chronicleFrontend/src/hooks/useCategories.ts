@@ -1,39 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../lib/queryKeys';
 import { getCategories, type Category } from '../services';
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const categoriesQuery = useQuery({
+    queryKey: queryKeys.categories.all,
+    queryFn: getCategories,
+  });
 
-  useEffect(() => {
-    let isMounted = true;
+  const error = categoriesQuery.error instanceof Error ? categoriesQuery.error.message : categoriesQuery.error ? 'Failed to load categories.' : '';
 
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const data = await getCategories();
-        if (isMounted) {
-          setCategories(data);
-        }
-      } catch (loadError) {
-        if (isMounted) {
-          setError(loadError instanceof Error ? loadError.message : 'Failed to load categories.');
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    void load();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return { categories, loading, error };
+  return {
+    categories: categoriesQuery.data ?? ([] as Category[]),
+    loading: categoriesQuery.isLoading,
+    error,
+  };
 }
