@@ -61,11 +61,11 @@ export function AdminContentHub() {
   const totalViews = publishedArticles.reduce((total, article) => total + Number.parseInt(article.views.replace(/[^\d]/g, ''), 10), 0);
 
   async function handleDelete(slug: string) {
-    await deleteArticleMutation.mutateAsync(slug);
+    deleteArticleMutation.mutate(slug);
   }
 
   async function handlePublish(slug: string) {
-    await publishArticleMutation.mutateAsync(slug);
+    publishArticleMutation.mutate(slug);
   }
 
   const summaryItems = [

@@ -160,6 +160,7 @@ export function AdminEngagementHub() {
       if (context?.previousComments) {
         setComments(context.previousComments);
       }
+      toast.error('Failed to update comment status.');
     },
   });
 
@@ -171,6 +172,9 @@ export function AdminEngagementHub() {
       setReplyOpen(null);
       void invalidateEngagementOverview(queryClient);
       toast.success('Reply added.');
+    },
+    onError: () => {
+      toast.error('Failed to add reply.');
     },
   });
 
@@ -199,18 +203,19 @@ export function AdminEngagementHub() {
       if (context?.previousCampaigns) {
         setCampaigns(context.previousCampaigns);
       }
+      toast.error('Failed to create campaign.');
     },
   });
 
   const sampleArticles = Array.from(new Set(comments.map((comment) => comment.articleTitle)));
 
   async function updateCommentStatus(id: string, status: CommentStatus) {
-    await updateCommentStatusMutation.mutateAsync({ id, status });
+    updateCommentStatusMutation.mutate({ id, status });
   }
 
   async function handleReply(commentId: string) {
     if (!replyText.trim()) return;
-    await addCommentReplyMutation.mutateAsync({ commentId, text: replyText.trim() });
+    addCommentReplyMutation.mutate({ commentId, text: replyText.trim() });
   }
 
   const handleSendPush = handlePushSubmit((values) => {
@@ -230,7 +235,7 @@ export function AdminEngagementHub() {
   });
 
   const handleSendNewsletter = handleNewsletterSubmit(async (values) => {
-    await createCampaignMutation.mutateAsync({ title: values.newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
+    createCampaignMutation.mutate({ title: values.newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
     setNewsletterStatus(`"${values.newsletterTitle}" will be sent to subscribers.`);
     resetNewsletter({ newsletterTitle: '' });
   });

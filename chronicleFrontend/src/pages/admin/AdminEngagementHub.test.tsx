@@ -142,4 +142,30 @@ describe('AdminEngagementHub', () => {
       expect(screen.getAllByText('LinkedIn').length).toBeGreaterThan(0);
     });
   });
+
+  it('rolls back optimistic comment status when mutation fails', async () => {
+    mockedChangeCommentStatus.mockRejectedValueOnce(new Error('Status failed'));
+    await renderEngagementHub();
+
+    expect(await screen.findByRole('button', { name: 'Approve' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Approve' })).toBeInTheDocument();
+      expect(mockedToastError).toHaveBeenCalledWith('Failed to update comment status.');
+    });
+  });
+
+  it('rolls back optimistic campaign creation when mutation fails', async () => {
+    mockedCreateCampaign.mockRejectedValueOnce(new Error('Campaign failed'));
+    await renderEngagementHub();
+
+    const campaignTitle = await screen.findByPlaceholderText('e.g. Weekend Edition');
+    fireEvent.change(campaignTitle, { target: { value: 'Weekend Edition' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create & Send' }));
+
+    await waitFor(() => {
+      expect(mockedToastError).toHaveBeenCalledWith('Failed to create campaign.');
+    });
+  });
 });
