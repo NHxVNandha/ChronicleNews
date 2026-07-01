@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
@@ -10,6 +11,32 @@ import { deleteArticle, updateArticle } from '../../services';
 
 export function AdminContentHub() {
   const { articles, setArticles, loading, error } = useAdminArticles();
+  const queryClient = useQueryClient();
+
+  const deleteArticleMutation = useMutation({
+    mutationFn: deleteArticle,
+    onSuccess: (_, slug) => {
+      setArticles((current) => current.filter((article) => article.slug !== slug));
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+      toast.success('Article moved out of the content list.');
+    },
+    onError: (deleteError) => {
+      toast.error(deleteError instanceof Error ? deleteError.message : 'Failed to delete article.');
+    },
+  });
+
+  const publishArticleMutation = useMutation({
+    mutationFn: (slug: string) => updateArticle(slug, { status: 'Published' }),
+    onSuccess: (updated, slug) => {
+      setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+      void queryClient.invalidateQueries({ queryKey: ['dashboard', 'overview'] });
+      toast.success('Article published.');
+    },
+    onError: (publishError) => {
+      toast.error(publishError instanceof Error ? publishError.message : 'Failed to publish article.');
+    },
+  });
 
   const drafts = articles.filter((article) => article.status === 'Draft');
   const reviewQueue = articles.filter((article) => article.status === 'Needs Review' || article.status === 'Draft');
@@ -18,23 +45,11 @@ export function AdminContentHub() {
   const totalViews = publishedArticles.reduce((total, article) => total + Number.parseInt(article.views.replace(/[^\d]/g, ''), 10), 0);
 
   async function handleDelete(slug: string) {
-    try {
-      await deleteArticle(slug);
-      setArticles((current) => current.filter((article) => article.slug !== slug));
-      toast.success('Article moved out of the content list.');
-    } catch (deleteError) {
-      toast.error(deleteError instanceof Error ? deleteError.message : 'Failed to delete article.');
-    }
+    await deleteArticleMutation.mutateAsync(slug);
   }
 
   async function handlePublish(slug: string) {
-    try {
-      const updated = await updateArticle(slug, { status: 'Published' });
-      setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
-      toast.success('Article published.');
-    } catch (publishError) {
-      toast.error(publishError instanceof Error ? publishError.message : 'Failed to publish article.');
-    }
+    await publishArticleMutation.mutateAsync(slug);
   }
 
   const summaryItems = [

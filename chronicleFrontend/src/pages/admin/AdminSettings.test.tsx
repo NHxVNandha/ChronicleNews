@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdminSettings } from './AdminSettings';
 
@@ -55,8 +56,17 @@ describe('AdminSettings', () => {
     });
   });
 
+  function renderSettings() {
+    const queryClient = new QueryClient();
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <AdminSettings />
+      </QueryClientProvider>,
+    );
+  }
+
   it('shows validation feedback and blocks general save when required fields are invalid', async () => {
-    render(<AdminSettings />);
+    renderSettings();
 
     const publicationName = screen.getByDisplayValue('CHRONICLE');
     fireEvent.change(publicationName, { target: { value: '' } });
@@ -70,7 +80,7 @@ describe('AdminSettings', () => {
   });
 
   it('submits general settings and updates workflow toggle state', async () => {
-    render(<AdminSettings />);
+    renderSettings();
 
     const publicationName = screen.getByDisplayValue('CHRONICLE');
     fireEvent.change(publicationName, { target: { value: 'Chronicle Press' } });

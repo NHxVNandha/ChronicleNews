@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
@@ -60,6 +61,7 @@ const defaultSettingsValues: SettingsFormValues = {
 
 export function AdminSettings() {
   const { availableRoles, teamMembers, setTeamMembers, loading, error: teamError, setError: setTeamError } = useTeamAccess();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<TabName>('general');
   const [permissionMatrix, setPermissionMatrix] = useState<Record<RoleName, boolean[]>>({ Admin: [true, true, true, true, true], Editor: [true, true, true, true, false], Author: [true, true, false, true, false], Reviewer: [false, true, false, false, false] });
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<SettingsFormValues>({
@@ -68,6 +70,32 @@ export function AdminSettings() {
   });
 
   const formValues = watch();
+
+  const updateUserRoleMutation = useMutation({
+    mutationFn: ({ memberId, fullName, roleId }: { memberId: string; fullName: string; roleId: string }) => updateUserRole(memberId, { fullName, roleId }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['team', 'access'] });
+      toast.success('Role updated.');
+    },
+    onError: (updateError) => {
+      const message = updateError instanceof Error ? updateError.message : 'Failed to update user role.';
+      setTeamError(message);
+      toast.error(message);
+    },
+  });
+
+  const updateUserStatusMutation = useMutation({
+    mutationFn: ({ memberId, status }: { memberId: string; status: 'Active' | 'Disabled' }) => updateUserStatus(memberId, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['team', 'access'] });
+      toast.success('Status updated.');
+    },
+    onError: (updateError) => {
+      const message = updateError instanceof Error ? updateError.message : 'Failed to update user status.';
+      setTeamError(message);
+      toast.error(message);
+    },
+  });
 
   const publishingRules = [
     { label: 'Require editor approval', key: 'requireEditorApproval' as const, enabled: formValues.requireEditorApproval },
@@ -87,14 +115,7 @@ export function AdminSettings() {
 
     setTeamMembers((current) => current.map((item) => item.id === memberId ? { ...item, role, roleId: roleRecord.id } : item));
 
-    try {
-      await updateUserRole(memberId, { fullName: member.name, roleId: roleRecord.id });
-      toast.success('Role updated.');
-    } catch (updateError) {
-      const message = updateError instanceof Error ? updateError.message : 'Failed to update user role.';
-      setTeamError(message);
-      toast.error(message);
-    }
+    await updateUserRoleMutation.mutateAsync({ memberId, fullName: member.name, roleId: roleRecord.id });
   }
 
   async function toggleMemberStatus(memberId: string) {
@@ -104,14 +125,7 @@ export function AdminSettings() {
 
     setTeamMembers((current) => current.map((item) => item.id === memberId ? { ...item, status: nextStatus } : item));
 
-    try {
-      await updateUserStatus(memberId, nextStatus);
-      toast.success('Status updated.');
-    } catch (updateError) {
-      const message = updateError instanceof Error ? updateError.message : 'Failed to update user status.';
-      setTeamError(message);
-      toast.error(message);
-    }
+    await updateUserStatusMutation.mutateAsync({ memberId, status: nextStatus });
   }
 
   const roleCounts = teamAccessRoles.map((role) => ({ ...role, users: teamMembers.filter((member) => member.role === role.role).length || role.users }));
