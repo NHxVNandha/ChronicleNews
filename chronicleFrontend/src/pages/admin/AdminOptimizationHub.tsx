@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -98,12 +97,6 @@ const defaultOptimizationValues: OptimizationFormValues = {
   languageStandard: '',
   writingStyle: '',
   tone: '',
-};
-
-const sectionReveal = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.28, ease: 'easeOut' as const },
 };
 
 export function AdminOptimizationHub() {
@@ -270,7 +263,7 @@ export function AdminOptimizationHub() {
         </div>
       ) : (
       <div className="space-y-8 lg:space-y-10">
-      <motion.div {...sectionReveal}>
+      <div>
         <AdminPageHeader
           eyebrow="Quality Control"
           title="Optimization Center"
@@ -282,28 +275,28 @@ export function AdminOptimizationHub() {
             </div>
           }
         />
-      </motion.div>
+      </div>
       {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
-      <motion.div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: 'SEO Score', value: seoScore, delta: `${scoreFactors.length} tracked factors`, icon: 'travel_explore', tone: 'blue' as const, variant: 'primary' as const },
           { label: 'Readability', value: readabilityScore, delta: readabilityLabel, icon: 'description', tone: readabilityScore >= 70 ? 'emerald' as const : 'amber' as const },
           { label: 'Keyword Density', value: `${keywordDensity}%`, delta: `Keyword: ${formValues.focusKeyword}`, icon: 'search', tone: 'default' as const },
           { label: 'AI Provider', value: formValues.provider || 'OpenAI', delta: formValues.modelName || 'Model not set', icon: 'auto_fix_high', tone: 'default' as const },
-        ].map((stat, index) => (
-          <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }}>
+        ].map((stat) => (
+          <div key={stat.label}>
             <AdminStatCard label={stat.label} value={stat.value} delta={stat.delta} icon={stat.icon} tone={stat.tone} variant={stat.variant} />
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
 
-      <motion.div className="min-w-0 space-y-6" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
+      <div className="min-w-0 space-y-6">
         <div className="flex gap-1 rounded-2xl border border-slate-200 bg-slate-100 p-1.5">
           {optTabs.map((tab) => (
-            <motion.button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
+            <button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition hover:-translate-y-px ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)}>
               <Icon name={tab.icon} className="text-lg" />{tab.label}
-            </motion.button>
+            </button>
           ))}
         </div>
 
@@ -652,7 +645,7 @@ export function AdminOptimizationHub() {
             </AdminPanel>
           </div>}
 
-        </motion.div>
+        </div>
       </div>
       )}
     </AdminLayout>

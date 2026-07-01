@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -60,12 +59,6 @@ const socialSchema = z.object({
 type PushFormValues = z.infer<typeof pushSchema>;
 type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 type SocialFormValues = z.infer<typeof socialSchema>;
-
-const sectionReveal = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.28, ease: 'easeOut' as const },
-};
 
 export function AdminEngagementHub() {
   const [loading, setLoading] = useState(true);
@@ -220,17 +213,17 @@ export function AdminEngagementHub() {
       <div className="space-y-10 lg:space-y-12">
         {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
-        <motion.div {...sectionReveal}>
+        <div>
           <AdminPageHeader
             eyebrow="Audience Operations"
             title="Engagement Center"
             description="Comments, campaigns, and audience signals grouped into one modern moderation and outreach workspace."
           />
-        </motion.div>
+        </div>
 
-        <motion.div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {newsletterStats.map((stat, index) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }}>
+            <div key={stat.label}>
               <AdminStatCard
                 label={stat.label}
                 value={stat.value}
@@ -239,12 +232,12 @@ export function AdminEngagementHub() {
                 tone={index === 0 ? 'blue' : 'default'}
                 variant={index === 0 ? 'primary' : 'compact'}
               />
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* ── Section 1: Comments Moderation ── */}
-        <motion.div {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
+        <div>
         <AdminPanel>
           <AdminSectionHeader
             icon={<Icon name="forum" className="text-[20px]" />}
@@ -303,8 +296,8 @@ export function AdminEngagementHub() {
                   <p className="text-sm">Try adjusting your filters or search terms.</p>
                 </div>
               ) : (
-                filteredComments.map((comment, index) => (
-                  <motion.div key={comment.id} className="p-5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.04 + index * 0.02 }}>
+                filteredComments.map((comment) => (
+                  <div key={comment.id} className="p-5">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-3">
@@ -360,16 +353,16 @@ export function AdminEngagementHub() {
                         </button>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))
               )}
             </div>
           </div>
         </AdminPanel>
-        </motion.div>
+        </div>
 
         {/* ── Section 2: Audience Analytics ── */}
-        <motion.div className="space-y-5" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}>
+        <div className="space-y-5">
           <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-purple-600 text-white"><Icon name="insights" /></span>
             <div className="flex-1">
@@ -427,10 +420,10 @@ export function AdminEngagementHub() {
               </div>
             </section>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Section 3: Push Notifications ── */}
-        <motion.div className="space-y-5" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.12 }}>
+        <div className="space-y-5">
           <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-600 text-white"><Icon name="notifications_active" /></span>
             <div className="flex-1">
@@ -495,10 +488,10 @@ export function AdminEngagementHub() {
               )}
             </section>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Section 4: Newsletter & Campaigns ── */}
-        <motion.div className="space-y-5" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.14 }}>
+        <div className="space-y-5">
           <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-600 text-white"><Icon name="campaign" /></span>
             <div className="flex-1">
@@ -598,10 +591,10 @@ export function AdminEngagementHub() {
               </table>
             </div>
           </section>
-        </motion.div>
+        </div>
 
         {/* ── Section 5: Social Media Scheduling ── */}
-        <motion.div className="space-y-5" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.16 }}>
+        <div className="space-y-5">
           <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-sky-600 text-white"><Icon name="share" /></span>
             <div className="flex-1">
@@ -661,7 +654,7 @@ export function AdminEngagementHub() {
               )}
             </section>
           </div>
-        </motion.div>
+        </div>
 
       </div>
       )}
