@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
 import { AdminInfoCard, AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
@@ -6,6 +7,12 @@ import { AdminLayout } from '../../layouts/AdminLayout';
 import { Icon } from '../../components/ui';
 import { useAdminArticles } from '../../hooks/admin/useAdminArticles';
 import { deleteArticle, updateArticle } from '../../services';
+
+const sectionReveal = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.28, ease: 'easeOut' as const },
+};
 
 export function AdminContentHub() {
   const { articles, setArticles, loading, error } = useAdminArticles();
@@ -67,32 +74,36 @@ export function AdminContentHub() {
         <div className="space-y-10 lg:space-y-12">
           {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
-          <AdminPageHeader
-            eyebrow="Editorial Workflow"
-            title="Content Workspace"
-            description="Articles, review queue, and publishing schedule grouped into one operational workspace."
-            actions={<Link className="rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600" to="/admin/articles/new">Create Article</Link>}
-          />
+          <motion.div {...sectionReveal}>
+            <AdminPageHeader
+              eyebrow="Editorial Workflow"
+              title="Content Workspace"
+              description="Articles, review queue, and publishing schedule grouped into one operational workspace."
+              actions={<Link className="rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600" to="/admin/articles/new">Create Article</Link>}
+            />
+          </motion.div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <motion.div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}>
             {summaryItems.map((item, index) => (
-              <AdminStatCard
-                key={item.label}
-                label={item.label}
-                value={item.value}
-                helper={item.helper}
-                icon={item.icon}
-                tone={index === 0 ? 'blue' : item.tone}
-                variant={index === 0 ? 'primary' : 'compact'}
-              />
+              <motion.div key={item.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, ease: 'easeOut', delay: 0.06 + index * 0.04 }}>
+                <AdminStatCard
+                  label={item.label}
+                  value={item.value}
+                  helper={item.helper}
+                  icon={item.icon}
+                  tone={index === 0 ? 'blue' : item.tone}
+                  variant={index === 0 ? 'primary' : 'compact'}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          <AdminPanel
-            title="Editorial Summary"
-            description="Production volume, review pressure, scheduled output, and published reach in one view."
-            action={<div className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-700"><Icon name="warning" className="text-base" />{reviewQueue.length} items need editorial attention</div>}
-          >
+          <motion.div {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
+            <AdminPanel
+              title="Editorial Summary"
+              description="Production volume, review pressure, scheduled output, and published reach in one view."
+              action={<motion.div className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-700" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.1 }}><Icon name="warning" className="text-base" />{reviewQueue.length} items need editorial attention</motion.div>}
+            >
             <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
               <AdminPanel title="Content Library" description="Filter published, draft, scheduled, review, and archived content in one editorial table." padding="md">
                 <div className="-mx-6 -mb-6 mt-1 overflow-hidden rounded-b-2xl">
@@ -111,14 +122,15 @@ export function AdminContentHub() {
                   />
                   <div className="mt-4 space-y-2">
                     {reviewQueue.map((article, index) => (
-                      <AdminInfoCard
-                        key={article.slug}
-                        leading={<Icon name={article.status === 'Needs Review' ? 'rate_review' : 'edit_note'} className="text-[18px]" />}
-                        title={article.title}
-                        description={<div className="space-y-2"><div className="flex flex-wrap items-center gap-2"><AdminStatusBadge status={article.status === 'Needs Review' ? 'needs-review' : 'draft'}>{article.status}</AdminStatusBadge><AdminStatusBadge status={index === 0 ? 'flagged' : 'pending'}>{index === 0 ? 'Priority' : 'Normal'}</AdminStatusBadge></div><p>{article.author} · Updated {article.updatedAt}</p></div>}
-                        action={<Link className="rounded-lg bg-slate-950 px-3 py-2 text-[11px] font-bold !text-white transition hover:bg-slate-800" to={`/admin/articles/${article.slug}/edit`}>Open Review</Link>}
-                        className="rounded-2xl border border-slate-100 bg-slate-50 p-4 hover:bg-white"
-                      />
+                      <motion.div key={article.slug} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.08 + index * 0.03 }} whileHover={{ y: -2 }}>
+                        <AdminInfoCard
+                          leading={<Icon name={article.status === 'Needs Review' ? 'rate_review' : 'edit_note'} className="text-[18px]" />}
+                          title={article.title}
+                          description={<div className="space-y-2"><div className="flex flex-wrap items-center gap-2"><AdminStatusBadge status={article.status === 'Needs Review' ? 'needs-review' : 'draft'}>{article.status}</AdminStatusBadge><AdminStatusBadge status={index === 0 ? 'flagged' : 'pending'}>{index === 0 ? 'Priority' : 'Normal'}</AdminStatusBadge></div><p>{article.author} · Updated {article.updatedAt}</p></div>}
+                          action={<Link className="rounded-lg bg-slate-950 px-3 py-2 text-[11px] font-bold !text-white transition hover:bg-slate-800" to={`/admin/articles/${article.slug}/edit`}>Open Review</Link>}
+                          className="rounded-2xl border border-slate-100 bg-slate-50 p-4 hover:bg-white"
+                        />
+                      </motion.div>
                     ))}
                   </div>
                 </AdminPanel>
@@ -137,8 +149,8 @@ export function AdminContentHub() {
                       { slot: '11:30', day: 'Tue', title: articles[3]?.title ?? 'Market Pulse', status: 'Editing' },
                       { slot: '15:00', day: 'Wed', title: scheduledArticles[0]?.title ?? articles[4]?.title ?? 'Scheduled Story', status: 'Scheduled' },
                       { slot: '19:00', day: 'Thu', title: articles[2]?.title ?? 'Awaiting Review', status: 'Awaiting Review' },
-                    ].map((item) => (
-                      <div key={`${item.day}-${item.slot}`} className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    ].map((item, index) => (
+                      <motion.div key={`${item.day}-${item.slot}`} className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.1 + index * 0.03 }} whileHover={{ y: -2 }}>
                         <div className="min-w-[60px] rounded-lg bg-white px-3 py-2 text-center shadow-sm">
                           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{item.day}</p>
                           <p className="mt-1 text-sm font-bold text-slate-950">{item.slot}</p>
@@ -148,13 +160,14 @@ export function AdminContentHub() {
                           <p className="mt-1 text-xs text-slate-500">Homepage slot editorial block</p>
                         </div>
                         <AdminStatusBadge status={item.status === 'Published' ? 'published' : item.status === 'Scheduled' ? 'scheduled' : item.status === 'Editing' ? 'draft' : 'needs-review'}>{item.status}</AdminStatusBadge>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </AdminPanel>
               </aside>
             </div>
-          </AdminPanel>
+            </AdminPanel>
+          </motion.div>
         </div>
       )}
     </AdminLayout>
