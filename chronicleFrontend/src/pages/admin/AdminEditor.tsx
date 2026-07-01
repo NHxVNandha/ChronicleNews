@@ -10,7 +10,7 @@ import { AdminPageHeader, AdminPanel, AdminStatusBadge } from '../../components/
 import { ArticlePreviewPanel } from '../../components/ArticlePreviewPanel';
 import { PublishConfirmModal } from '../../components/PublishConfirmModal';
 import { Field, Icon } from '../../components/ui';
-import { queryKeys } from '../../lib/queryKeys';
+import { invalidateArticles, invalidateDashboard } from '../../lib/queryInvalidation';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { createArticle, getArticleEditorBySlug, getCategories, publishArticle, saveArticle, type ArticleEditorRecord, type Category } from '../../services';
 
@@ -117,8 +117,8 @@ export function AdminEditor() {
       if (!slug || !isEditing) {
         navigate(`/admin/articles/${article.slug}/edit`, { replace: true });
       }
-      void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.overview });
+      void invalidateArticles(queryClient);
+      void invalidateDashboard(queryClient);
       setStatusMessage('Draft saved successfully.');
       toast.success('Draft saved.');
       setTimeout(() => setStatusMessage(''), 3000);
@@ -148,8 +148,8 @@ export function AdminEditor() {
       if (!slug) {
         navigate(`/admin/articles/${article.slug}/edit`, { replace: true });
       }
-      void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.overview });
+      void invalidateArticles(queryClient);
+      void invalidateDashboard(queryClient);
       setShowPublish(false);
       setStatusMessage('Article published successfully!');
       toast.success('Article published successfully.');

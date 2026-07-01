@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { invalidateEngagementOverview } from '../../lib/queryInvalidation';
 import { queryKeys } from '../../lib/queryKeys';
 import { SkeletonBlock } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
@@ -152,7 +153,7 @@ export function AdminEngagementHub() {
     },
     onSuccess: (updated, variables) => {
       setComments((current) => current.map((c) => c.id === variables.id ? updated : c));
-      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
+      void invalidateEngagementOverview(queryClient);
       toast.success(`Comment ${variables.status.toLowerCase()}.`);
     },
     onError: (_error, _variables, context) => {
@@ -168,7 +169,7 @@ export function AdminEngagementHub() {
       setComments((current) => current.map((c) => c.id === variables.commentId ? { ...c, replies: [...c.replies, reply] } : c));
       setReplyText('');
       setReplyOpen(null);
-      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
+      void invalidateEngagementOverview(queryClient);
       toast.success('Reply added.');
     },
   });
@@ -191,7 +192,7 @@ export function AdminEngagementHub() {
     },
     onSuccess: (created) => {
       setCampaigns((current) => [created, ...current.filter((campaign) => !campaign.id.startsWith('optimistic-'))]);
-      void queryClient.invalidateQueries({ queryKey: queryKeys.engagement.overview });
+      void invalidateEngagementOverview(queryClient);
       toast.success('Campaign created.');
     },
     onError: (_error, _variables, context) => {

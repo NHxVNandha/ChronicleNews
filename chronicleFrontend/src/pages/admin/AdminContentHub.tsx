@@ -5,7 +5,7 @@ import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
 import { AdminInfoCard, AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
-import { queryKeys } from '../../lib/queryKeys';
+import { invalidateArticles, invalidateDashboard } from '../../lib/queryInvalidation';
 import { Icon } from '../../components/ui';
 import { useAdminArticles } from '../../hooks/admin/useAdminArticles';
 import { deleteArticle, updateArticle } from '../../services';
@@ -22,7 +22,7 @@ export function AdminContentHub() {
       return { previousArticles };
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
+      void invalidateArticles(queryClient);
       toast.success('Article moved out of the content list.');
     },
     onError: (deleteError, _, context) => {
@@ -42,8 +42,8 @@ export function AdminContentHub() {
     },
     onSuccess: (updated, slug) => {
       setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
-      void queryClient.invalidateQueries({ queryKey: queryKeys.articles.all });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.overview });
+      void invalidateArticles(queryClient);
+      void invalidateDashboard(queryClient);
       toast.success('Article published.');
     },
     onError: (publishError, _, context) => {

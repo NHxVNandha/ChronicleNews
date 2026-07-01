@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
+import { invalidateOptimizationSettings } from '../../lib/queryInvalidation';
 import { queryKeys } from '../../lib/queryKeys';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { Field, Icon } from '../../components/ui';
@@ -215,7 +216,7 @@ export function AdminOptimizationHub() {
         writingStyle: ai.writingStyle,
         tone: ai.tone,
       });
-      void queryClient.invalidateQueries({ queryKey: queryKeys.optimization.settings });
+      void invalidateOptimizationSettings(queryClient);
       setStatusMessage('Optimization settings saved.');
       toast.success('Optimization settings saved.');
       setTimeout(() => setStatusMessage(''), 3000);
