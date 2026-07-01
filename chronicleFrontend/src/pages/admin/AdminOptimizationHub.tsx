@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
@@ -51,6 +54,52 @@ const providers = ['OpenAI', 'Gemini', 'Azure OpenAI', 'Custom API Endpoint'];
 const rules = ['Hindari clickbait berlebihan', 'Hindari bahasa tidak baku', 'Hindari opini pada hard news', 'Wajib cek typo', 'Wajib cek struktur 5W+1H', 'Wajib cek judul dan ringkasan'];
 const safeguards = ['AI hanya memberi saran, tidak mengubah artikel otomatis', 'Editor wajib approve setiap perubahan', 'Simpan riwayat koreksi AI', 'Tampilkan before/after sebelum apply', 'AI tidak boleh auto-publish'];
 
+const optimizationSchema = z.object({
+  defaultMetaTitle: z.string().trim().min(5, 'Default meta title is too short.'),
+  metaDescription: z.string().trim().min(20, 'Meta description must be at least 20 characters.').max(320, 'Meta description should stay under 320 characters.'),
+  focusKeyword: z.string().trim().min(2, 'Focus keyword is required.'),
+  robotsTxt: z.string().trim().min(10, 'robots.txt cannot be empty.'),
+  enableCrawling: z.boolean(),
+  indexArticlePages: z.boolean(),
+  indexCategoryPages: z.boolean(),
+  noIndexAuthorPages: z.boolean(),
+  provider: z.string().trim().min(1, 'Provider is required.'),
+  modelName: z.string().trim().min(2, 'Model name is required.'),
+  baseUrl: z.string().trim().min(1, 'Base URL is required.'),
+  apiKeyHint: z.string(),
+  temperature: z.number().min(0, 'Temperature must be at least 0.').max(2, 'Temperature must be 2 or lower.'),
+  maxTokens: z.number().int().min(1, 'Max tokens must be greater than 0.'),
+  systemPrompt: z.string().trim().min(10, 'System prompt must be at least 10 characters.'),
+  primaryLanguage: z.string().trim().min(2, 'Primary language is required.'),
+  languageStandard: z.string().trim().min(2, 'Language standard is required.'),
+  writingStyle: z.string().trim().min(2, 'Writing style is required.'),
+  tone: z.string().trim().min(2, 'Tone is required.'),
+});
+
+type OptimizationFormValues = z.infer<typeof optimizationSchema>;
+
+const defaultOptimizationValues: OptimizationFormValues = {
+  defaultMetaTitle: '',
+  metaDescription: '',
+  focusKeyword: 'digital transformation',
+  robotsTxt: '',
+  enableCrawling: true,
+  indexArticlePages: true,
+  indexCategoryPages: true,
+  noIndexAuthorPages: false,
+  provider: 'OpenAI',
+  modelName: '',
+  baseUrl: '',
+  apiKeyHint: '',
+  temperature: 0.7,
+  maxTokens: 1000,
+  systemPrompt: '',
+  primaryLanguage: '',
+  languageStandard: '',
+  writingStyle: '',
+  tone: '',
+};
+
 const sectionReveal = {
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
@@ -66,10 +115,13 @@ export function AdminOptimizationHub() {
   const [seoScore] = useState(78);
   const [readabilityScore] = useState(68);
   const [keywordDensity] = useState(2.4);
-  const [currentKeyword, setCurrentKeyword] = useState('digital transformation');
   const [socialTab, setSocialTab] = useState<'facebook' | 'twitter'>('facebook');
-  const [seoSettings, setSeoSettings] = useState<SeoSettings | null>(null);
-  const [aiSettings, setAiSettings] = useState<AiSettings | null>(null);
+  const { register, reset, watch, handleSubmit, setValue, formState: { errors } } = useForm<OptimizationFormValues>({
+    resolver: zodResolver(optimizationSchema),
+    defaultValues: defaultOptimizationValues,
+  });
+
+  const formValues = watch();
 
   useEffect(() => {
     let isMounted = true;
@@ -77,9 +129,27 @@ export function AdminOptimizationHub() {
       try {
         const [seo, ai] = await Promise.all([getSeoSettings(), getAiSettings()]);
         if (!isMounted) return;
-        setSeoSettings(seo);
-        setAiSettings(ai);
-        setCurrentKeyword(seo.focusKeyword);
+        reset({
+          defaultMetaTitle: seo.defaultMetaTitle,
+          metaDescription: seo.metaDescription,
+          focusKeyword: seo.focusKeyword,
+          robotsTxt: seo.robotsTxt,
+          enableCrawling: seo.enableCrawling,
+          indexArticlePages: seo.indexArticlePages,
+          indexCategoryPages: seo.indexCategoryPages,
+          noIndexAuthorPages: seo.noIndexAuthorPages,
+          provider: ai.provider,
+          modelName: ai.modelName,
+          baseUrl: ai.baseUrl,
+          apiKeyHint: ai.apiKeyHint,
+          temperature: ai.temperature,
+          maxTokens: ai.maxTokens,
+          systemPrompt: ai.systemPrompt,
+          primaryLanguage: ai.primaryLanguage,
+          languageStandard: ai.languageStandard,
+          writingStyle: ai.writingStyle,
+          tone: ai.tone,
+        });
       } catch (loadError) {
         if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load optimization settings.');
       } finally {
@@ -91,19 +161,60 @@ export function AdminOptimizationHub() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reset]);
 
-  async function handleSaveAll() {
-    if (!seoSettings || !aiSettings) return;
+  const handleSaveAll = handleSubmit(async (values) => {
     try {
       setSaving(true);
       setError('');
+      const seoPayload: SeoSettings = {
+        defaultMetaTitle: values.defaultMetaTitle,
+        metaDescription: values.metaDescription,
+        focusKeyword: values.focusKeyword,
+        robotsTxt: values.robotsTxt,
+        enableCrawling: values.enableCrawling,
+        indexArticlePages: values.indexArticlePages,
+        indexCategoryPages: values.indexCategoryPages,
+        noIndexAuthorPages: values.noIndexAuthorPages,
+      };
+      const aiPayload: AiSettings = {
+        provider: values.provider,
+        modelName: values.modelName,
+        baseUrl: values.baseUrl,
+        apiKeyHint: values.apiKeyHint,
+        temperature: values.temperature,
+        maxTokens: values.maxTokens,
+        systemPrompt: values.systemPrompt,
+        primaryLanguage: values.primaryLanguage,
+        languageStandard: values.languageStandard,
+        writingStyle: values.writingStyle,
+        tone: values.tone,
+      };
       const [seo, ai] = await Promise.all([
-        updateSeoSettings({ ...seoSettings, focusKeyword: currentKeyword }),
-        updateAiSettings(aiSettings),
+        updateSeoSettings(seoPayload),
+        updateAiSettings(aiPayload),
       ]);
-      setSeoSettings(seo);
-      setAiSettings(ai);
+      reset({
+        defaultMetaTitle: seo.defaultMetaTitle,
+        metaDescription: seo.metaDescription,
+        focusKeyword: seo.focusKeyword,
+        robotsTxt: seo.robotsTxt,
+        enableCrawling: seo.enableCrawling,
+        indexArticlePages: seo.indexArticlePages,
+        indexCategoryPages: seo.indexCategoryPages,
+        noIndexAuthorPages: seo.noIndexAuthorPages,
+        provider: ai.provider,
+        modelName: ai.modelName,
+        baseUrl: ai.baseUrl,
+        apiKeyHint: ai.apiKeyHint,
+        temperature: ai.temperature,
+        maxTokens: ai.maxTokens,
+        systemPrompt: ai.systemPrompt,
+        primaryLanguage: ai.primaryLanguage,
+        languageStandard: ai.languageStandard,
+        writingStyle: ai.writingStyle,
+        tone: ai.tone,
+      });
       setStatusMessage('Optimization settings saved.');
       toast.success('Optimization settings saved.');
       setTimeout(() => setStatusMessage(''), 3000);
@@ -114,7 +225,7 @@ export function AdminOptimizationHub() {
     } finally {
       setSaving(false);
     }
-  }
+  });
 
   const scoreFactors = [
     { label: 'Meta Tags', value: 90, color: 'bg-emerald-500' },
@@ -167,7 +278,7 @@ export function AdminOptimizationHub() {
           actions={
             <div className="flex flex-col items-start gap-3">
               {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
-              <button className="w-fit rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
+              <button className="w-fit rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
             </div>
           }
         />
@@ -178,8 +289,8 @@ export function AdminOptimizationHub() {
         {[
           { label: 'SEO Score', value: seoScore, delta: `${scoreFactors.length} tracked factors`, icon: 'travel_explore', tone: 'blue' as const, variant: 'primary' as const },
           { label: 'Readability', value: readabilityScore, delta: readabilityLabel, icon: 'description', tone: readabilityScore >= 70 ? 'emerald' as const : 'amber' as const },
-          { label: 'Keyword Density', value: `${keywordDensity}%`, delta: `Keyword: ${currentKeyword}`, icon: 'search', tone: 'default' as const },
-          { label: 'AI Provider', value: aiSettings?.provider ?? 'OpenAI', delta: aiSettings?.modelName ?? 'Model not set', icon: 'auto_fix_high', tone: 'default' as const },
+          { label: 'Keyword Density', value: `${keywordDensity}%`, delta: `Keyword: ${formValues.focusKeyword}`, icon: 'search', tone: 'default' as const },
+          { label: 'AI Provider', value: formValues.provider || 'OpenAI', delta: formValues.modelName || 'Model not set', icon: 'auto_fix_high', tone: 'default' as const },
         ].map((stat, index) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }}>
             <AdminStatCard label={stat.label} value={stat.value} delta={stat.delta} icon={stat.icon} tone={stat.tone} variant={stat.variant} />
@@ -219,24 +330,26 @@ export function AdminOptimizationHub() {
               <AdminSectionHeader title="SEO Management" description="Meta defaults, keyword analysis, structured data, and link health." bordered={false} />
               <div className="grid gap-6 lg:grid-cols-2">
                 <div className="space-y-4">
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Meta Title</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" value={seoSettings?.defaultMetaTitle ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, defaultMetaTitle: e.target.value } : current)} placeholder="Chronicle News — Independent Journalism" /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Meta Title</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" placeholder="Chronicle News — Independent Journalism" {...register('defaultMetaTitle')} />{errors.defaultMetaTitle && <p className="mt-2 text-sm font-semibold text-red-600">{errors.defaultMetaTitle.message}</p>}</label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Meta Description</span>
-                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" rows={3} value={seoSettings?.metaDescription ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, metaDescription: e.target.value } : current)} />
-                    <p className="mt-1 text-right text-xs text-slate-400">{(seoSettings?.metaDescription ?? '').length} characters</p>
+                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 outline-none focus:border-secondary" rows={3} {...register('metaDescription')} />
+                    <p className="mt-1 text-right text-xs text-slate-400">{formValues.metaDescription.length} characters</p>
+                    {errors.metaDescription && <p className="mt-2 text-sm font-semibold text-red-600">{errors.metaDescription.message}</p>}
                   </label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Focus Keyword</span>
                     <div className="relative">
                       <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                      <input className="w-full rounded-lg border border-slate-200 bg-slate-50 py-4 pl-11 pr-4 outline-none focus:border-secondary" value={currentKeyword} onChange={(e) => setCurrentKeyword(e.target.value)} placeholder="Enter target keyword..." />
+                      <input className="w-full rounded-lg border border-slate-200 bg-slate-50 py-4 pl-11 pr-4 outline-none focus:border-secondary" placeholder="Enter target keyword..." {...register('focusKeyword')} />
                     </div>
+                    {errors.focusKeyword && <p className="mt-2 text-sm font-semibold text-red-600">{errors.focusKeyword.message}</p>}
                   </label>
                 </div>
                 <div className="space-y-4 rounded-xl bg-blue-50 p-5">
                   <h4 className="font-bold text-primary">Keyword Analysis</h4>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg bg-white p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Keyword</p><p className="mt-1 font-bold text-primary">{currentKeyword}</p></div>
+                    <div className="rounded-lg bg-white p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Keyword</p><p className="mt-1 font-bold text-primary">{formValues.focusKeyword}</p></div>
                     <div className="rounded-lg bg-white p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Density</p><p className="mt-1 font-bold text-primary">{keywordDensity}% <span className="text-sm font-normal text-slate-500">(target: 2-3%)</span></p></div>
                     <div className="rounded-lg bg-white p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">Title match</p><p className="mt-1 font-bold text-emerald-600">Yes</p></div>
                     <div className="rounded-lg bg-white p-4"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">H1 match</p><p className="mt-1 font-bold text-emerald-600">Yes</p></div>
@@ -338,17 +451,18 @@ export function AdminOptimizationHub() {
                 <div className="space-y-4">
                   <label className="block">
                     <span className="mb-2 flex items-center justify-between text-sm font-bold uppercase tracking-wider text-slate-600"><span>robots.txt</span><button className="rounded bg-slate-100 px-3 py-1 text-xs font-bold text-primary" type="button">Reset to default</button></span>
-                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-sm outline-none focus:border-secondary" rows={6} value={seoSettings?.robotsTxt ?? ''} onChange={(e) => setSeoSettings((current) => current ? { ...current, robotsTxt: e.target.value } : current)} />
+                    <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-sm outline-none focus:border-secondary" rows={6} {...register('robotsTxt')} />
+                    {errors.robotsTxt && <p className="mt-2 text-sm font-semibold text-red-600">{errors.robotsTxt.message}</p>}
                   </label>
                   <div className="space-y-3">
                     <h4 className="font-bold text-primary">Crawl Settings</h4>
-                    {seoSettings && ([
+                    {([
                       ['Enable crawling', 'enableCrawling'],
                       ['Index article pages', 'indexArticlePages'],
                       ['Index category pages', 'indexCategoryPages'],
                       ['Noindex author pages', 'noIndexAuthorPages'],
                     ] as const).map(([label, key]) => (
-                      <button key={key} className="flex w-full items-center justify-between rounded-lg bg-slate-50 px-4 py-3" type="button" onClick={() => setSeoSettings((current) => current ? { ...current, [key]: !current[key] } : current)}><span className="text-sm font-semibold text-slate-700">{label}</span><span className={`h-6 w-11 rounded-full p-1 ${seoSettings[key] ? 'bg-secondary' : 'bg-slate-300'}`}><span className={`block h-4 w-4 rounded-full bg-white ${seoSettings[key] ? 'translate-x-5' : ''}`} /></span></button>
+                      <button key={key} className="flex w-full items-center justify-between rounded-lg bg-slate-50 px-4 py-3" type="button" onClick={() => setValue(key, !formValues[key], { shouldDirty: true })}><span className="text-sm font-semibold text-slate-700">{label}</span><span className={`h-6 w-11 rounded-full p-1 ${formValues[key] ? 'bg-secondary' : 'bg-slate-300'}`}><span className={`block h-4 w-4 rounded-full bg-white ${formValues[key] ? 'translate-x-5' : ''}`} /></span></button>
                     ))}
                   </div>
                 </div>
@@ -464,24 +578,24 @@ export function AdminOptimizationHub() {
             <AdminPanel tone="accent">
               <AdminSectionHeader title="AI & KBBI Settings" description="Configure provider, model, KBBI rules, and editor approval safety." bordered={false} />
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Provider</span><select className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.provider ?? 'OpenAI'} onChange={(e) => setAiSettings((current) => current ? { ...current, provider: e.target.value } : current)}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select></label>
-                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Model Name</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.modelName ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, modelName: e.target.value } : current)} /></label>
-                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Base URL</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.baseUrl ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, baseUrl: e.target.value } : current)} /></label>
-                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">API Key</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.apiKeyHint ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, apiKeyHint: e.target.value } : current)} type="password" /></label>
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Temperature</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.temperature ?? 0} onChange={(e) => setAiSettings((current) => current ? { ...current, temperature: Number(e.target.value) } : current)} type="number" step="0.1" /></label>
-                <label className="block"><span className="mb-2 block font-bold text-slate-600">Max Tokens</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" value={aiSettings?.maxTokens ?? 0} onChange={(e) => setAiSettings((current) => current ? { ...current, maxTokens: Number(e.target.value) } : current)} type="number" /></label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Provider</span><select className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" {...register('provider')}>{providers.map((provider) => <option key={provider}>{provider}</option>)}</select>{errors.provider && <p className="mt-2 text-sm font-semibold text-red-600">{errors.provider.message}</p>}</label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Model Name</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" {...register('modelName')} />{errors.modelName && <p className="mt-2 text-sm font-semibold text-red-600">{errors.modelName.message}</p>}</label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Base URL</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" {...register('baseUrl')} />{errors.baseUrl && <p className="mt-2 text-sm font-semibold text-red-600">{errors.baseUrl.message}</p>}</label>
+                <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">API Key</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" type="password" {...register('apiKeyHint')} /></label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Temperature</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" type="number" step="0.1" {...register('temperature', { valueAsNumber: true })} />{errors.temperature && <p className="mt-2 text-sm font-semibold text-red-600">{errors.temperature.message}</p>}</label>
+                <label className="block"><span className="mb-2 block font-bold text-slate-600">Max Tokens</span><input className="w-full rounded-lg border border-purple-100 bg-white p-3 outline-none focus:border-secondary" type="number" {...register('maxTokens', { valueAsNumber: true })} />{errors.maxTokens && <p className="mt-2 text-sm font-semibold text-red-600">{errors.maxTokens.message}</p>}</label>
               </div>
-              <label className="mt-5 block"><span className="mb-2 block font-bold text-slate-600">System Prompt Editorial</span><textarea className="w-full rounded-lg border border-purple-100 bg-white p-4 outline-none focus:border-secondary" rows={4} value={aiSettings?.systemPrompt ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, systemPrompt: e.target.value } : current)} /></label>
+              <label className="mt-5 block"><span className="mb-2 block font-bold text-slate-600">System Prompt Editorial</span><textarea className="w-full rounded-lg border border-purple-100 bg-white p-4 outline-none focus:border-secondary" rows={4} {...register('systemPrompt')} />{errors.systemPrompt && <p className="mt-2 text-sm font-semibold text-red-600">{errors.systemPrompt.message}</p>}</label>
             </AdminPanel>
 
             <section className="grid gap-6 lg:grid-cols-2">
               <AdminPanel title="Editorial Language Rules">
                 <h3 className="text-lg font-bold text-primary">Editorial Language Rules</h3>
                 <div className="mt-5 grid gap-4">
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Bahasa Utama</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.primaryLanguage ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, primaryLanguage: e.target.value } : current)} /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Standar Bahasa</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.languageStandard ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, languageStandard: e.target.value } : current)} /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Gaya Penulisan</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.writingStyle ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, writingStyle: e.target.value } : current)} /></label>
-                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Nada</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={aiSettings?.tone ?? ''} onChange={(e) => setAiSettings((current) => current ? { ...current, tone: e.target.value } : current)} /></label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Bahasa Utama</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" {...register('primaryLanguage')} />{errors.primaryLanguage && <p className="mt-2 text-sm font-semibold text-red-600">{errors.primaryLanguage.message}</p>}</label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Standar Bahasa</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" {...register('languageStandard')} />{errors.languageStandard && <p className="mt-2 text-sm font-semibold text-red-600">{errors.languageStandard.message}</p>}</label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Gaya Penulisan</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" {...register('writingStyle')} />{errors.writingStyle && <p className="mt-2 text-sm font-semibold text-red-600">{errors.writingStyle.message}</p>}</label>
+                  <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-500">Nada</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" {...register('tone')} />{errors.tone && <p className="mt-2 text-sm font-semibold text-red-600">{errors.tone.message}</p>}</label>
                 </div>
               </AdminPanel>
               <AdminPanel title="Rules Checklist">
