@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
 import { Icon } from '../../components/ui';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { useTeamAccess } from '../../hooks/admin/useTeamAccess';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { AdminLayout } from '../../layouts/AdminLayout';
@@ -28,6 +31,34 @@ const tabs: { id: TabName; label: string; icon: string }[] = [
   { id: 'integrations', label: 'Integrations & API', icon: 'api' },
 ];
 
+const settingsSchema = z.object({
+  publicationName: z.string().trim().min(3, 'Publication name must be at least 3 characters.'),
+  defaultLanguage: z.string().trim().min(1, 'Default language is required.'),
+  timezone: z.string().trim().min(1, 'Timezone is required.'),
+  editorialTagline: z.string().trim().min(5, 'Editorial tagline must be at least 5 characters.'),
+  faviconUrl: z.string().trim().refine((value) => value.length === 0 || /^https?:\/\//.test(value), 'Favicon URL must start with http:// or https://.'),
+  aboutSummary: z.string().trim().min(20, 'About summary must be at least 20 characters.'),
+  requireEditorApproval: z.boolean(),
+  enableFeaturedArticleFlag: z.boolean(),
+  allowPublicComments: z.boolean(),
+  sendPublishNotifications: z.boolean(),
+});
+
+type SettingsFormValues = z.infer<typeof settingsSchema>;
+
+const defaultSettingsValues: SettingsFormValues = {
+  publicationName: 'CHRONICLE',
+  defaultLanguage: 'English',
+  timezone: 'Asia/Jakarta (WIB, UTC+7)',
+  editorialTagline: 'Truth in Structure',
+  faviconUrl: '',
+  aboutSummary: 'Independent journalism for the informed reader. We deliver depth over noise, and clarity over clicks.',
+  requireEditorApproval: true,
+  enableFeaturedArticleFlag: true,
+  allowPublicComments: false,
+  sendPublishNotifications: false,
+};
+
 const sectionReveal = {
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
@@ -37,18 +68,20 @@ const sectionReveal = {
 export function AdminSettings() {
   const { availableRoles, teamMembers, setTeamMembers, loading, error: teamError, setError: setTeamError } = useTeamAccess();
   const [activeTab, setActiveTab] = useState<TabName>('general');
-
-  const [publishingRules, setPublishingRules] = useState([
-    { label: 'Require editor approval', enabled: true },
-    { label: 'Enable featured article flag', enabled: true },
-    { label: 'Allow public comments', enabled: false },
-    { label: 'Send publish notifications', enabled: false },
-  ]);
   const [permissionMatrix, setPermissionMatrix] = useState<Record<RoleName, boolean[]>>({ Admin: [true, true, true, true, true], Editor: [true, true, true, true, false], Author: [true, true, false, true, false], Reviewer: [false, true, false, false, false] });
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<SettingsFormValues>({
+    resolver: zodResolver(settingsSchema),
+    defaultValues: defaultSettingsValues,
+  });
 
-  function togglePublishingRule(label: string) {
-    setPublishingRules((current) => current.map((rule) => rule.label === label ? { ...rule, enabled: !rule.enabled } : rule));
-  }
+  const formValues = watch();
+
+  const publishingRules = [
+    { label: 'Require editor approval', key: 'requireEditorApproval' as const, enabled: formValues.requireEditorApproval },
+    { label: 'Enable featured article flag', key: 'enableFeaturedArticleFlag' as const, enabled: formValues.enableFeaturedArticleFlag },
+    { label: 'Allow public comments', key: 'allowPublicComments' as const, enabled: formValues.allowPublicComments },
+    { label: 'Send publish notifications', key: 'sendPublishNotifications' as const, enabled: formValues.sendPublishNotifications },
+  ];
 
   function togglePermission(role: RoleName, permissionIndex: number) {
     setPermissionMatrix((current) => ({ ...current, [role]: current[role].map((enabled, index) => index === permissionIndex ? !enabled : enabled) }));
@@ -90,6 +123,10 @@ export function AdminSettings() {
 
   const roleCounts = teamAccessRoles.map((role) => ({ ...role, users: teamMembers.filter((member) => member.role === role.role).length || role.users }));
   const enabledRuleCount = publishingRules.filter((rule) => rule.enabled).length;
+
+  const handleSaveGeneral = handleSubmit(() => {
+    toast.success('Workspace profile updated.');
+  });
 
   if (loading) {
     return (
@@ -147,19 +184,19 @@ export function AdminSettings() {
             <span className="rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-bold text-emerald-700">Live</span>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Publication Name</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" defaultValue="CHRONICLE" /></label>
-            <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Language</span><select className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary"><option>English</option><option>Indonesian</option></select></label>
-            <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Timezone</span><select className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary"><option>Asia/Jakarta (WIB, UTC+7)</option><option>Asia/Makassar (WITA, UTC+8)</option><option>Asia/Jayapura (WIT, UTC+9)</option><option>UTC</option></select></label>
-            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Editorial Tagline</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" defaultValue="Truth in Structure" /></label>
-            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Favicon URL</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" placeholder="https://chronicle.news/favicon.ico" /></label>
-            <label className="block lg:col-span-3"><span className="mb-2 flex items-center justify-between text-sm font-bold uppercase tracking-wider text-slate-600"><span>About Summary</span><span className="text-xs font-normal text-slate-400">Shown on /about page</span></span><textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" rows={4} defaultValue="Independent journalism for the informed reader. We deliver depth over noise, and clarity over clicks." /></label>
+            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Publication Name</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" {...register('publicationName')} />{errors.publicationName && <p className="mt-2 text-sm font-semibold text-red-600">{errors.publicationName.message}</p>}</label>
+            <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Default Language</span><select className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" {...register('defaultLanguage')}><option>English</option><option>Indonesian</option></select>{errors.defaultLanguage && <p className="mt-2 text-sm font-semibold text-red-600">{errors.defaultLanguage.message}</p>}</label>
+            <label className="block"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Timezone</span><select className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" {...register('timezone')}><option>Asia/Jakarta (WIB, UTC+7)</option><option>Asia/Makassar (WITA, UTC+8)</option><option>Asia/Jayapura (WIT, UTC+9)</option><option>UTC</option></select>{errors.timezone && <p className="mt-2 text-sm font-semibold text-red-600">{errors.timezone.message}</p>}</label>
+            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Editorial Tagline</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" {...register('editorialTagline')} />{errors.editorialTagline && <p className="mt-2 text-sm font-semibold text-red-600">{errors.editorialTagline.message}</p>}</label>
+            <label className="block lg:col-span-2"><span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Favicon URL</span><input className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" placeholder="https://chronicle.news/favicon.ico" {...register('faviconUrl')} />{errors.faviconUrl && <p className="mt-2 text-sm font-semibold text-red-600">{errors.faviconUrl.message}</p>}</label>
+            <label className="block lg:col-span-3"><span className="mb-2 flex items-center justify-between text-sm font-bold uppercase tracking-wider text-slate-600"><span>About Summary</span><span className="text-xs font-normal text-slate-400">Shown on /about page</span></span><textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 outline-none focus:border-secondary" rows={4} {...register('aboutSummary')} />{errors.aboutSummary && <p className="mt-2 text-sm font-semibold text-red-600">{errors.aboutSummary.message}</p>}</label>
           </div>
           <div className="mt-6 flex items-center justify-between rounded-xl bg-blue-50 p-4">
             <div className="flex items-center gap-3">
               <Icon name="info" className="text-secondary" />
               <p className="text-sm text-slate-600">Changes to publication name and tagline apply globally across the site.</p>
             </div>
-            <button className="rounded-lg bg-primary px-6 py-3 font-bold !text-white" type="button">Save Changes</button>
+            <button className="rounded-lg bg-primary px-6 py-3 font-bold !text-white" type="button" onClick={() => void handleSaveGeneral()}>Save Changes</button>
           </div>
         </AdminPanel>
         </motion.div>
@@ -171,7 +208,7 @@ export function AdminSettings() {
           <AdminSectionHeader title="Publishing Rules" description="Toggle editorial gates and automated publishing behaviors." meta={<span className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-bold text-secondary">{enabledRuleCount} / {publishingRules.length} active</span>} bordered={false} />
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {publishingRules.map((rule, index) => (
-              <motion.button key={rule.label} className={`flex items-center justify-between rounded-xl border p-5 text-left transition ${rule.enabled ? 'border-secondary bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`} type="button" onClick={() => togglePublishingRule(rule.label)} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }} whileHover={{ y: -2 }}>
+              <motion.button key={rule.label} className={`flex items-center justify-between rounded-xl border p-5 text-left transition ${rule.enabled ? 'border-secondary bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`} type="button" onClick={() => setValue(rule.key, !rule.enabled, { shouldDirty: true })} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }} whileHover={{ y: -2 }}>
                 <span className="font-semibold text-slate-700">{rule.label}</span>
                 <span className={`h-7 w-12 rounded-full p-1 transition ${rule.enabled ? 'bg-secondary' : 'bg-slate-300'}`}>
                   <span className={`block h-5 w-5 rounded-full bg-white shadow transition ${rule.enabled ? 'translate-x-5' : ''}`} />
