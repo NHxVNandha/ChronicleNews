@@ -1,45 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import type { Article } from '../../data';
 import { getArticles, getDashboardPipeline, getDashboardRecentActivity, getDashboardSummary, type DashboardPipeline, type DashboardRecentActivity, type DashboardSummary } from '../../services';
 
+const defaultSummary: DashboardSummary = { publishedArticles: 0, draftQueue: 0, mediaAssets: 0, monthlyReaders: 0 };
+const defaultPipeline: DashboardPipeline = { draft: 0, needsReview: 0, scheduled: 0, published: 0 };
+
 export function useDashboardData() {
-  const [summary, setSummary] = useState<DashboardSummary>({ publishedArticles: 0, draftQueue: 0, mediaAssets: 0, monthlyReaders: 0 });
-  const [pipeline, setPipeline] = useState<DashboardPipeline>({ draft: 0, needsReview: 0, scheduled: 0, published: 0 });
-  const [recentActivity, setRecentActivity] = useState<DashboardRecentActivity[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const dashboardQuery = useQuery({
+    queryKey: ['dashboard', 'overview'],
+    queryFn: async () => {
+      const [summary, pipeline, recentActivity, articles] = await Promise.all([
+        getDashboardSummary(),
+        getDashboardPipeline(),
+        getDashboardRecentActivity(),
+        getArticles({ sort: 'popular', limit: 4 }),
+      ]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const [summaryData, pipelineData, activityData, articlesData] = await Promise.all([
-          getDashboardSummary(),
-          getDashboardPipeline(),
-          getDashboardRecentActivity(),
-          getArticles({ sort: 'popular', limit: 4 }),
-        ]);
+      return { summary, pipeline, recentActivity, articles };
+    },
+  });
 
-        if (!isMounted) return;
-        setSummary(summaryData);
-        setPipeline(pipelineData);
-        setRecentActivity(activityData);
-        setArticles(articlesData);
-      } catch (loadError) {
-        if (isMounted) setError(loadError instanceof Error ? loadError.message : 'Failed to load dashboard data.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
+  const error = dashboardQuery.error instanceof Error ? dashboardQuery.error.message : dashboardQuery.error ? 'Failed to load dashboard data.' : '';
 
-    void load();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return { summary, pipeline, recentActivity, articles, loading, error };
+  return {
+    summary: dashboardQuery.data?.summary ?? defaultSummary,
+    pipeline: dashboardQuery.data?.pipeline ?? defaultPipeline,
+    recentActivity: dashboardQuery.data?.recentActivity ?? ([] as DashboardRecentActivity[]),
+    articles: dashboardQuery.data?.articles ?? ([] as Article[]),
+    loading: dashboardQuery.isLoading,
+    error,
+  };
 }
