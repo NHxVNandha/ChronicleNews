@@ -13,11 +13,11 @@ import { AdminLayout } from '../../layouts/AdminLayout';
 import { createArticle, getArticleEditorBySlug, getCategories, publishArticle, saveArticle, type ArticleEditorRecord, type Category } from '../../services';
 
 const editorSchema = z.object({
-  title: z.string(),
-  summary: z.string(),
+  title: z.string().trim().min(8, 'Headline must be at least 8 characters.'),
+  summary: z.string().trim().min(20, 'Summary must be at least 20 characters.').max(240, 'Summary should stay under 240 characters.'),
   featuredImageUrl: z.string(),
-  category: z.string(),
-  body: z.string(),
+  category: z.string().trim().min(1, 'Select a category.'),
+  body: z.string().trim().min(80, 'Article body must be at least 80 characters.'),
 });
 
 type EditorFormValues = z.infer<typeof editorSchema>;
@@ -41,9 +41,10 @@ export function AdminEditor() {
   const [statusMessage, setStatusMessage] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
-  const { register, reset, watch, handleSubmit, setValue } = useForm<EditorFormValues>({
+  const { register, reset, watch, handleSubmit, setValue, trigger, formState: { errors } } = useForm<EditorFormValues>({
     resolver: zodResolver(editorSchema),
     defaultValues: defaultEditorValues,
+    mode: 'onBlur',
   });
 
   const formValues = watch();
@@ -166,6 +167,16 @@ export function AdminEditor() {
     await handlePublishNow(values);
   });
 
+  async function openPublishModal() {
+    const isValid = await trigger(['title', 'summary', 'category', 'body']);
+    if (!isValid) {
+      toast.error('Complete the required article fields before publishing.');
+      return;
+    }
+
+    setShowPublish(true);
+  }
+
   return (
     <AdminLayout title={isEditing ? 'Edit Article' : 'Create Article'}>
       {showPreview && <ArticlePreviewPanel article={previewArticle} onClose={() => setShowPreview(false)} />}
@@ -186,7 +197,7 @@ export function AdminEditor() {
           actions={
             <div className="flex flex-wrap items-center gap-3">
               {editingArticle && <AdminStatusBadge status={editingArticle.status === 'Published' ? 'published' : editingArticle.status === 'Scheduled' ? 'scheduled' : editingArticle.status === 'Needs Review' ? 'needs-review' : editingArticle.status === 'Archived' ? 'archived' : 'draft'}>{editingArticle.status}</AdminStatusBadge>}
-              <button className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving} type="button" onClick={() => setShowPublish(true)}>
+              <button className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving} type="button" onClick={() => void openPublishModal()}>
                 <Icon name="publish" className="mr-2 inline text-[18px]" />{saving ? 'Working...' : 'Publish Now'}
               </button>
             </div>
@@ -200,12 +211,17 @@ export function AdminEditor() {
             <div className="space-y-8 lg:space-y-10">
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Article Title</label>
-                <textarea className="mt-3 w-full resize-none border-0 bg-transparent font-display text-4xl font-bold leading-tight tracking-tight text-slate-950 outline-none lg:text-5xl" rows={2} placeholder="Enter a compelling headline..." {...register('title')} />
+                <textarea className={`mt-3 w-full resize-none border-0 bg-transparent font-display text-4xl font-bold leading-tight tracking-tight outline-none lg:text-5xl ${errors.title ? 'text-red-700 placeholder:text-red-300' : 'text-slate-950'}`} rows={2} placeholder="Enter a compelling headline..." {...register('title')} />
+                {errors.title && <p className="mt-2 text-sm font-semibold text-red-600">{errors.title.message}</p>}
               </div>
 
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Deck / Summary</label>
-                <textarea className="mt-3 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-5 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300 focus:bg-white" rows={3} placeholder="Write a brief, punchy summary to appear in previews..." {...register('summary')} />
+                <textarea className={`mt-3 w-full resize-none rounded-2xl border p-5 text-lg leading-8 outline-none transition focus:bg-white ${errors.summary ? 'border-red-300 bg-red-50 text-red-900 focus:border-red-300' : 'border-slate-200 bg-slate-50 text-slate-700 focus:border-slate-300'}`} rows={3} placeholder="Write a brief, punchy summary to appear in previews..." {...register('summary')} />
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  {errors.summary ? <p className="text-sm font-semibold text-red-600">{errors.summary.message}</p> : <span className="text-sm text-slate-400">Used in previews and cards.</span>}
+                  <span className={`text-xs font-semibold ${formValues.summary.length > 240 ? 'text-red-500' : 'text-slate-400'}`}>{formValues.summary.length}/240</span>
+                </div>
               </div>
 
               <div>
@@ -241,7 +257,11 @@ export function AdminEditor() {
 
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Article Body</label>
-                <textarea className="mt-3 min-h-[420px] w-full rounded-2xl border border-slate-200 bg-white p-6 text-lg leading-8 text-slate-700 outline-none transition focus:border-slate-300" placeholder={isEditing ? 'Continue editing this story draft or published article...' : 'Start writing your story here...'} {...register('body')} />
+                <textarea className={`mt-3 min-h-[420px] w-full rounded-2xl border p-6 text-lg leading-8 outline-none transition ${errors.body ? 'border-red-300 bg-red-50 text-red-900 focus:border-red-300' : 'border-slate-200 bg-white text-slate-700 focus:border-slate-300'}`} placeholder={isEditing ? 'Continue editing this story draft or published article...' : 'Start writing your story here...'} {...register('body')} />
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  {errors.body ? <p className="text-sm font-semibold text-red-600">{errors.body.message}</p> : <span className="text-sm text-slate-400">Aim for enough context before sending to review.</span>}
+                  <span className={`text-xs font-semibold ${formValues.body.trim().length < 80 ? 'text-amber-600' : 'text-slate-400'}`}>{formValues.body.trim().length} chars</span>
+                </div>
               </div>
             </div>
           </AdminPanel>
@@ -251,7 +271,7 @@ export function AdminEditor() {
 
             <AdminPanel tone="dark" title="Publish & Workflow" description="Finalize editorial actions from one control rail.">
               <div className="space-y-4">
-                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-secondary py-4 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving} type="button" onClick={() => setShowPublish(true)}>
+                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-secondary py-4 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving} type="button" onClick={() => void openPublishModal()}>
                   <Icon name="publish" className="text-[18px]" /> {saving ? 'Working...' : 'Publish Now'}
                 </button>
                 <div className="grid grid-cols-2 gap-3">
@@ -278,9 +298,10 @@ export function AdminEditor() {
                 <Field label="Tags" placeholder="Add tags..." icon="tag" />
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-[0.12em] text-slate-500">Category</span>
-                  <select className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 outline-none transition focus:border-slate-300 focus:bg-white" {...register('category')}>
+                  <select className={`w-full rounded-xl border p-3 outline-none transition focus:bg-white ${errors.category ? 'border-red-300 bg-red-50 text-red-900 focus:border-red-300' : 'border-slate-200 bg-slate-50 focus:border-slate-300'}`} {...register('category')}>
                     {categoryOptions.map((item) => <option key={item.id} value={item.name}>{item.name}</option>)}
                   </select>
+                  {errors.category && <p className="mt-2 text-sm font-semibold text-red-600">{errors.category.message}</p>}
                 </label>
               </div>
             </AdminPanel>
