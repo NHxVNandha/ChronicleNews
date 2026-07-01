@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
 import { Icon } from '../../components/ui';
 import { toast } from 'sonner';
@@ -26,6 +27,12 @@ const tabs: { id: TabName; label: string; icon: string }[] = [
   { id: 'team', label: 'Team & Access', icon: 'groups' },
   { id: 'integrations', label: 'Integrations & API', icon: 'api' },
 ];
+
+const sectionReveal = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.28, ease: 'easeOut' as const },
+};
 
 export function AdminSettings() {
   const { availableRoles, teamMembers, setTeamMembers, loading, error: teamError, setError: setTeamError } = useTeamAccess();
@@ -112,21 +119,24 @@ export function AdminSettings() {
   return (
     <AdminLayout title="Workspace Settings">
       <div className="space-y-8 lg:space-y-10">
-      <AdminPageHeader
-        eyebrow="Workspace Controls"
-        title="Workspace Settings"
-        description="Configure editorial identity, publishing workflow, team roles, permissions, and integrations."
-      />
+      <motion.div {...sectionReveal}>
+        <AdminPageHeader
+          eyebrow="Workspace Controls"
+          title="Workspace Settings"
+          description="Configure editorial identity, publishing workflow, team roles, permissions, and integrations."
+        />
+      </motion.div>
 
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1.5">
+      <motion.div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1.5" {...sectionReveal} transition={{ duration: 0.28, ease: 'easeOut', delay: 0.04 }}>
         {tabs.map((tab) => (
-          <button key={tab.id} className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-5 py-3 text-sm font-bold transition ${activeTab === tab.id ? 'bg-white text-primary shadow-sm' : 'text-slate-600 hover:text-primary'}`} type="button" onClick={() => setActiveTab(tab.id)}>
+          <motion.button key={tab.id} className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-5 py-3 text-sm font-bold transition ${activeTab === tab.id ? 'bg-white text-primary shadow-sm' : 'text-slate-600 hover:text-primary'}`} type="button" onClick={() => setActiveTab(tab.id)} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
             <Icon name={tab.icon} className="text-base" />{tab.label}
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
       {activeTab === 'general' && (
+        <motion.div {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
         <AdminPanel>
           <div className="mb-6 flex items-center gap-6">
             <div className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-primary text-3xl font-bold text-white">C</div>
@@ -152,32 +162,37 @@ export function AdminSettings() {
             <button className="rounded-lg bg-primary px-6 py-3 font-bold !text-white" type="button">Save Changes</button>
           </div>
         </AdminPanel>
+        </motion.div>
       )}
 
       {activeTab === 'workflow' && (
+        <motion.div {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
         <AdminPanel>
           <AdminSectionHeader title="Publishing Rules" description="Toggle editorial gates and automated publishing behaviors." meta={<span className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-bold text-secondary">{enabledRuleCount} / {publishingRules.length} active</span>} bordered={false} />
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {publishingRules.map((rule) => (
-              <button key={rule.label} className={`flex items-center justify-between rounded-xl border p-5 text-left transition ${rule.enabled ? 'border-secondary bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`} type="button" onClick={() => togglePublishingRule(rule.label)}>
+            {publishingRules.map((rule, index) => (
+              <motion.button key={rule.label} className={`flex items-center justify-between rounded-xl border p-5 text-left transition ${rule.enabled ? 'border-secondary bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`} type="button" onClick={() => togglePublishingRule(rule.label)} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }} whileHover={{ y: -2 }}>
                 <span className="font-semibold text-slate-700">{rule.label}</span>
                 <span className={`h-7 w-12 rounded-full p-1 transition ${rule.enabled ? 'bg-secondary' : 'bg-slate-300'}`}>
                   <span className={`block h-5 w-5 rounded-full bg-white shadow transition ${rule.enabled ? 'translate-x-5' : ''}`} />
                 </span>
-              </button>
+              </motion.button>
             ))}
           </div>
         </AdminPanel>
+        </motion.div>
       )}
 
       {activeTab === 'team' && (
-        <div className="space-y-6">
+        <motion.div className="space-y-6" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
           {teamError && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{teamError}</div>}
           <AdminPanel action={<button className="flex w-fit items-center gap-2 rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20" type="button"><Icon name="person_add" className="text-[18px]" /> Invite User</button>}>
             <AdminSectionHeader title="Team Access Management" description="Define role capacity, granular permissions, and assign members." bordered={false} />
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {roleCounts.map((item) => (
-                <AdminStatCard key={item.role} label={item.role} value={item.users} helper={item.description} tone={item.role === 'Admin' ? 'blue' : item.role === 'Editor' ? 'amber' : 'default'} />
+              {roleCounts.map((item, index) => (
+                <motion.div key={item.role} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }}>
+                  <AdminStatCard label={item.role} value={item.users} helper={item.description} tone={item.role === 'Admin' ? 'blue' : item.role === 'Editor' ? 'amber' : 'default'} />
+                </motion.div>
               ))}
             </div>
           </AdminPanel>
@@ -248,11 +263,11 @@ export function AdminSettings() {
               </table>
             </div>
           </AdminPanel>
-        </div>
+        </motion.div>
       )}
 
       {activeTab === 'integrations' && (
-        <div className="space-y-6">
+        <motion.div className="space-y-6" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
           <section className="grid gap-6 lg:grid-cols-2">
             <AdminPanel title="API Keys">
               <div className="space-y-3">
@@ -308,7 +323,7 @@ export function AdminSettings() {
               </div>
             </div>
           </AdminPanel>
-        </div>
+        </motion.div>
       )}
       </div>
     </AdminLayout>

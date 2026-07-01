@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
@@ -49,6 +50,12 @@ function Gauge({ score, label, size = 100 }: GaugeProps) {
 const providers = ['OpenAI', 'Gemini', 'Azure OpenAI', 'Custom API Endpoint'];
 const rules = ['Hindari clickbait berlebihan', 'Hindari bahasa tidak baku', 'Hindari opini pada hard news', 'Wajib cek typo', 'Wajib cek struktur 5W+1H', 'Wajib cek judul dan ringkasan'];
 const safeguards = ['AI hanya memberi saran, tidak mengubah artikel otomatis', 'Editor wajib approve setiap perubahan', 'Simpan riwayat koreksi AI', 'Tampilkan before/after sebelum apply', 'AI tidak boleh auto-publish'];
+
+const sectionReveal = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.28, ease: 'easeOut' as const },
+};
 
 export function AdminOptimizationHub() {
   const [loading, setLoading] = useState(true);
@@ -152,32 +159,40 @@ export function AdminOptimizationHub() {
         </div>
       ) : (
       <div className="space-y-8 lg:space-y-10">
-      <AdminPageHeader
-        eyebrow="Quality Control"
-        title="Optimization Center"
-        description="SEO, content quality, AI/KBBI editorial correction, and performance analytics in one command center."
-        actions={
-          <div className="flex flex-col items-start gap-3">
-            {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
-            <button className="w-fit rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
-          </div>
-        }
-      />
+      <motion.div {...sectionReveal}>
+        <AdminPageHeader
+          eyebrow="Quality Control"
+          title="Optimization Center"
+          description="SEO, content quality, AI/KBBI editorial correction, and performance analytics in one command center."
+          actions={
+            <div className="flex flex-col items-start gap-3">
+              {statusMessage && <span className="rounded-full bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">{statusMessage}</span>}
+              <button className="w-fit rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60" disabled={saving || !seoSettings || !aiSettings} type="button" onClick={() => void handleSaveAll()}>{saving ? 'Saving...' : 'Save All Settings'}</button>
+            </div>
+          }
+        />
+      </motion.div>
       {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div>}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <AdminStatCard label="SEO Score" value={seoScore} delta={`${scoreFactors.length} tracked factors`} icon="travel_explore" tone="blue" variant="primary" />
-        <AdminStatCard label="Readability" value={readabilityScore} delta={readabilityLabel} icon="description" tone={readabilityScore >= 70 ? 'emerald' : 'amber'} />
-        <AdminStatCard label="Keyword Density" value={`${keywordDensity}%`} delta={`Keyword: ${currentKeyword}`} icon="search" />
-        <AdminStatCard label="AI Provider" value={aiSettings?.provider ?? 'OpenAI'} delta={aiSettings?.modelName ?? 'Model not set'} icon="auto_fix_high" />
-      </div>
+      <motion.div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.04 }}>
+        {[
+          { label: 'SEO Score', value: seoScore, delta: `${scoreFactors.length} tracked factors`, icon: 'travel_explore', tone: 'blue' as const, variant: 'primary' as const },
+          { label: 'Readability', value: readabilityScore, delta: readabilityLabel, icon: 'description', tone: readabilityScore >= 70 ? 'emerald' as const : 'amber' as const },
+          { label: 'Keyword Density', value: `${keywordDensity}%`, delta: `Keyword: ${currentKeyword}`, icon: 'search', tone: 'default' as const },
+          { label: 'AI Provider', value: aiSettings?.provider ?? 'OpenAI', delta: aiSettings?.modelName ?? 'Model not set', icon: 'auto_fix_high', tone: 'default' as const },
+        ].map((stat, index) => (
+          <motion.div key={stat.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut', delay: 0.06 + index * 0.03 }}>
+            <AdminStatCard label={stat.label} value={stat.value} delta={stat.delta} icon={stat.icon} tone={stat.tone} variant={stat.variant} />
+          </motion.div>
+        ))}
+      </motion.div>
 
-      <div className="min-w-0 space-y-6">
+      <motion.div className="min-w-0 space-y-6" {...sectionReveal} transition={{ duration: 0.3, ease: 'easeOut', delay: 0.08 }}>
         <div className="flex gap-1 rounded-2xl border border-slate-200 bg-slate-100 p-1.5">
           {optTabs.map((tab) => (
-            <button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)}>
+            <motion.button key={tab.id} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition ${currentTab === tab.id ? 'bg-white !text-primary shadow-sm' : 'text-slate-500 hover:text-primary'}`} type="button" onClick={() => setCurrentTab(tab.id)} whileHover={{ y: -1 }} whileTap={{ scale: 0.99 }}>
               <Icon name={tab.icon} className="text-lg" />{tab.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -523,7 +538,7 @@ export function AdminOptimizationHub() {
             </AdminPanel>
           </div>}
 
-        </div>
+        </motion.div>
       </div>
       )}
     </AdminLayout>
