@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatusBadge } from '../../components/admin';
 import { NewsLayoutRenderer } from '../../components/layout-builder/NewsLayoutRenderer';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { Icon } from '../../components/ui';
@@ -99,34 +100,23 @@ export function AdminLayoutsHub() {
           <SkeletonBlock className="h-[500px]" />
         </div>
       ) : (
-      <>
-      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h1 className="font-display text-4xl font-bold text-primary">News Layout Builder</h1>
-          <p className="mt-2 max-w-3xl text-slate-600">Create reusable news layout templates. Sections are filled automatically from article rules instead of manual article picking.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button className="rounded-lg border border-slate-200 bg-white px-4 py-3 font-bold text-primary" type="button" onClick={() => setTemplate((current) => ({ ...current, status: 'Draft' }))}>Save Draft</button>
-          <button className="rounded-lg bg-primary px-5 py-3 font-bold !text-white" type="button" onClick={() => setTemplate((current) => ({ ...current, status: 'Published' }))}>Publish Template</button>
-        </div>
-      </div>
+      <div className="space-y-8 lg:space-y-10">
+      <AdminPageHeader
+        eyebrow="Visual Composition"
+        title="News Layout Builder"
+        description="Create reusable news layout templates. Sections are filled automatically from article rules instead of manual article picking."
+        actions={<div className="flex flex-wrap gap-2"><button className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-primary" type="button" onClick={() => setTemplate((current) => ({ ...current, status: 'Draft' }))}>Save Draft</button><button className="rounded-xl bg-secondary px-5 py-3 text-sm font-bold !text-white shadow-lg shadow-blue-950/20" type="button" onClick={() => setTemplate((current) => ({ ...current, status: 'Published' }))}>Publish Template</button></div>}
+      />
 
-      <div className="space-y-5">
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-white"><Icon name="view_quilt" /></span>
-          <div className="flex-1">
-            <h2 className="font-display text-2xl font-bold text-primary">Template Editor</h2>
-            <p className="text-sm text-slate-500">{template.name} · {template.sections.length} sections</p>
-          </div>
-          <span className={`rounded-full px-3 py-1 text-xs font-bold ${template.status === 'Published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{template.status}</span>
-        </div>
-      </div>
+      <AdminPanel action={<AdminStatusBadge status={template.status === 'Published' ? 'published' : 'draft'}>{template.status}</AdminStatusBadge>}>
+        <AdminSectionHeader icon={<Icon name="view_quilt" className="text-[20px]" />} title="Template Editor" description={`${template.name} · ${template.sections.length} sections`} bordered={false} />
+      </AdminPanel>
 
       <div className="grid gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
         <aside className="space-y-6">
-          <section className="rounded-xl border border-slate-200 bg-white p-5 soft-shadow">
+          <AdminPanel title="Sections" description={`${template.sections.length} modules · 10 component variations`} padding="md">
             <div className="mb-4 flex items-center justify-between">
-              <div><h3 className="text-xl font-bold text-primary">Sections</h3><p className="text-sm text-slate-500">{template.sections.length} modules · 10 component variations</p></div>
+              <div />
             </div>
             <div className="space-y-2">
               {template.sections.map((section, index) => (
@@ -136,16 +126,15 @@ export function AdminLayoutsHub() {
                 </button>
               ))}
             </div>
-            <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-white px-3 py-3 font-bold text-primary transition hover:border-secondary hover:bg-blue-50" type="button" onClick={() => addSection('grid')}><Icon name="add" /> Add Section</button>
-          </section>
+            <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white px-3 py-3 font-bold text-primary transition hover:border-secondary hover:bg-blue-50" type="button" onClick={() => addSection('grid')}><Icon name="add" /> Add Section</button>
+          </AdminPanel>
 
-          {selectedSection && <section className="rounded-xl border border-slate-200 bg-white p-5 soft-shadow"><h3 className="mb-4 text-xl font-bold text-primary">Section Actions</h3><div className="grid grid-cols-2 gap-2"><button className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold text-primary" type="button" onClick={() => moveSection(selectedSection.id, -1)}>Move Up</button><button className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-bold text-primary" type="button" onClick={() => moveSection(selectedSection.id, 1)}>Move Down</button><button className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-bold text-secondary" type="button" onClick={() => duplicateSection(selectedSection.id)}>Duplicate</button><button className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700" type="button" onClick={() => deleteSection(selectedSection.id)}>Delete</button></div></section>}
+          {selectedSection && <AdminPanel title="Section Actions" padding="md"><div className="grid grid-cols-2 gap-2"><button className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-bold text-primary" type="button" onClick={() => moveSection(selectedSection.id, -1)}>Move Up</button><button className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-bold text-primary" type="button" onClick={() => moveSection(selectedSection.id, 1)}>Move Down</button><button className="rounded-xl bg-blue-50 px-3 py-2 text-sm font-bold text-secondary" type="button" onClick={() => duplicateSection(selectedSection.id)}>Duplicate</button><button className="rounded-xl bg-red-50 px-3 py-2 text-sm font-bold text-red-700" type="button" onClick={() => deleteSection(selectedSection.id)}>Delete</button></div></AdminPanel>}
         </aside>
 
         <aside className="space-y-6">
           {selectedSection ? (
-            <section className="rounded-xl border border-slate-200 bg-white p-5 soft-shadow">
-              <h3 className="font-display mb-4 text-2xl font-bold text-primary">Settings</h3>
+            <AdminPanel title="Settings" padding="md">
               <div className="grid gap-4 lg:grid-cols-2">
                 <label className="block"><span className="mb-1 block text-sm font-bold text-slate-600">Section Title</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={selectedSection.title} onChange={(event) => patchSelected((section) => ({ ...section, title: event.target.value }))} /></label>
                 <label className="block"><span className="mb-1 block text-sm font-bold text-slate-600">Component</span><select className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" value={selectedSection.component} onChange={(event) => patchSelected((section) => ({ ...section, component: event.target.value as LayoutComponent }))}>{layoutComponents.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
@@ -155,27 +144,22 @@ export function AdminLayoutsHub() {
                 <label className="block"><span className="mb-1 block text-sm font-bold text-slate-600">Limit</span><input className="w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-secondary" min={1} max={8} type="number" value={selectedSection.dataSource.limit} onChange={(event) => patchSelected((section) => ({ ...section, dataSource: { ...section.dataSource, limit: Number(event.target.value) || 1 } }))} /></label>
                 <button className="flex items-center justify-between rounded-lg bg-slate-100 px-4 py-3 text-left font-bold text-primary lg:col-span-2" type="button" onClick={() => patchSelected((section) => ({ ...section, dataSource: { ...section.dataSource, featuredOnly: !section.dataSource.featuredOnly } }))}><span>Featured only</span><span className={`h-6 w-11 rounded-full p-1 ${selectedSection.dataSource.featuredOnly ? 'bg-secondary' : 'bg-slate-300'}`}><span className={`block h-4 w-4 rounded-full bg-white transition ${selectedSection.dataSource.featuredOnly ? 'translate-x-5' : ''}`} /></span></button>
               </div>
-            </section>
-          ) : <section className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center"><Icon name="view_quilt" className="text-4xl text-slate-300" /><p className="mt-3 font-bold text-primary">Add a section to begin.</p></section>}
+            </AdminPanel>
+          ) : <AdminPanel className="text-center" padding="lg"><Icon name="view_quilt" className="text-4xl text-slate-300" /><p className="mt-3 font-bold text-primary">Add a section to begin.</p></AdminPanel>}
         </aside>
       </div>
 
       <div className="mt-8 space-y-5">
-        <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-secondary text-white"><Icon name="visibility" /></span>
-          <div className="flex-1">
-            <h2 className="font-display text-2xl font-bold text-primary">Live Preview</h2>
-            <p className="text-sm text-slate-500">{template.name} · Target: homepage · Updates instantly</p>
-          </div>
-          <div className="flex gap-2">{(['mobile', 'md', 'desktop'] as const).map((mode) => <button key={mode} className={`rounded-lg px-3 py-2 text-sm font-bold ${previewMode === mode ? 'bg-primary !text-white' : 'bg-slate-100 text-slate-600'}`} type="button" onClick={() => setPreviewMode(mode)}>{mode === 'md' ? 'Tablet' : mode === 'mobile' ? 'Mobile' : 'Desktop'}</button>)}</div>
-        </div>
-        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 soft-shadow">
+        <AdminPanel action={<div className="flex gap-2">{(['mobile', 'md', 'desktop'] as const).map((mode) => <button key={mode} className={`rounded-xl px-3 py-2 text-sm font-bold ${previewMode === mode ? 'bg-slate-950 !text-white' : 'bg-slate-100 text-slate-600'}`} type="button" onClick={() => setPreviewMode(mode)}>{mode === 'md' ? 'Tablet' : mode === 'mobile' ? 'Mobile' : 'Desktop'}</button>)}</div>}>
+          <AdminSectionHeader icon={<Icon name="visibility" className="text-[20px]" />} title="Live Preview" description={`${template.name} · Target: homepage · Updates instantly`} bordered={false} />
+        <section className="mt-4 min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className={`mx-auto transition-all ${previewMode === 'mobile' ? 'max-w-sm' : previewMode === 'md' ? 'max-w-3xl' : 'max-w-none'}`}>
           <NewsLayoutRenderer template={template} articles={articles} previewMode={previewMode} />
         </div>
       </section>
+      </AdminPanel>
       </div>
-      </>
+      </div>
       )}
     </AdminLayout>
   );
