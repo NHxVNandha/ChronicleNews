@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { ArticleDataTable } from '../../components/ArticleDataTable';
 import { SkeletonBlock, SkeletonLine, SkeletonTable } from '../../components/Skeleton';
 import { AdminInfoCard, AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
@@ -17,13 +18,23 @@ export function AdminContentHub() {
   const totalViews = publishedArticles.reduce((total, article) => total + Number.parseInt(article.views.replace(/[^\d]/g, ''), 10), 0);
 
   async function handleDelete(slug: string) {
-    await deleteArticle(slug);
-    setArticles((current) => current.filter((article) => article.slug !== slug));
+    try {
+      await deleteArticle(slug);
+      setArticles((current) => current.filter((article) => article.slug !== slug));
+      toast.success('Article moved out of the content list.');
+    } catch (deleteError) {
+      toast.error(deleteError instanceof Error ? deleteError.message : 'Failed to delete article.');
+    }
   }
 
   async function handlePublish(slug: string) {
-    const updated = await updateArticle(slug, { status: 'Published' });
-    setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
+    try {
+      const updated = await updateArticle(slug, { status: 'Published' });
+      setArticles((current) => current.map((article) => article.slug === slug ? updated : article));
+      toast.success('Article published.');
+    } catch (publishError) {
+      toast.error(publishError instanceof Error ? publishError.message : 'Failed to publish article.');
+    }
   }
 
   const summaryItems = [

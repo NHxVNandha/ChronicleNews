@@ -139,6 +139,7 @@ export function AdminEngagementHub() {
     const status = values.pushSchedule === 'now' ? 'Sent' : 'Scheduled';
     setPushHistory((prev) => [{ title: values.pushTitle, sent: values.pushSchedule === 'now' ? now : values.pushSchedule, status }, ...prev]);
     resetPush({ pushTitle: '', pushBody: '', pushSchedule: 'now' });
+    toast.success(status === 'Sent' ? 'Notification sent.' : 'Notification scheduled.');
   });
 
   const handleSendNewsletter = handleNewsletterSubmit(async (values) => {
@@ -159,6 +160,7 @@ export function AdminEngagementHub() {
     };
     setSocialPostsList((prev) => [newPost, ...prev]);
     resetSocial({ socialPlatform: values.socialPlatform, socialText: '', socialSchedule: '' });
+    toast.success('Social post scheduled.');
   });
 
   const filteredComments = comments.filter((c) => {
