@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard } from '../../components/admin';
 import { Icon } from '../../components/ui';
+import { toast } from 'sonner';
 import { useTeamAccess } from '../../hooks/admin/useTeamAccess';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
 import { AdminLayout } from '../../layouts/AdminLayout';
@@ -55,8 +56,11 @@ export function AdminSettings() {
 
     try {
       await updateUserRole(memberId, { fullName: member.name, roleId: roleRecord.id });
+      toast.success('Role updated.');
     } catch (updateError) {
-      setTeamError(updateError instanceof Error ? updateError.message : 'Failed to update user role.');
+      const message = updateError instanceof Error ? updateError.message : 'Failed to update user role.';
+      setTeamError(message);
+      toast.error(message);
     }
   }
 
@@ -69,8 +73,11 @@ export function AdminSettings() {
 
     try {
       await updateUserStatus(memberId, nextStatus);
+      toast.success('Status updated.');
     } catch (updateError) {
-      setTeamError(updateError instanceof Error ? updateError.message : 'Failed to update user status.');
+      const message = updateError instanceof Error ? updateError.message : 'Failed to update user status.';
+      setTeamError(message);
+      toast.error(message);
     }
   }
 

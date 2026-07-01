@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Icon } from '../../components/ui';
 import { useAuth } from '../../context/AuthContext';
 
@@ -23,15 +24,19 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
     if (!isLogin) {
       setError('Registration is not available yet. Use a seeded account to sign in.');
+      toast.error('Registration is not available yet.');
       return;
     }
 
     try {
       setSubmitting(true);
       await login(email, password);
+      toast.success('Welcome back.');
       navigate(redirectTo, { replace: true });
     } catch (loginError) {
-      setError(loginError instanceof Error ? loginError.message : 'Unable to sign in.');
+      const message = loginError instanceof Error ? loginError.message : 'Unable to sign in.';
+      setError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }

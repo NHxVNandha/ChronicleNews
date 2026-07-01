@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock, SkeletonLine } from '../../components/Skeleton';
@@ -97,9 +98,12 @@ export function AdminOptimizationHub() {
       setSeoSettings(seo);
       setAiSettings(ai);
       setStatusMessage('Optimization settings saved.');
+      toast.success('Optimization settings saved.');
       setTimeout(() => setStatusMessage(''), 3000);
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Failed to save optimization settings.');
+      const message = saveError instanceof Error ? saveError.message : 'Failed to save optimization settings.';
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

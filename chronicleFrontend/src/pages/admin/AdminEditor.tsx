@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import { AiEditorialAssistant } from '../../components/AiEditorialAssistant';
 import { AdminPageHeader, AdminPanel, AdminStatusBadge } from '../../components/admin';
 import { ArticlePreviewPanel } from '../../components/ArticlePreviewPanel';
@@ -78,9 +79,12 @@ export function AdminEditor() {
         navigate(`/admin/articles/${created.slug}/edit`, { replace: true });
       }
       setStatusMessage('Draft saved successfully.');
+      toast.success('Draft saved.');
       setTimeout(() => setStatusMessage(''), 3000);
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Failed to save article.');
+      const message = saveError instanceof Error ? saveError.message : 'Failed to save article.';
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -109,9 +113,12 @@ export function AdminEditor() {
 
       setShowPublish(false);
       setStatusMessage('Article published successfully!');
+      toast.success('Article published successfully.');
       setTimeout(() => setStatusMessage(''), 3000);
     } catch (publishError) {
-      setError(publishError instanceof Error ? publishError.message : 'Failed to publish article.');
+      const message = publishError instanceof Error ? publishError.message : 'Failed to publish article.';
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

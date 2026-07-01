@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock } from '../../components/Skeleton';
@@ -94,6 +95,7 @@ export function AdminEngagementHub() {
   async function updateCommentStatus(id: string, status: CommentStatus) {
     const updated = await changeCommentStatus(id, status);
     setComments((current) => current.map((c) => c.id === id ? updated : c));
+    toast.success(`Comment ${status.toLowerCase()}.`);
   }
 
   async function handleReply(commentId: string) {
@@ -102,6 +104,7 @@ export function AdminEngagementHub() {
     setComments((current) => current.map((c) => c.id === commentId ? { ...c, replies: [...c.replies, reply] } : c));
     setReplyText('');
     setReplyOpen(null);
+    toast.success('Reply added.');
   }
 
   function handleSendPush() {
@@ -120,6 +123,7 @@ export function AdminEngagementHub() {
     setCampaigns((current) => [created, ...current]);
     setNewsletterStatus(`"${newsletterTitle}" will be sent to subscribers.`);
     setNewsletterTitle('');
+    toast.success('Campaign created.');
   }
 
   function handleScheduleSocial() {
