@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { AdminPageHeader, AdminPanel, AdminSectionHeader, AdminStatCard, AdminStatusBadge } from '../../components/admin';
 import { AdminLayout } from '../../layouts/AdminLayout';
 import { SkeletonBlock } from '../../components/Skeleton';
@@ -38,6 +41,26 @@ const platformColors: Record<string, string> = {
   Instagram: 'bg-pink-100 text-pink-700',
 };
 
+const pushSchema = z.object({
+  pushTitle: z.string().trim().min(5, 'Notification title must be at least 5 characters.'),
+  pushBody: z.string().trim().min(10, 'Notification body must be at least 10 characters.'),
+  pushSchedule: z.string().trim().min(1, 'Choose when to send the notification.'),
+});
+
+const newsletterSchema = z.object({
+  newsletterTitle: z.string().trim().min(5, 'Campaign title must be at least 5 characters.'),
+});
+
+const socialSchema = z.object({
+  socialPlatform: z.string().trim().min(1, 'Platform is required.'),
+  socialText: z.string().trim().min(10, 'Post text must be at least 10 characters.'),
+  socialSchedule: z.string().trim().min(1, 'Schedule time is required.'),
+});
+
+type PushFormValues = z.infer<typeof pushSchema>;
+type NewsletterFormValues = z.infer<typeof newsletterSchema>;
+type SocialFormValues = z.infer<typeof socialSchema>;
+
 const sectionReveal = {
   initial: { opacity: 0, y: 18 },
   animate: { opacity: 1, y: 0 },
@@ -55,19 +78,23 @@ export function AdminEngagementHub() {
   const [articleFilter, setArticleFilter] = useState('All');
   const [replyOpen, setReplyOpen] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
-
-  const [pushTitle, setPushTitle] = useState('');
-  const [pushBody, setPushBody] = useState('');
-  const [pushSchedule, setPushSchedule] = useState('now');
   const [pushHistory, setPushHistory] = useState<{ title: string; sent: string; status: string }[]>([]);
-
-  const [newsletterTitle, setNewsletterTitle] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState('');
-
-  const [socialText, setSocialText] = useState('');
-  const [socialPlatform, setSocialPlatform] = useState('Twitter / X');
-  const [socialSchedule, setSocialSchedule] = useState('');
   const [socialPostsList, setSocialPostsList] = useState<SocialPost[]>(socialPosts);
+  const { register: registerPush, handleSubmit: handlePushSubmit, watch: watchPush, reset: resetPush, formState: { errors: pushErrors } } = useForm<PushFormValues>({
+    resolver: zodResolver(pushSchema),
+    defaultValues: { pushTitle: '', pushBody: '', pushSchedule: 'now' },
+  });
+  const { register: registerNewsletter, handleSubmit: handleNewsletterSubmit, reset: resetNewsletter, formState: { errors: newsletterErrors } } = useForm<NewsletterFormValues>({
+    resolver: zodResolver(newsletterSchema),
+    defaultValues: { newsletterTitle: '' },
+  });
+  const { register: registerSocial, handleSubmit: handleSocialSubmit, reset: resetSocial, formState: { errors: socialErrors } } = useForm<SocialFormValues>({
+    resolver: zodResolver(socialSchema),
+    defaultValues: { socialPlatform: 'Twitter / X', socialText: '', socialSchedule: '' },
+  });
+
+  const pushValues = watchPush();
 
   useEffect(() => {
     let isMounted = true;
@@ -114,38 +141,32 @@ export function AdminEngagementHub() {
     toast.success('Reply added.');
   }
 
-  function handleSendPush() {
-    if (!pushTitle.trim()) return;
+  const handleSendPush = handlePushSubmit((values) => {
     const now = new Date().toLocaleString('id-ID');
-    const status = pushSchedule === 'now' ? 'Sent' : 'Scheduled';
-    setPushHistory((prev) => [{ title: pushTitle, sent: pushSchedule === 'now' ? now : pushSchedule, status }, ...prev]);
-    setPushTitle('');
-    setPushBody('');
-    setPushSchedule('now');
-  }
+    const status = values.pushSchedule === 'now' ? 'Sent' : 'Scheduled';
+    setPushHistory((prev) => [{ title: values.pushTitle, sent: values.pushSchedule === 'now' ? now : values.pushSchedule, status }, ...prev]);
+    resetPush({ pushTitle: '', pushBody: '', pushSchedule: 'now' });
+  });
 
-  async function handleSendNewsletter() {
-    if (!newsletterTitle.trim()) return;
-    const created = await createCampaign({ title: newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
+  const handleSendNewsletter = handleNewsletterSubmit(async (values) => {
+    const created = await createCampaign({ title: values.newsletterTitle, type: 'Newsletter', audience: 'All Subscribers' });
     setCampaigns((current) => [created, ...current]);
-    setNewsletterStatus(`"${newsletterTitle}" will be sent to subscribers.`);
-    setNewsletterTitle('');
+    setNewsletterStatus(`"${values.newsletterTitle}" will be sent to subscribers.`);
+    resetNewsletter({ newsletterTitle: '' });
     toast.success('Campaign created.');
-  }
+  });
 
-  function handleScheduleSocial() {
-    if (!socialText.trim() || !socialSchedule.trim()) return;
+  const handleScheduleSocial = handleSocialSubmit((values) => {
     const newPost: SocialPost = {
       id: Date.now(),
-      platform: socialPlatform,
-      text: socialText,
-      scheduled: socialSchedule,
+      platform: values.socialPlatform,
+      text: values.socialText,
+      scheduled: values.socialSchedule,
       status: 'Scheduled',
     };
     setSocialPostsList((prev) => [newPost, ...prev]);
-    setSocialText('');
-    setSocialSchedule('');
-  }
+    resetSocial({ socialPlatform: values.socialPlatform, socialText: '', socialSchedule: '' });
+  });
 
   const filteredComments = comments.filter((c) => {
     if (statusFilter !== 'All' && c.status !== statusFilter) return false;
@@ -424,27 +445,30 @@ export function AdminEngagementHub() {
               <div className="space-y-4">
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Title</span>
-                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" placeholder="Breaking: ..." value={pushTitle} onChange={(e) => setPushTitle(e.target.value)} />
+                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" placeholder="Breaking: ..." {...registerPush('pushTitle')} />
+                  {pushErrors.pushTitle && <p className="mt-2 text-sm font-semibold text-red-600">{pushErrors.pushTitle.message}</p>}
                 </label>
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Body</span>
-                  <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" rows={3} placeholder="Notification message..." value={pushBody} onChange={(e) => setPushBody(e.target.value)} />
+                  <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" rows={3} placeholder="Notification message..." {...registerPush('pushBody')} />
+                  {pushErrors.pushBody && <p className="mt-2 text-sm font-semibold text-red-600">{pushErrors.pushBody.message}</p>}
                 </label>
                 <div className="flex flex-wrap items-center gap-4">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="push-schedule" value="now" checked={pushSchedule === 'now'} onChange={() => setPushSchedule('now')} />
+                    <input type="radio" value="now" {...registerPush('pushSchedule')} checked={pushValues.pushSchedule === 'now'} />
                     <span className="text-sm font-semibold text-slate-700">Send now</span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="push-schedule" value="schedule" checked={pushSchedule !== 'now'} onChange={() => setPushSchedule('')} />
+                    <input type="radio" value="schedule" {...registerPush('pushSchedule')} checked={pushValues.pushSchedule !== 'now'} />
                     <span className="text-sm font-semibold text-slate-700">Schedule</span>
                   </label>
-                  {pushSchedule !== 'now' && (
-                    <input type="datetime-local" className="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" value={pushSchedule || ''} onChange={(e) => setPushSchedule(e.target.value)} />
+                  {pushValues.pushSchedule !== 'now' && (
+                    <input type="datetime-local" className="rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none" {...registerPush('pushSchedule')} />
                   )}
                 </div>
-                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={handleSendPush}>
-                  {pushSchedule === 'now' ? 'Send Notification' : 'Schedule Notification'}
+                {pushErrors.pushSchedule && <p className="text-sm font-semibold text-red-600">{pushErrors.pushSchedule.message}</p>}
+                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={() => void handleSendPush()}>
+                  {pushValues.pushSchedule === 'now' ? 'Send Notification' : 'Schedule Notification'}
                 </button>
               </div>
             </section>
@@ -499,7 +523,8 @@ export function AdminEngagementHub() {
               <div className="space-y-4">
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Campaign Title</span>
-                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" placeholder="e.g. Weekend Edition" value={newsletterTitle} onChange={(e) => setNewsletterTitle(e.target.value)} />
+                  <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" placeholder="e.g. Weekend Edition" {...registerNewsletter('newsletterTitle')} />
+                  {newsletterErrors.newsletterTitle && <p className="mt-2 text-sm font-semibold text-red-600">{newsletterErrors.newsletterTitle.message}</p>}
                 </label>
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Target Audience</span>
@@ -515,7 +540,7 @@ export function AdminEngagementHub() {
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Email Subject</span>
                   <input className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" placeholder="Subject line..." />
                 </label>
-                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={handleSendNewsletter}>Create & Send</button>
+                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={() => void handleSendNewsletter()}>Create & Send</button>
                 {newsletterStatus && (
                   <p className="rounded-lg bg-emerald-50 p-3 text-center text-sm font-bold text-emerald-700">{newsletterStatus}</p>
                 )}
@@ -591,22 +616,25 @@ export function AdminEngagementHub() {
               <div className="space-y-4">
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Platform</span>
-                  <select className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" value={socialPlatform} onChange={(e) => setSocialPlatform(e.target.value)}>
+                  <select className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" {...registerSocial('socialPlatform')}>
                     <option>Twitter / X</option>
                     <option>Facebook</option>
                     <option>LinkedIn</option>
                     <option>Instagram</option>
                   </select>
+                  {socialErrors.socialPlatform && <p className="mt-2 text-sm font-semibold text-red-600">{socialErrors.socialPlatform.message}</p>}
                 </label>
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Post Text</span>
-                  <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" rows={3} placeholder="Write your post..." value={socialText} onChange={(e) => setSocialText(e.target.value)} />
+                  <textarea className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" rows={3} placeholder="Write your post..." {...registerSocial('socialText')} />
+                  {socialErrors.socialText && <p className="mt-2 text-sm font-semibold text-red-600">{socialErrors.socialText.message}</p>}
                 </label>
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-slate-600">Schedule</span>
-                  <input type="datetime-local" className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" value={socialSchedule} onChange={(e) => setSocialSchedule(e.target.value)} />
+                  <input type="datetime-local" className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-secondary" {...registerSocial('socialSchedule')} />
+                  {socialErrors.socialSchedule && <p className="mt-2 text-sm font-semibold text-red-600">{socialErrors.socialSchedule.message}</p>}
                 </label>
-                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={handleScheduleSocial}>Schedule Post</button>
+                <button className="w-full rounded-lg bg-primary py-3 font-bold !text-white hover:bg-primary/90" type="button" onClick={() => void handleScheduleSocial()}>Schedule Post</button>
               </div>
             </section>
 
